@@ -9,6 +9,9 @@ gradle-android-scala-plugin
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.8.1'

@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url uri('../../repo')
+            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
         }
     }
     dependencies {

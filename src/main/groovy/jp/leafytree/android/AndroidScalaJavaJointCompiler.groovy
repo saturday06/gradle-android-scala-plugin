@@ -25,13 +25,11 @@ import org.gradle.api.tasks.WorkResult
 class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
     private final Project project
     private final Compiler<JavaCompileSpec> androidJavaCompiler
-    private final Boolean test
     private final Map extraOptions
 
-    public AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Boolean test, Map extraOptions) {
+    public AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions) {
         this.project = project
         this.androidJavaCompiler = androidJavaCompiler
-        this.test = test
         this.extraOptions = extraOptions
     }
 
@@ -59,13 +57,8 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
             project.configurations.scalaCompileProvided.each { file ->
                 bootclasspath(location: file)
             }
-            if (test) {
-                def parentDir = scalacDestinationDir.parentFile
-                if (parentDir.name != "test") {
-                    throw new GradleException("Unexpected directory structure: " + scalacDestinationDir.absolutePath)
-                }
-                def scalaMainClasspath = new File(parentDir.parentFile, scalacDestinationDir.name)
-                bootclasspath(location: scalaMainClasspath)
+            spec.classpath.each { file ->
+                classpath(location: file)
             }
             spec.source.addToAntBuilder(ant, 'src', FileCollection.AntType.MatchingTask)
         }

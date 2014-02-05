@@ -1,0 +1,2 @@
+gradle-android-scala-plugin
+===========================

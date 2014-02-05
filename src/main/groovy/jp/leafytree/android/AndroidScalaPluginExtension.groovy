@@ -17,4 +17,8 @@ package jp.leafytree.android
 
 class AndroidScalaPluginExtension {
     String target = "jvm-1.6"
+
+    def target(target) { // TODO: Auto generation
+        this.target = target
+    }
 }

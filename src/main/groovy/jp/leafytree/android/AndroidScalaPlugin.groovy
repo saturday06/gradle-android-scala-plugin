@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package jp.leafytree.android
+
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -29,6 +30,7 @@ import javax.inject.Inject
 public class AndroidScalaPlugin implements Plugin<Project> {
     private final FileResolver fileResolver
     private final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
+    private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
 
     @Inject
     public AndroidScalaPlugin(FileResolver fileResolver) {
@@ -36,8 +38,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     public void apply(Project project) {
-        project.extensions.create("androidScala", AndroidScalaPluginExtension)
         def androidExtension = project.extensions.getByName("android")
+        updateAndroidExtension(project, androidExtension)
         updateAndroidSourceSetsExtension(project, androidExtension)
         project.gradle.taskGraph.whenReady { taskGraph ->
             addScalaDependencies(project)
@@ -57,6 +59,14 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def version = scalaLibraryDependency.version
         project.configurations { scalaCompileProvided }
         project.dependencies.add("scalaCompileProvided", "org.scala-lang:scala-compiler:$version")
+    }
+
+    void updateAndroidExtension(Project project, Object androidExtension) {
+        androidExtension.metaClass.getScala = { extension }
+        androidExtension.metaClass.scala = { configureClosure ->
+            ConfigureUtil.configure(configureClosure, extension)
+            androidExtension
+        }
     }
 
     void updateAndroidSourceSetsExtension(Project project, Object androidExtension) {
@@ -91,7 +101,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def test = (task.name ==~ /.+TestJava$/)
         def key = test ? "instrumentTest" : "main" // TODO: Use /TestJava$/ regexp
         task.source = task.source + sourceDirectorySetMap[key]
-        def options = [ target: project.androidScala.target ]
+        def options = [target: extension.target]
         task.javaCompiler = new AndroidScalaJavaJointCompiler(project, task.javaCompiler, test, options)
     }
 }

@@ -63,10 +63,10 @@ android {
             proguardFile file('proguard-android.txt')
         }
     }
-}
 
-androidScala {
-    target "jvm-1.6" // default: "jvm-1.6"
+    scala {
+        target "jvm-1.6" // default: "jvm-1.6"
+    }
 }
 
 dependencies {

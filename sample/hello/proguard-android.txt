@@ -1,0 +1,5 @@
+-dontoptimize
+-dontobfuscate
+-dontpreverify
+-dontwarn scala.**
+-keep class !scala.collection.** { *; }

@@ -38,6 +38,20 @@ android {
         versionName '1.0'
     }
 
+    sourceSets {
+        main {
+            scala {
+                srcDir "src/main/scala" // default: "src/main/scala"
+            }
+        }
+
+        instrumentTest {
+            scala {
+                srcDir "src/instrumentTest/scala" // default: "src/instrumentTest/scala"
+            }
+        }
+    }
+
     buildTypes {
         debug {
             runProguard true
@@ -49,6 +63,10 @@ android {
             proguardFile file('proguard-android.txt')
         }
     }
+}
+
+androidScala {
+    target "jvm-1.6" // default: "jvm-1.6"
 }
 
 dependencies {

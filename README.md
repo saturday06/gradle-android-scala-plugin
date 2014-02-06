@@ -55,12 +55,12 @@ android {
     buildTypes {
         debug {
             runProguard true // required
-            proguardFile file('proguard-android.txt')
+            proguardFile file('proguard-rules.txt')
         }
 
         release {
             runProguard true
-            proguardFile file('proguard-android.txt')
+            proguardFile file('proguard-rules.txt')
         }
     }
 
@@ -74,7 +74,7 @@ dependencies {
 }
 ```
 
-### proguard-android.txt
+### proguard-rules.txt
 
 ```
 -dontoptimize

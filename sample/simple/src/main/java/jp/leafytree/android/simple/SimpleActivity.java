@@ -8,7 +8,7 @@ public class SimpleActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.simple_activity);
+        setContentView(R.layout.activity_simple);
         TextView scalaTextView = (TextView) findViewById(R.id.scala_text_view);
         scalaTextView.setText(new HelloScala().say());
     }

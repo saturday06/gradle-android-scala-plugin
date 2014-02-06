@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity
 class HelloActivity extends FragmentActivity {
   override def onCreate(savedInstanceState: Bundle) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.hello_activity)
+    setContentView(R.layout.activity_hello)
     val scalaTextView = findViewById(R.id.scala_text_view).asInstanceOf[TextView]
     scalaTextView.setText(new HelloJava().say())
   }

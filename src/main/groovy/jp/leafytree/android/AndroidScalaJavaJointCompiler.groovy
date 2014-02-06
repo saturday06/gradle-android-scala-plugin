@@ -72,7 +72,7 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
         def result = androidJavaCompiler.execute(spec)
 
         // restore compiled scala classes
-        project.ant.copy(todir: spec.destinationDir) {
+        ant.copy(todir: spec.destinationDir) {
             fileset(dir: scalacDestinationDir)
         }
         return result

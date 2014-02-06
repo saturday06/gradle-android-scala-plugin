@@ -2,4 +2,5 @@
 -dontobfuscate
 -dontpreverify
 -dontwarn scala.**
+-dontwarn jp.leafytree.android.libproject.lib1.**
 -keep class !scala.collection.** { *; }

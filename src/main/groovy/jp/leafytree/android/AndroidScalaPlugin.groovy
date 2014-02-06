@@ -92,6 +92,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     void updateAndroidJavaCompileTask(Project project, Object androidExtension, Task task) {
+        if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
+            return
+        }
         if (!(task.name ==~ /^compile(.+)Java$/)) { // TODO: Use !=~ operator
             return
         }

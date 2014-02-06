@@ -33,12 +33,12 @@ android {
     buildTypes {
         debug {
             runProguard true
-            proguardFile file('proguard-android.txt')
+            proguardFile file('proguard-rules.txt')
         }
 
         release {
             runProguard true
-            proguardFile file('proguard-android.txt')
+            proguardFile file('proguard-rules.txt')
         }
     }
 }

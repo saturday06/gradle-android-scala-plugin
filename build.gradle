@@ -38,7 +38,9 @@ version = '1.0-SNAPSHOT'
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: uri('../gh-pages/repository/snapshot'))
+            repository(url: uri('gh-pages/repository/snapshot'))
         }
     }
 }
+
+task endToEndTest(type: jp.leafytree.android.AndroidScalaPluginEndToEndTestTask)

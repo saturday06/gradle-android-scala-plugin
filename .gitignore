@@ -9,5 +9,9 @@
 /*.iws
 /gh-pages/
 
+/buildSrc/.gradle/
+/buildSrc/build/
+/buildSrc/*.iml
+
 .DS_Store
 Thumbs.db

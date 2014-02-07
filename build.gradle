@@ -42,3 +42,5 @@ uploadArchives {
         }
     }
 }
+
+task endToEndTest(type: jp.leafytree.android.AndroidScalaPluginEndToEndTestTask)

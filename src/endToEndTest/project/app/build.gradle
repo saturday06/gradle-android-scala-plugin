@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url snaphotRepositoryUrl
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "jp.leafytree.android:gradle-android-scala-plugin:$androidScalaPluginVersion"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'android'
+apply plugin: 'android-scala'
+apply plugin: 'idea'
+
+android {
+    compileSdkVersion Integer.decode(androidPluginCompileSdkVersion)
+    buildToolsVersion androidPluginBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.decode(androidPluginMinSdkVersion)
+        targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        debug {
+            runProguard true
+            proguardFile file('proguard-rules.txt')
+        }
+
+        release {
+            runProguard true
+            proguardFile file('proguard-rules.txt')
+        }
+    }
+
+    scala {
+        target androidScalaTarget
+    }
+}
+
+dependencies {
+    compile "org.scala-lang:scala-library:$scalaLibraryVersion"
+    compile "com.android.support:support-v4:19.0.1"
+    instrumentTestCompile "com.jayway.android.robotium:robotium-solo:5.0.1"
+}

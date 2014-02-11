@@ -45,3 +45,4 @@ uploadArchives {
 
 task integTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)
 task integrationTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)
+task sample(type: jp.leafytree.android.AndroidScalaPluginSampleTask)

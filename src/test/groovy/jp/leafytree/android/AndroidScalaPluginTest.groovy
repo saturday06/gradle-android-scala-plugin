@@ -15,14 +15,39 @@
  */
 package jp.leafytree.android
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 
 class AndroidScalaPluginTest {
+    Project project
+
+    @Before
+    public void setUp() {
+        project = ProjectBuilder.builder().build()
+    }
+
     @Test
-    public void greeterPluginAddsGreetingTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'android-scala'
+    public void applyingBeforeAndroidPluginShouldThrowException() {
+        try {
+            project.apply plugin: 'android-scala'
+            Assert.fail("Should throw Exception")
+        } catch (GradleException e) {
+        }
+    }
+
+    @Test
+    public void applyingAfterAndroidPluginShouldNeverThrowException() {
+        project.apply plugin: 'android'
+        project.apply plugin: 'android-scala' // never throw Exception
+    }
+
+    @Test
+    public void applyingAfterAndroidLibraryPluginShouldNeverThrowException() {
+        project.apply plugin: 'android-library'
+        project.apply plugin: 'android-scala' // never throw Exception
     }
 }

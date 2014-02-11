@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jp.leafytree.android
+package jp.leafytree.gradle
 
 import com.google.common.io.ByteStreams
 import org.apache.commons.lang.SystemUtils

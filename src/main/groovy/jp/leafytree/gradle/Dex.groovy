@@ -49,7 +49,7 @@ public class Dex {
         undexedJar
     }
 
-    public void proguard(File dexJar, List libraryDexJars, String config, String proguardClasspath = null) {
+    public void proguard(File dexJar, List<File> libraryDexJars, String config, String proguardClasspath = null) {
         // extract jars
         def extractDir = new File(workDir, "proguard-extract" + File.separator + dexJar.name)
         if (!extractDir.exists()) {

@@ -26,19 +26,18 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
     private final Project project
     private final Compiler<JavaCompileSpec> androidJavaCompiler
     private final Map extraOptions
+    private final AntBuilder ant
 
-    public AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions) {
+    public AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions, String scalacClasspath = null) {
         this.project = project
         this.androidJavaCompiler = androidJavaCompiler
         this.extraOptions = extraOptions
+        this.ant = project.ant
+        ant.taskdef(name: 'scalac', classname: 'scala.tools.ant.Scalac', // TODO: import antlib xml
+                classpath: scalacClasspath)
     }
 
-    public WorkResult execute(JavaCompileSpec spec) {
-        // scala
-        def scalacDestinationDir = new File(spec.destinationDir.getAbsolutePath() + "-scala")
-        if (!scalacDestinationDir.exists() && !scalacDestinationDir.mkdirs()) {
-            throw new GradleException("Failed to create directory: $scalacDestinationDir")
-        }
+    public Map getScalacOptions(JavaCompileSpec spec) {
         def options = spec.compileOptions.optionMap().findAll {
             [
                     "srcdir", "classpath", "sourcepath", "bootclasspath",
@@ -48,33 +47,31 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
         if (!options["bootclasspath"] && spec.compileOptions.bootClasspath) {
             options["bootclasspath"] = spec.compileOptions.bootClasspath
         }
-        options += extraOptions
-        def ant = project.ant
-        ant.taskdef(name: 'scalac', classname: 'scala.tools.ant.Scalac', // TODO: import antlib xml
-                classpath: project.configurations.scalaCompileProvided.asPath)
-        options["destDir"] = scalacDestinationDir
-        ant.scalac(options) {
-            project.configurations.scalaCompileProvided.each { file ->
-                bootclasspath(location: file)
-            }
-            spec.classpath.each { file ->
-                classpath(location: file)
-            }
+        options["classpath"] = spec.classpath.collect { it.absolutePath }.join(File.pathSeparator)
+        options + extraOptions
+    }
+
+    public WorkResult execute(JavaCompileSpec spec) {
+        // destinationDir for scalac need to be changed because someone deletes spec.destinationDir/**/*.class
+        // before androidJavaCompiler.execute. TODO: fundamental solution
+        def scalacDestinationDir = new File(spec.destinationDir.getAbsolutePath() + "-scala")
+        if (!scalacDestinationDir.isDirectory() && !scalacDestinationDir.mkdirs()) {
+            throw new GradleException("Failed to create directory: $scalacDestinationDir")
+        }
+        ant.scalac(getScalacOptions(spec) + [destDir: scalacDestinationDir]) {
             spec.source.addToAntBuilder(ant, 'src', FileCollection.AntType.MatchingTask)
         }
 
         // java
-        spec.source = spec.source.filter { !it.absolutePath.endsWith(".scala") }
-        if (spec.source.empty) {
-            return { true } as WorkResult
-        }
         spec.classpath = spec.classpath + project.files(scalacDestinationDir)
-        def result = androidJavaCompiler.execute(spec)
+        spec.source = spec.source.filter { !it.absolutePath.endsWith(".scala") }
+        def result = spec.source.empty ? ({ true } as WorkResult) : androidJavaCompiler.execute(spec)
 
         // restore compiled scala classes
         ant.move(todir: spec.destinationDir, preservelastmodified: true) {
             fileset(dir: scalacDestinationDir)
         }
+
         return result
     }
 }

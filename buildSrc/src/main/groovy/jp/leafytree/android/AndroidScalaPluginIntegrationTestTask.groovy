@@ -1,10 +1,25 @@
+/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.leafytree.android
 
-import org.apache.tools.ant.taskdefs.condition.Os
+import jp.leafytree.gradle.GradleWrapper
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-public class AndroidScalaPluginEndToEndTestTask extends DefaultTask {
+public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
     @TaskAction
     def run() {
         [
@@ -58,7 +73,7 @@ public class AndroidScalaPluginEndToEndTestTask extends DefaultTask {
     }
 
     def runProject(projectName, tasks, gradleWrapperProperties, gradleProperties) {
-        def baseDir = new File([project.buildFile.parentFile.absolutePath, "src", "endToEndTest"].join(File.separator))
+        def baseDir = new File([project.buildFile.parentFile.absolutePath, "src", "integTest"].join(File.separator))
         def projectDir = new File([baseDir.absolutePath, "project", projectName].join(File.separator))
         new File(baseDir, ["gradle", "wrapper", "gradle-wrapper.properties"].join(File.separator)).withWriter {
             gradleWrapperProperties.store(it, getClass().getName())
@@ -66,23 +81,13 @@ public class AndroidScalaPluginEndToEndTestTask extends DefaultTask {
         new File(projectDir, "gradle.properties").withWriter {
             gradleProperties.store(it, getClass().getName())
         }
-
-        def command = Os.isFamily(Os.FAMILY_WINDOWS) ?
-                [new File(baseDir, "gradlew.bat").absolutePath] :
-                ["/bin/sh", new File(baseDir, "gradlew").absolutePath]
-        command += ["--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
+        def gradleWrapper = new GradleWrapper(baseDir)
         def stdout = new StringBuilder()
         def stderr = new StringBuilder()
-        def process = command.execute()
-        process.waitForProcessOutput(stdout, stderr)
-        println("""
--- command --
-$command
--- stdout ---
-$stdout
--- stderr ---
-$stderr
-""")
+        def args = ["--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
+        println "gradlew $args"
+        def process = gradleWrapper.execute(args)
+        GradleWrapper.printProcessOutput(process)
         if (process.exitValue() != 0) {
             throw new IOException("process.exitValue != 0 but ${process.exitValue()}")
         }

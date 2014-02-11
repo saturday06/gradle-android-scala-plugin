@@ -49,27 +49,28 @@ public class Dex {
         undexedJar
     }
 
-    public void proguard(File dexJar, List<File> libraryDexJars, String config, String proguardClasspath = null) {
+    public void proguard(File dexJar, List<File> dependencyDexJars, String config, String proguardClasspath = null) {
         // extract jars
         def extractDir = new File(workDir, "proguard-extract" + File.separator + dexJar.name)
         if (!extractDir.exists()) {
             ant.unzip(src: dexJar, dest: extractDir)
         }
         def jar = undex(dexJar)
-        def libraryJars = libraryDexJars.collect { undex(it) }
+        def dependencyJars = dependencyDexJars.collect { undex(it) }
 
         // proguard
-        def proguardedJar = new File(mkdirsOrThrow("proguard"), jar.name)
+        def proguardDir = mkdirsOrThrow("proguard")
+        def proguardedJar = new File(proguardDir, jar.name)
         ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                 classpath: proguardClasspath)
         def proguardConfigFile = new File(workDir, "proguard-config.txt")
         proguardConfigFile.withWriter { it.write config }
         ant.proguard(configuration: proguardConfigFile) {
             injar(file: jar)
-            outjar(file: proguardedJar)
-            libraryJars.each {
-                libraryjar(file: it)
+            dependencyJars.each {
+                injar(file: it)
             }
+            outjar(file: proguardDir)
         }
 
         // replace dexJar with proguard-ed one

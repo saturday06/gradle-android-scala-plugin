@@ -39,7 +39,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 
-group = 'jp.leafytree.android'
+group = 'jp.leafytree.gradle'
 version = '1.0-SNAPSHOT'
 
 uploadArchives {
@@ -50,6 +50,6 @@ uploadArchives {
     }
 }
 
-task integTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)
-task integrationTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)
-task sample(type: jp.leafytree.android.AndroidScalaPluginSampleTask)
+task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask)
+task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask)
+task sample(type: jp.leafytree.gradle.AndroidScalaPluginSampleTask)

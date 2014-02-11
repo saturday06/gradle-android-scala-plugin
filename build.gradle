@@ -19,6 +19,7 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
+    maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
 }
 
 buildscript {
@@ -30,6 +31,12 @@ buildscript {
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    testCompile "com.android.tools.build:gradle:0.8.1"
+    testCompile "com.googlecode.dex2jar:dex-tools:0.0.9.15@zip"
+    testCompile "com.google.guava:guava:16.0.1"
+    testCompile "net.sf.proguard:proguard-anttask:4.11"
+    testCompile "org.scala-lang:scala-compiler:2.10.3"
+    testCompile "org.mockito:mockito-core:1.9.5"
 }
 
 group = 'jp.leafytree.android'

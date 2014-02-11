@@ -1,7 +1,9 @@
 gradle-android-scala-plugin
 ============================
 
-## Getting started
+gradle-android-scala-plugin adds scala language support to official gradle android plugin.
+
+## Configuration example
 
 ### build.gradle
 

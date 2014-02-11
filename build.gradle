@@ -43,4 +43,5 @@ uploadArchives {
     }
 }
 
-task endToEndTest(type: jp.leafytree.android.AndroidScalaPluginEndToEndTestTask)
+task integTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)
+task integrationTest(type: jp.leafytree.android.AndroidScalaPluginIntegrationTestTask)

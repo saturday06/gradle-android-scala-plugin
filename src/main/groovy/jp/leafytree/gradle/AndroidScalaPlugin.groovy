@@ -137,7 +137,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontoptimize
         -dontobfuscate
         -dontpreverify
-        -dontwarn scala.**
+        -dontwarn android.**, java.**, scala.**
+        -ignorewarnings
         -keep class !scala.collection.** { *; }
         """
     }

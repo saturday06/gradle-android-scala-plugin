@@ -27,8 +27,8 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 ["appAndLib", ["installDebug", "connectedInstrumentTest"]],
         ].each { projectArgs ->
             [
-                    ["1.10", "2.10.3", "0.8.1", "19", "19.0.1", "4", "19"],
-                    ["1.10", "2.11.0-M8", "0.8.1", "19", "19.0.1", "4", "19"],
+                    ["1.10", "2.10.3", "0.8.3", "19", "19.0.1", "4", "19"],
+                    ["1.10", "2.11.0-M8", "0.8.3", "19", "19.0.1", "4", "19"],
             ].each { buildArgs ->
                 def gradleVersion = buildArgs.first()
                 def gradleWrapperProperties = getGradleWrapperProperties(gradleVersion)

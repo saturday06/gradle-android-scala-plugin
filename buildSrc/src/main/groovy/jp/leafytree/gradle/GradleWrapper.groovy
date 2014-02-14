@@ -27,9 +27,9 @@ class GradleWrapper {
     public Process execute(List<String> options) {
         def command = []
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            command << "gradlew.bat"
+            command << dir.absolutePath + File.separator + "gradlew.bat"
         } else {
-            command += ["/bin/sh", "gradlew"]
+            command += ["/bin/sh", dir.absolutePath + File.separator + "gradlew"]
         }
         def processBuilder = new ProcessBuilder(command + options)
         processBuilder.directory(dir)

@@ -133,14 +133,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     String getProGuardConfig() {
-        """
+        '''
         -dontoptimize
         -dontobfuscate
         -dontpreverify
-        -dontwarn android.**, java.**, scala.**
+        -dontwarn android.**, java.**, junit.framework.**, javax.microedition.khronos.**
+        -dontwarn **.R$*
+        -dontwarn scala.**
         -ignorewarnings
         -keep class !scala.collection.** { *; }
-        """
+        '''
     }
 
     void proguardBeforeDexDebugTestTask(Task task) {

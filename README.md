@@ -31,7 +31,7 @@ apply plugin: 'idea'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.0.2'
 
     defaultConfig {
         minSdkVersion 7

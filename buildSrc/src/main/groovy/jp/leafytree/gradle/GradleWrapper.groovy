@@ -32,6 +32,7 @@ class GradleWrapper {
             def shell = System.getenv("SHELL") ?: "/bin/sh"
             command += [shell, dir.absolutePath + File.separator + "gradlew"]
         }
+        command = command.collect { it.toString() }.toList() // Avoid ArrayStoreException
         def processBuilder = new ProcessBuilder(command + options)
         processBuilder.directory(dir)
         processBuilder.start()

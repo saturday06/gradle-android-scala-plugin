@@ -29,7 +29,8 @@ class GradleWrapper {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             command << dir.absolutePath + File.separator + "gradlew.bat"
         } else {
-            command += ["/bin/sh", dir.absolutePath + File.separator + "gradlew"]
+            def shell = System.getenv("SHELL") ?: "/bin/sh"
+            command += [shell, dir.absolutePath + File.separator + "gradlew"]
         }
         def processBuilder = new ProcessBuilder(command + options)
         processBuilder.directory(dir)

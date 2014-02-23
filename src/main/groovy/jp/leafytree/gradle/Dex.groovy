@@ -93,7 +93,8 @@ public class Dex {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             command << "$dexToolsDir$File.separator${toolName}.bat"
         } else {
-            command += ["/bin/sh", "$dexToolsDir$File.separator${toolName}.sh"]
+            def shell = System.getenv("SHELL") ?: "/bin/sh"
+            command += [shell, "$dexToolsDir$File.separator${toolName}.sh"]
         }
         command += options
         command = command.collect { it.toString() }.toList() // TODO: what's this ?

@@ -15,6 +15,7 @@
  */
 package jp.leafytree.gradle
 
+import com.google.common.io.ByteStreams
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.GradleException
 import org.gradle.api.Project
@@ -101,17 +102,10 @@ public class Dex {
         def processBuilder = new ProcessBuilder(command)
         processBuilder.directory(dexToolsDir)
         def process = processBuilder.start()
-        def stdout = new StringBuilder()
-        def stderr = new StringBuilder()
-        process.waitForProcessOutput(stdout, stderr)
-        logger.debug("""
--- command --
-$command
--- stdout ---
-$stdout
--- stderr ---
-$stderr
-""")
+        Thread.start { ByteStreams.copy(process.in, System.out) }
+        Thread.start { ByteStreams.copy(process.err, System.err) }
+        // process.waitForProcessOutput(System.out, System.err)
+        process.waitFor()
         if (process.exitValue() != 0) {
             throw new GradleException("process.exitValue != 0 but ${process.exitValue()}")
         }

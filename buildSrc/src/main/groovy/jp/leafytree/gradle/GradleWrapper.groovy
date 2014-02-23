@@ -37,16 +37,4 @@ class GradleWrapper {
         processBuilder.directory(dir)
         processBuilder.start()
     }
-
-    public static printProcessOutput(Process process) {
-        def stdout = new StringBuilder()
-        def stderr = new StringBuilder()
-        process.waitForProcessOutput(stdout, stderr)
-        println("""
--- stdout ---
-$stdout
--- stderr ---
-$stderr
-""")
-    }
 }

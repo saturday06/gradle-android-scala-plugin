@@ -15,7 +15,12 @@
  */
 apply plugin: 'groovy'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    compile "com.google.guava:guava:16.0.1"
 }

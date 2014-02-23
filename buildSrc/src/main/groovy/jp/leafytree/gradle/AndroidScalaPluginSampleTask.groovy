@@ -15,6 +15,7 @@
  */
 package jp.leafytree.gradle
 
+import com.google.common.io.ByteStreams
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -30,7 +31,10 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
             def gradleWrapper = new GradleWrapper(dir)
             println "gradlew $args"
             def process = gradleWrapper.execute(args)
-            GradleWrapper.printProcessOutput(process)
+            Thread.start { ByteStreams.copy(process.in, System.out) }
+            Thread.start { ByteStreams.copy(process.err, System.err) }
+            process.waitFor()
+            // process.waitForProcessOutput(System.out, System.err)
             if (process.exitValue() != 0) {
                 throw new IOException("process.exitValue != 0 but ${process.exitValue()}")
             }

@@ -4,7 +4,7 @@ before_install:
     # Install base Android SDK
     - sudo apt-get update -qq
     - sudo apt-get install -qq libstdc++6:i386 lib32z1
-    - export COMPONENTS=build-tools-19.0.1,android-19,sysimg-19,extra
+    - export COMPONENTS=build-tools-19.0.2,android-19,sysimg-19,extra
     - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/master/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
     - source ~/.android-sdk-installer/env
     - export TERM=dumb # to get clean gradle output

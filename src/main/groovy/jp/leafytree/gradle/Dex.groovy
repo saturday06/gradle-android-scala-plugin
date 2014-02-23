@@ -97,7 +97,7 @@ public class Dex {
             command += [shell, "$dexToolsDir$File.separator${toolName}.sh"]
         }
         command += options
-        command = command.collect { it.toString() }.toList() // TODO: what's this ?
+        command = command.collect { it.toString() }.toList() // Avoid ArrayStoreException
         def processBuilder = new ProcessBuilder(command)
         processBuilder.directory(dexToolsDir)
         def process = processBuilder.start()

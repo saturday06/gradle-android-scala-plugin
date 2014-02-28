@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'signing'
 apply plugin: 'idea'
 
 repositories {
@@ -39,14 +41,77 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 
+description 'Gradle Android Scala Plugin adds scala language support to official gradle android plugin.'
 group = 'jp.leafytree.gradle'
 version = '1.0-SNAPSHOT'
+
+def uploadToSonatypeRepository = hasProperty('sonatypeUserName')
 
 uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: uri('gh-pages/repository/snapshot'))
         }
+        if (uploadToSonatypeRepository) {
+            def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
+                                                              : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: repositoryUrl) {
+                    authentication(userName: sonatypeUserName, password: sonatypePassword)
+                }
+                pom.project {
+                    name 'Android Gradle Scala Plugin'
+                    packaging 'jar'
+                    description project.description
+                    url 'https://github.com/saturday06/gradle-android-scala-plugin'
+
+                    scm {
+                        url 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
+                        connection 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
+                        developerConnection 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'saturday06'
+                            name 'Isamu Mogi'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourceJar
+}
+
+signing {
+    if (uploadToSonatypeRepository) {
+        sign configurations.archives
     }
 }
 

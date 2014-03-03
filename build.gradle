@@ -62,7 +62,7 @@ uploadArchives {
                     authentication(userName: sonatypeUserName, password: sonatypePassword)
                 }
                 pom.project {
-                    name 'Android Gradle Scala Plugin'
+                    name 'Gradle Android Scala Plugin'
                     packaging 'jar'
                     description project.description
                     url 'https://github.com/saturday06/gradle-android-scala-plugin'

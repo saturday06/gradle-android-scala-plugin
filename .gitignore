@@ -4,6 +4,7 @@
 /out/
 /repo/
 /.idea/
+/src/integTest/gradle/wrapper/gradle-wrapper.properties
 /*.iml
 /*.ipr
 /*.iws

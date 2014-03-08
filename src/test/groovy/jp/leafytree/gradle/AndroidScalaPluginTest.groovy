@@ -65,18 +65,18 @@ class AndroidScalaPluginTest {
         src1.parentFile.mkdirs()
         src1.withWriter { it.write("class Src1{}") }
         Assert.assertEquals([src1], plugin.sourceDirectorySetMap["main"].files.toList())
-        Assert.assertEquals([], plugin.sourceDirectorySetMap["instrumentTest"].files.toList())
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["androidTest"].files.toList())
     }
 
     @Test
-    public void addDefaultScalaInstrumentTestSourceSetToAndroidPlugin() {
+    public void addDefaultScalaAndroidTestSourceSetToAndroidPlugin() {
         def plugin = getPlugin()
-        Assert.assertEquals([], plugin.sourceDirectorySetMap["instrumentTest"].files.toList())
-        def src1 = new File(project.file("."), ["src", "instrumentTest", "scala", "Src1Test.scala"].join(File.separator))
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["androidTest"].files.toList())
+        def src1 = new File(project.file("."), ["src", "androidTest", "scala", "Src1Test.scala"].join(File.separator))
         src1.parentFile.mkdirs()
         src1.withWriter { it.write("class Src1Test{}") }
         Assert.assertEquals([], plugin.sourceDirectorySetMap["main"].files.toList())
-        Assert.assertEquals([src1], plugin.sourceDirectorySetMap["instrumentTest"].files.toList())
+        Assert.assertEquals([src1], plugin.sourceDirectorySetMap["androidTest"].files.toList())
     }
 
     @Test
@@ -90,21 +90,21 @@ class AndroidScalaPluginTest {
         customSrc.withWriter { it.write("class Src2{}") }
         project.android { sourceSets { main { scala { srcDir "custom/sourceSet" } } } }
         Assert.assertEquals([customSrc, defaultSrc], plugin.sourceDirectorySetMap["main"].files.toList().sort())
-        Assert.assertEquals([], plugin.sourceDirectorySetMap["instrumentTest"].files.toList().sort())
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["androidTest"].files.toList().sort())
     }
 
     @Test
-    public void addCustomScalaInstrumentTestSourceSetToAndroidPlugin() {
+    public void addCustomScalaAndroidTestSourceSetToAndroidPlugin() {
         def plugin = getPlugin()
-        def defaultSrc = new File(project.file("."), ["src", "instrumentTest", "scala", "Src1.scala"].join(File.separator))
+        def defaultSrc = new File(project.file("."), ["src", "androidTest", "scala", "Src1.scala"].join(File.separator))
         def customSrc = new File(project.file("."), ["custom", "sourceSet", "Src2.scala"].join(File.separator))
         defaultSrc.parentFile.mkdirs()
         defaultSrc.withWriter { it.write("class Src1{}") }
         customSrc.parentFile.mkdirs()
         customSrc.withWriter { it.write("class Src2{}") }
-        project.android { sourceSets { instrumentTest { scala { srcDir "custom/sourceSet" } } } }
+        project.android { sourceSets { androidTest { scala { srcDir "custom/sourceSet" } } } }
         Assert.assertEquals([], plugin.sourceDirectorySetMap["main"].files.toList().sort())
-        Assert.assertEquals([customSrc, defaultSrc], plugin.sourceDirectorySetMap["instrumentTest"].files.toList().sort())
+        Assert.assertEquals([customSrc, defaultSrc], plugin.sourceDirectorySetMap["androidTest"].files.toList().sort())
     }
 
     @Test
@@ -115,17 +115,17 @@ class AndroidScalaPluginTest {
         customSrc.withWriter { it.write("class Src2{}") }
         project.android { sourceSets { main { scala { srcDirs = ["custom/sourceSet"] } } } }
         Assert.assertEquals([customSrc], plugin.sourceDirectorySetMap["main"].files.toList().sort())
-        Assert.assertEquals([], plugin.sourceDirectorySetMap["instrumentTest"].files.toList().sort())
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["androidTest"].files.toList().sort())
     }
 
     @Test
-    public void updateCustomScalaInstrumentTestSourceSetToAndroidPlugin() {
+    public void updateCustomScalaAndroidTestSourceSetToAndroidPlugin() {
         def plugin = getPlugin()
         def customSrc = new File(project.file("."), ["custom", "testSourceSet", "Src1Test.scala"].join(File.separator))
         customSrc.parentFile.mkdirs()
         customSrc.withWriter { it.write("class Src2Test{}") }
-        project.android { sourceSets { instrumentTest { scala { srcDirs = ["custom/testSourceSet"] } } } }
+        project.android { sourceSets { androidTest { scala { srcDirs = ["custom/testSourceSet"] } } } }
         Assert.assertEquals([], plugin.sourceDirectorySetMap["main"].files.toList().sort())
-        Assert.assertEquals([customSrc], plugin.sourceDirectorySetMap["instrumentTest"].files.toList().sort())
+        Assert.assertEquals([customSrc], plugin.sourceDirectorySetMap["androidTest"].files.toList().sort())
     }
 }

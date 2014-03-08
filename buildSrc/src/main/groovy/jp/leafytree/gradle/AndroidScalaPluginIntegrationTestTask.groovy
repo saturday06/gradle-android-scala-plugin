@@ -23,9 +23,9 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
     @TaskAction
     def run() {
         [
-                ["app", ["installDebug", "connectedInstrumentTest"]],
-                ["lib", ["connectedInstrumentTest"]],
-                ["appAndLib", ["installDebug", "connectedInstrumentTest"]],
+                ["app", ["installDebug", "connectedAndroidTest"]],
+                ["lib", ["connectedAndroidTest"]],
+                ["appAndLib", ["installDebug", "connectedAndroidTest"]],
         ].each { projectArgs ->
             [
                     ["1.11", "2.10.3", "0.9.0", "19", "19.0.3", "4", "19"],

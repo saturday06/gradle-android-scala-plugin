@@ -24,8 +24,8 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
     def buildAndCheck() {
         [
                 ["simple", ["installDebug"]],
-                ["hello", ["installDebug", "connectedInstrumentTest"]],
-                ["libproject", ["installDebug", "connectedInstrumentTest"]],
+                ["hello", ["installDebug", "connectedAndroidTest"]],
+                ["libproject", ["installDebug", "connectedAndroidTest"]],
         ].each { projectName, args ->
             def dir = new File(project.buildFile.parentFile, "sample" + File.separator + projectName)
             def gradleWrapper = new GradleWrapper(dir)

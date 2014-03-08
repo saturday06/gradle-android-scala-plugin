@@ -16,4 +16,4 @@ before_install:
 before_script:
   - wait_for_emulator
 
-script: ./gradlew clean uploadArchives integTest sample
+script: ./gradlew clean check uploadArchives integTest sample

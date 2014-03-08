@@ -27,7 +27,6 @@ repositories {
 
 apply plugin: 'android'
 apply plugin: 'android-scala'
-apply plugin: 'idea'
 
 android {
     compileSdkVersion 19
@@ -43,13 +42,13 @@ android {
     sourceSets {
         main {
             scala {
-                srcDir "src/main/scala" // default: "src/main/scala"
+                srcDir "path/to/main/scala" // default: "src/main/scala"
             }
         }
 
         androidTest {
             scala {
-                srcDir "src/androidTest/scala" // default: "src/androidTest/scala"
+                srcDir "path/to/androidTest/scala" // default: "src/androidTest/scala"
             }
         }
     }

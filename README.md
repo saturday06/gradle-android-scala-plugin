@@ -47,9 +47,9 @@ android {
             }
         }
 
-        instrumentTest {
+        androidTest {
             scala {
-                srcDir "src/instrumentTest/scala" // default: "src/instrumentTest/scala"
+                srcDir "src/androidTest/scala" // default: "src/androidTest/scala"
             }
         }
     }

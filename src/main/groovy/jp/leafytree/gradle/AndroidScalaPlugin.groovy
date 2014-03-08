@@ -94,7 +94,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     void updateAndroidSourceSetsExtension() {
-        ["main", "instrumentTest"].each { sourceSetName ->
+        ["main", "androidTest"].each { sourceSetName ->
             def defaultSrcDir = ["src", sourceSetName, "scala"].join(File.separator)
             def sourceSet = androidExtension.sourceSets."$sourceSetName"
             def scala = new DefaultSourceDirectorySet("$sourceSet.name (scala)", fileResolver)
@@ -125,7 +125,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!(task instanceof JavaCompile)) {
             throw new GradleException("\"$task\" matches /^compile(.+)Java\$/ but is not instance of JavaCompile")
         }
-        def key = (task.name ==~ /.+TestJava$/) ? "instrumentTest" : "main" // TODO: Use /TestJava$/ regexp
+        def key = (task.name ==~ /.+TestJava$/) ? "androidTest" : "main" // TODO: Use /TestJava$/ regexp
         task.source = task.source + sourceDirectorySetMap[key]
         def options = [target: extension.target]
         def scalacClasspath = project.configurations.androidScalaPluignScalaCompiler.asPath

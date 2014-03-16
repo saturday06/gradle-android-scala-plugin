@@ -17,7 +17,6 @@ repositories {
 
 apply plugin: 'android'
 apply plugin: 'android-scala'
-apply plugin: 'idea'
 
 android {
     compileSdkVersion 19

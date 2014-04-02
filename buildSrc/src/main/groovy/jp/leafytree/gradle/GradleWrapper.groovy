@@ -25,15 +25,9 @@ class GradleWrapper {
     }
 
     public Process execute(List<String> options) {
-        def command = []
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            command << dir.absolutePath + File.separator + "gradlew.bat"
-        } else {
-            def shell = System.getenv("SHELL") ?: "/bin/sh"
-            command += [shell, dir.absolutePath + File.separator + "gradlew"]
-        }
-        command = command.collect { it.toString() }.toList() // Avoid ArrayStoreException
-        def processBuilder = new ProcessBuilder(command + options)
+        def ext = (Os.isFamily(Os.FAMILY_WINDOWS) ? ".bat" : "")
+        def gradlew = dir.absolutePath + File.separator + "gradlew" + ext
+        def processBuilder = new ProcessBuilder([gradlew] + options)
         processBuilder.directory(dir)
         processBuilder.start()
     }

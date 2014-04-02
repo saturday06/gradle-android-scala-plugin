@@ -90,15 +90,10 @@ public class Dex {
     }
 
     void executeDexTools(String toolName, List options) {
-        def command = []
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            command << "$dexToolsDir$File.separator${toolName}.bat"
-        } else {
-            def shell = System.getenv("SHELL") ?: "/bin/sh"
-            command += [shell, "$dexToolsDir$File.separator${toolName}.sh"]
-        }
-        command += options
-        command = command.collect { it.toString() }.toList() // Avoid ArrayStoreException
+        def ext = Os.isFamily(Os.FAMILY_WINDOWS) ? ".bat" : ".sh"
+        def script = dexToolsDir.absolutePath + File.separator + toolName + ext
+        new File(script).setExecutable(true)
+        def command = [script] + options
         def processBuilder = new ProcessBuilder(command)
         processBuilder.directory(dexToolsDir)
         def process = processBuilder.start()

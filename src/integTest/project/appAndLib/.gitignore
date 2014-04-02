@@ -3,3 +3,4 @@
 /*.iml
 /app/build/
 /lib/build/
+/gradle.properties

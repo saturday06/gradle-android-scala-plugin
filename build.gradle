@@ -50,12 +50,11 @@ def uploadToSonatypeRepository = hasProperty('sonatypeUserName')
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: uri('gh-pages/repository/snapshot'))
-        }
-        if (uploadToSonatypeRepository) {
-            def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
-                                                              : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            mavenDeployer {
+            snapshotRepository(url: uri('gh-pages/repository/snapshot'))
+
+            if (uploadToSonatypeRepository) {
+                def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
+                                                                  : "https://oss.sonatype.org/service/local/staging/deploy/maven2"
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
                 repository(url: repositoryUrl) {

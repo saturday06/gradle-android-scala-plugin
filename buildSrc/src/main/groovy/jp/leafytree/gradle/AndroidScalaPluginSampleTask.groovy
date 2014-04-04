@@ -26,11 +26,11 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
                 ["simple", ["installDebug"]],
                 ["hello", ["installDebug", "connectedAndroidTest"]],
                 ["libproject", ["installDebug", "connectedAndroidTest"]],
-        ].each { projectName, args ->
+        ].each { projectName, gradleArgs ->
             def dir = new File(project.buildFile.parentFile, "sample" + File.separator + projectName)
             def gradleWrapper = new GradleWrapper(dir)
-            println "gradlew $args"
-            def process = gradleWrapper.execute(args)
+            println "gradlew $gradleArgs"
+            def process = gradleWrapper.execute(gradleArgs)
             Thread.start { ByteStreams.copy(process.in, System.out) }
             Thread.start { ByteStreams.copy(process.err, System.err) }
             process.waitFor()

@@ -21,17 +21,17 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-public class Dex {
+public class DexProguard {
     public final AntBuilder ant
     public final File workDir
     public final File dexToolsDir
     public final Logger logger
 
-    public Dex(Project project, File dexToolsDir) {
+    public DexProguard(Project project, File dexToolsDir) {
         this(project.ant, new File(project.buildDir, "android-scala-plugin-dex"), dexToolsDir, project.logger)
     }
 
-    public Dex(AntBuilder ant, File workDir, File dexToolsDir, Logger logger) {
+    public DexProguard(AntBuilder ant, File workDir, File dexToolsDir, Logger logger) {
         this.ant = ant
         this.workDir = workDir
         this.dexToolsDir = dexToolsDir
@@ -50,7 +50,7 @@ public class Dex {
         undexedJar
     }
 
-    public void proguard(File dexJar, List<File> dependencyDexJars, String config, String proguardClasspath = null) {
+    public void execute(File dexJar, List<File> dependencyDexJars, String config, String proguardClasspath = null) {
         // extract jars
         def extractDir = new File(workDir, "proguard-extract" + File.separator + dexJar.name)
         if (!extractDir.exists()) {

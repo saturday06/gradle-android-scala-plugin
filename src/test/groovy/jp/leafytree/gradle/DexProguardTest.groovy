@@ -23,11 +23,11 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class DexTest {
+class DexProguardTest {
     Project project
     File testDexJar
     File libraryDexJar
-    Dex dex
+    DexProguard dexProguard
 
     @Before
     public void setUp() {
@@ -44,8 +44,8 @@ class DexTest {
         def dexToolsDir = new File([unzipDir.absolutePath, "dex2jar-0.0.9.15"].join(File.separator))
         project.ant.unzip(src: dexToolsZip, dest: unzipDir)
 
-        dex = new Dex(project, dexToolsDir)
-        def testDir = dex.mkdirsOrThrow("proguardTest")
+        dexProguard = new DexProguard(project, dexToolsDir)
+        def testDir = dexProguard.mkdirsOrThrow("proguardTest")
         testDexJar = new File(testDir, "test.dex.jar")
         testDexJar.withOutputStream {
             ByteStreams.copy(getClass().getResourceAsStream("test.dex.jar"), it)
@@ -65,7 +65,7 @@ class DexTest {
         -dontwarn java.lang.**
         -keep class jp.leafytree.android.Empty { *; }
         """
-        dex.proguard(testDexJar, [libraryDexJar], config)
+        dexProguard.execute(testDexJar, [libraryDexJar], config)
         Assert.assertTrue(testDexJar.size() < 3000)
     }
 
@@ -79,7 +79,7 @@ class DexTest {
         -keep class jp.leafytree.android.Empty { *; }
         -keep class jp.leafytree.android.Data1 { *; }
         """
-        dex.proguard(testDexJar, [libraryDexJar], config)
+        dexProguard.execute(testDexJar, [libraryDexJar], config)
         Assert.assertTrue(testDexJar.size() > 15000)
         Assert.assertTrue(testDexJar.size() < 20000)
     }
@@ -95,7 +95,7 @@ class DexTest {
         -keep class jp.leafytree.android.Data1 { *; }
         -keep class jp.leafytree.android.Data2 { *; }
         """
-        dex.proguard(testDexJar, [libraryDexJar], config)
+        dexProguard.execute(testDexJar, [libraryDexJar], config)
         Assert.assertTrue(testDexJar.size() > 35000)
         Assert.assertTrue(testDexJar.size() < 40000)
     }
@@ -112,7 +112,7 @@ class DexTest {
         -keep class jp.leafytree.android.Data2 { *; }
         """
         try {
-            dex.proguard(testDexJar, [], config)
+            dexProguard.execute(testDexJar, [], config)
             Assert.fail("Should throw Exception")
         } catch (Exception e) {
             // ok

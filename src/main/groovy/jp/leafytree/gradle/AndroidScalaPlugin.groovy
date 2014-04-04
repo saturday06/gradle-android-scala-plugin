@@ -171,8 +171,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!dexToolsDir.isDirectory()) {
             project.ant.unzip(src: dexToolsZip, dest: unzipDir)
         }
-        def dex = new Dex(project, dexToolsDir)
+        def dexProguard = new DexProguard(project, dexToolsDir)
         def proguardClasspath = project.configurations.androidScalaPluginProGuard.asPath
-        dex.proguard(scalaLibraryJar, libraryJars, getProGuardConfig(), proguardClasspath)
+        dexProguard.execute(scalaLibraryJar, libraryJars, getProGuardConfig(), proguardClasspath)
     }
 }

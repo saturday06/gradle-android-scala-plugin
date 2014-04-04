@@ -1,20 +1,21 @@
 package jp.leafytree.android.hello;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.robotium.solo.Solo;
 import scala.collection.concurrent.TrieMap;
 
-public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<HelloActivity> {
-    public Solo solo;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
-    @SuppressWarnings("deprecation")
+public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<HelloActivity> {
     public HelloActivityJavaTest() {
-        super("jp.leafytree.android.hello", HelloActivity.class);
+        super(HelloActivity.class);
     }
 
     @Override
     public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
+        getActivity();
     }
 
     public void testSimpleAssertion() {
@@ -22,7 +23,7 @@ public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<Hell
     }
 
     public void testSimpleActivityAssertion() {
-        solo.waitForText("Hello. I'm Java !");
+        onView(withText("Hello. I'm Java !")).check(matches(isDisplayed()));
     }
 
     public void testCallScalaLibraryClassOfNotUsedByMainApp() {

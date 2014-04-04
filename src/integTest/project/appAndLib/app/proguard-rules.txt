@@ -3,6 +3,7 @@
 -dontpreverify
 -dontwarn scala.**
 -dontwarn sun.misc.Unsafe
+-dontwarn org.hamcrest.**
 -dontwarn com.google.android.apps.common.testing.**
 -dontwarn jp.leafytree.android.libproject.lib1.**
 -keep class !scala.** { *; }

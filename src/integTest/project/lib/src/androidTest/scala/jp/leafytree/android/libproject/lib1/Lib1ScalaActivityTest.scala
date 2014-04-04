@@ -1,15 +1,16 @@
-package jp.leafytree.android.libproject.lib1
+package jp.leafytree.android.libproject.app
 
 import android.test.ActivityInstrumentationTestCase2
-import com.robotium.solo.Solo
 import scala.collection.concurrent.TrieMap
 import junit.framework.Assert
+import jp.leafytree.android.libproject.lib1.Lib1ScalaActivity
+import com.google.android.apps.common.testing.ui.espresso.Espresso._
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers._
+import com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions._
 
-class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaActivity]("jp.leafytree.android.libproject.lib1", classOf[Lib1ScalaActivity]) {
-  var solo: Solo = _
-
-  override def setUp {
-    solo = new Solo(getInstrumentation, getActivity)
+class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaActivity](classOf[Lib1ScalaActivity]) {
+  override def setUp() {
+    getActivity()
   }
 
   def testSimpleAssertion {
@@ -17,7 +18,7 @@ class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaAc
   }
 
   def testSimpleActivityAssertion {
-    solo.waitForText("Lib1Java")
+    onView(withText("Lib1Java")).check(matches(isDisplayed))
   }
 
   def testCallScalaLibraryClassOfNotUsedByMainApp {

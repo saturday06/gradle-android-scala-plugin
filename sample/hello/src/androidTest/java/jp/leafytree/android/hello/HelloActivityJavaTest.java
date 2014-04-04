@@ -2,18 +2,19 @@ package jp.leafytree.android.hello;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.robotium.solo.Solo;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
 public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<HelloActivity> {
-    public Solo solo;
-
     public HelloActivityJavaTest() {
         super(HelloActivity.class);
     }
 
     @Override
     public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
+        getActivity();
     }
 
     public void test1() {
@@ -21,6 +22,6 @@ public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<Hell
     }
 
     public void test2() {
-        solo.waitForText("Hello. I'm Java !");
+        onView(withText("Hello. I'm Java !")).check(matches(isDisplayed()));
     }
 }

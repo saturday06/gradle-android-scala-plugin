@@ -23,6 +23,6 @@ public class Lib1ScalaActivityJavaTest extends ActivityInstrumentationTestCase2<
     }
 
     public void test2() {
-        assertTrue(solo.searchText("Lib1Java", true));
+        solo.waitForText("Lib1Java");
     }
 }

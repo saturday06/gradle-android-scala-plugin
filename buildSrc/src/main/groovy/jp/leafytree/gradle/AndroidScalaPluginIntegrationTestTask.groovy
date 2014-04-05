@@ -22,11 +22,12 @@ import org.gradle.api.tasks.TaskAction
 public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
     @TaskAction
     def run() {
+        def travis = System.getenv("TRAVIS").toString().toBoolean()
         [
-                ["app", ["installDebug", "connectedAndroidTest"]],
-                ["lib", ["connectedAndroidTest"]],
-                ["appAndLib", ["installDebug", "connectedAndroidTest"]],
-        ].each { projectName, gradleArgs ->
+                ["app", ["installDebug", "connectedAndroidTest"], false],
+                ["lib", ["connectedAndroidTest"], false],
+                ["appAndLib", ["installDebug", "connectedAndroidTest"], true],
+        ].findAll { x, y, runOnTravis -> (!travis || runOnTravis) }.each { projectName, gradleArgs, runOnTravis ->
             [
                     ["1.11", "2.10.3", "0.9.2", "19", "19.0.3", "4", "19"],
                     ["1.11", "2.11.0-RC3", "0.9.2", "19", "19.0.3", "4", "19"],

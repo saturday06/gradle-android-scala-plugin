@@ -71,7 +71,7 @@ android {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.10.3'
+    compile 'org.scala-lang:scala-library:2.10.4'
 }
 ```
 

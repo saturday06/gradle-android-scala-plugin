@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.10.3'
-    compile 'com.android.support:support-v4:19.0.1'
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.0.1'
+    compile 'org.scala-lang:scala-library:2.10.4'
+    compile 'com.android.support:support-v4:19.1.0'
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
 }

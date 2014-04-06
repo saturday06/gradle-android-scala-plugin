@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package jp.leafytree.gradle
+
 import com.google.common.annotations.VisibleForTesting
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -41,7 +42,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         this.fileResolver = fileResolver
     }
 
-    @VisibleForTesting
     void apply(Project project, Object androidExtension) {
         this.project = project
         this.androidExtension = androidExtension

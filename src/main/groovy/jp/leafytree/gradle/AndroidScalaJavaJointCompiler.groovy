@@ -28,7 +28,7 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
     private final Map extraOptions
     private final AntBuilder ant
 
-    public AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions, String scalacClasspath = null) {
+    AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions, String scalacClasspath = null) {
         this.project = project
         this.androidJavaCompiler = androidJavaCompiler
         this.extraOptions = extraOptions
@@ -37,7 +37,7 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
                 classpath: scalacClasspath)
     }
 
-    public Map getScalacOptions(JavaCompileSpec spec) {
+    Map getScalacOptions(JavaCompileSpec spec) {
         def options = spec.compileOptions.optionMap().findAll {
             [
                     "srcdir", "classpath", "sourcepath", "bootclasspath",
@@ -51,7 +51,7 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
         options + extraOptions
     }
 
-    public WorkResult execute(JavaCompileSpec spec) {
+    WorkResult execute(JavaCompileSpec spec) {
         // destinationDir for scalac need to be changed because someone deletes spec.destinationDir/**/*.class
         // before androidJavaCompiler.execute. TODO: fundamental solution
         def scalacDestinationDir = new File(spec.destinationDir.getAbsolutePath() + "-scala")

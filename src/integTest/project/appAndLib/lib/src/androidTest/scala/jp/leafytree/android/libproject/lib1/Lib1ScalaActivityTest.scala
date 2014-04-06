@@ -16,6 +16,6 @@ class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaAc
   }
 
   def test2() {
-    Assert.assertTrue(solo.searchText("Lib1Java", true))
+    solo.waitForText("Lib1Java")
   }
 }

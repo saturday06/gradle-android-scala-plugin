@@ -16,6 +16,6 @@ class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](
   }
 
   def test2() {
-    Assert.assertTrue(solo.searchText("Hello. I'm Java !", true))
+    solo.waitForText("Hello. I'm Java !")
   }
 }

@@ -124,21 +124,21 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Updates AndroidPlugin's sourceSets extension to work with AndroidScalaPlugin.
      */
     void updateAndroidSourceSetsExtension() {
-        ["main", "androidTest"].each { sourceSetName ->
-            def defaultSrcDir = ["src", sourceSetName, "scala"].join(File.separator)
-            def sourceSet = androidExtension.sourceSets."$sourceSetName"
-            def scala = new DefaultSourceDirectorySet("$sourceSet.name (scala)", fileResolver)
-            sourceDirectorySetMap[sourceSetName] = scala
+        androidExtension.sourceSets.each { sourceSet ->
+            String name = sourceSet.name
+            def defaultSrcDir = ["src", name, "scala"].join(File.separator)
+            def scala = new DefaultSourceDirectorySet("$name (scala)", fileResolver)
+            sourceDirectorySetMap[name] = scala
             scala.srcDir(defaultSrcDir)
             scala.getFilter().include("**/*.scala");
             if (sourceSet.metaClass.getMetaMethod("scala")) {
                 throw new GradleException('android.sourceSet.$type.scala already exists')
             }
-            sourceSet.metaClass.getScala = { sourceDirectorySetMap[sourceSetName] }
-            sourceSet.metaClass.setScala = { it -> sourceDirectorySetMap[sourceSetName] = it }
+            sourceSet.metaClass.getScala = { sourceDirectorySetMap[name] }
+            sourceSet.metaClass.setScala = { it -> sourceDirectorySetMap[name] = it }
             sourceSet.metaClass.scala = { configureClosure ->
-                ConfigureUtil.configure(configureClosure, sourceDirectorySetMap[sourceSetName])
-                sourceSet.java.srcDirs = sourceSet.java.srcDirs + sourceDirectorySetMap[sourceSetName] // TODO: More clean code
+                ConfigureUtil.configure(configureClosure, sourceDirectorySetMap[name])
+                sourceSet.java.srcDirs = sourceSet.java.srcDirs + sourceDirectorySetMap[name] // TODO: More clean code
                 androidExtension.sourceSets
             }
             sourceSet.java.srcDir(defaultSrcDir) // for Android Studio

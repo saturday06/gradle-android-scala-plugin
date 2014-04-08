@@ -92,9 +92,9 @@ uploadArchives {
     }
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    from groovydoc.destinationDir
     classifier = 'javadoc'
-    from 'build/docs/javadoc'
 }
 
 task sourceJar(type: Jar) {
@@ -104,7 +104,7 @@ task sourceJar(type: Jar) {
 
 artifacts {
     archives jar
-    archives javadocJar
+    archives groovydocJar
     archives sourceJar
 }
 

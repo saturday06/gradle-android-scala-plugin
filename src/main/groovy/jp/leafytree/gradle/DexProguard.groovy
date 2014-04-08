@@ -21,23 +21,44 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
+/**
+ * Proguard utilities for dex.
+ */
 class DexProguard {
-    private final AntBuilder ant
+    private final AntBuilder ant = new AntBuilder()
     private final File workDir
     private final File dexToolsDir
     private final Logger logger
 
+    /**
+     * Creates a new DexProguard with given parameters.
+     *
+     * @param project current project
+     * @param dexToolsDir the directory contains dex tools
+     */
     DexProguard(Project project, File dexToolsDir) {
-        this(project.ant, new File(project.buildDir, "android-scala-plugin-dex"), dexToolsDir, project.logger)
+        this(new File(project.buildDir, "android-scala-plugin-dex"), dexToolsDir, project.logger)
     }
 
-    DexProguard(AntBuilder ant, File workDir, File dexToolsDir, Logger logger) {
-        this.ant = ant
+    /**
+     * Creates a new DexProguard with given parameters.
+     *
+     * @param workDir the directory to put temporary files
+     * @param dexToolsDir the directory contains dex tools
+     * @param logger the Logger to use
+     */
+    DexProguard(File workDir, File dexToolsDir, Logger logger) {
         this.workDir = workDir
         this.dexToolsDir = dexToolsDir
         this.logger = logger
     }
 
+    /**
+     * Extracts dex.
+     *
+     * @param file dex file
+     * @return extracted jar
+     */
     File undex(File file) {
         def undexedJar = new File(mkdirsOrThrow("un-dexed"), file.name)
         if (undexedJar.exists()) {
@@ -50,6 +71,14 @@ class DexProguard {
         undexedJar
     }
 
+    /**
+     * Executes proguard.
+     *
+     * @param dexJar the jar file contains dex
+     * @param dependencyDexJars dependency files of dexJar
+     * @param config configuration for proguard
+     * @param proguardClasspath classpath of proguard
+     */
     void execute(File dexJar, List<File> dependencyDexJars, String config, String proguardClasspath = null) {
         // extract jars
         def extractDir = new File(workDir, "proguard-extract" + File.separator + dexJar.name)
@@ -81,14 +110,27 @@ class DexProguard {
         ant.zip(destfile: dexJar, basedir: extractDir)
     }
 
-    File mkdirsOrThrow(String... path) {
-        def dir = new File(([workDir] + path.toList()).join(File.separator))
+    /**
+     * Makes directory or throw GradleException.
+     *
+     * @param pathElements the path elements
+     * @return created directory
+     * @throws GradleException if the directory cannot be created
+     */
+    File mkdirsOrThrow(String... pathElements) throws GradleException {
+        def dir = new File(([workDir] + pathElements.toList()).join(File.separator))
         if (!dir.isDirectory() && !dir.mkdirs()) {
             throw new GradleException("Directory `$dir' couldn't be created")
         }
         dir
     }
 
+    /**
+     * Executes tools in dex-tools.
+     *
+     * @param toolName the tool name in dex-tools
+     * @param options options to pass
+     */
     void executeDexTools(String toolName, List options) {
         def ext = Os.isFamily(Os.FAMILY_WINDOWS) ? ".bat" : ".sh"
         def script = dexToolsDir.absolutePath + File.separator + toolName + ext

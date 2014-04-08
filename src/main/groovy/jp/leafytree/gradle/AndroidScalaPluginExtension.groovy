@@ -15,10 +15,19 @@
  */
 package jp.leafytree.gradle
 
+/**
+ * AndroidScalaPluginExtension has the configuration of scala.
+ */
 class AndroidScalaPluginExtension {
-    String target = "jvm-1.6"
+    /** scalac target option */
+    public String target = "jvm-1.6"
 
-    def target(target) { // TODO: Auto generation
+    /**
+     * Sets scalac target option.
+     *
+     * @param target the scalac target option.
+     */
+    public void target(String target) {
         this.target = target
     }
 }

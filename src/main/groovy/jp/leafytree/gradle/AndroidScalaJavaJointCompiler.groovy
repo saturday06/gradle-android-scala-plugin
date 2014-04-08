@@ -22,12 +22,23 @@ import org.gradle.api.internal.tasks.compile.Compiler
 import org.gradle.api.internal.tasks.compile.JavaCompileSpec
 import org.gradle.api.tasks.WorkResult
 
+/**
+ * AndroidScalaJavaJointCompiler adds scala support to JavaCompiler from Android Plugin.
+ */
 class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
     private final Project project
     private final Compiler<JavaCompileSpec> androidJavaCompiler
     private final Map extraOptions
     private final AntBuilder ant
 
+    /**
+     * Creates a new AndroidScalaJavaJointCompiler with the given options.
+     *
+     * @param project current project
+     * @param androidJavaCompiler the JavaCompiler from Android Plugin
+     * @param extraOptions extra scalac options
+     * @param scalacClasspath extra classpath for scalac
+     */
     AndroidScalaJavaJointCompiler(Project project, Compiler<JavaCompileSpec> androidJavaCompiler, Map extraOptions, String scalacClasspath = null) {
         this.project = project
         this.androidJavaCompiler = androidJavaCompiler
@@ -37,6 +48,12 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
                 classpath: scalacClasspath)
     }
 
+    /**
+     * Returns scalac options from spec.
+     *
+     * @param spec the JavaCompilerSpec from Android Plugin
+     * @return generated scalac options
+     */
     Map getScalacOptions(JavaCompileSpec spec) {
         def options = spec.compileOptions.optionMap().findAll {
             [
@@ -51,7 +68,13 @@ class AndroidScalaJavaJointCompiler implements Compiler<JavaCompileSpec> {
         options + extraOptions
     }
 
-    WorkResult execute(JavaCompileSpec spec) {
+    /**
+     * Executes java and scala compiler.
+     *
+     * @param spec the JavaCompilerSpec from Android Plugin
+     * @return compilation result
+     */
+    public WorkResult execute(JavaCompileSpec spec) {
         // destinationDir for scalac need to be changed because someone deletes spec.destinationDir/**/*.class
         // before androidJavaCompiler.execute. TODO: fundamental solution
         def scalacDestinationDir = new File(spec.destinationDir.getAbsolutePath() + "-scala")

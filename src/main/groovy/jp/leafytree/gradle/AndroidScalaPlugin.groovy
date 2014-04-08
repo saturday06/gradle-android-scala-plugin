@@ -28,20 +28,35 @@ import org.gradle.util.ConfigureUtil
 
 import javax.inject.Inject
 
+/**
+ * AndroidScalaPlugin adds scala language support to official gradle android plugin.
+ */
 public class AndroidScalaPlugin implements Plugin<Project> {
     private static final String DEX2JAR_VERSION = "0.0.9.15"
     private final FileResolver fileResolver
-    @VisibleForTesting final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
+    @VisibleForTesting
+    final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
     private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
     private Boolean library
     private Project project
     private Object androidExtension
 
+    /**
+     * Creates a new AndroidScalaJavaJointCompiler with given file resolver.
+     *
+     * @param fileResolver the FileResolver
+     */
     @Inject
     public AndroidScalaPlugin(FileResolver fileResolver) {
         this.fileResolver = fileResolver
     }
 
+    /**
+     * Registers the plugin to current project.
+     *
+     * @param project currnet project
+     * @param androidExtension extension of Android Plugin
+     */
     void apply(Project project, Object androidExtension) {
         this.project = project
         this.androidExtension = androidExtension
@@ -59,10 +74,19 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * Registers the plugin to current project.
+     *
+     * @param project currnet project
+     * @param androidExtension extension of Android Plugin
+     */
     public void apply(Project project) {
         apply(project, project.extensions.getByName("android"))
     }
 
+    /**
+     * Adds dependencies to execute plugin.
+     */
     void addDependencies() {
         def scalaLibraryDependency = project.configurations.compile.allDependencies.find {
             it.group == 'org.scala-lang' && it.name == "scala-library"
@@ -85,6 +109,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * Updates AndroidPlugin's root extension to work with AndroidScalaPlugin.
+     */
     void updateAndroidExtension() {
         androidExtension.metaClass.getScala = { extension }
         androidExtension.metaClass.scala = { configureClosure ->
@@ -93,6 +120,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * Updates AndroidPlugin's sourceSets extension to work with AndroidScalaPlugin.
+     */
     void updateAndroidSourceSetsExtension() {
         ["main", "androidTest"].each { sourceSetName ->
             def defaultSrcDir = ["src", sourceSetName, "scala"].join(File.separator)
@@ -115,6 +145,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * Updates AndroidPlugin's compilation task to support scala.
+     *
+     * @param task the Task to update
+     */
     void updateAndroidJavaCompileTask(Task task) {
         if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
             return
@@ -132,19 +167,32 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         task.javaCompiler = new AndroidScalaJavaJointCompiler(project, task.javaCompiler, options, scalacClasspath)
     }
 
+    /**
+     * Returns the proguard configuration text.
+     *
+     * @return the proguard configuration text
+     */
     String getProGuardConfig() {
         '''
         -dontoptimize
         -dontobfuscate
         -dontpreverify
-        -dontwarn android.**, java.**, junit.framework.**, javax.microedition.khronos.**
-        -dontwarn **.R$*
+        -dontwarn android.**
+        -dontwarn java.**
+        -dontwarn javax.microedition.khronos.**
+        -dontwarn junit.framework.**
         -dontwarn scala.**
+        -dontwarn **.R$*
         -ignorewarnings
         -keep class !scala.collection.** { *; }
         '''
     }
 
+    /**
+     * Executes proguard for pre-dexed jars.
+     *
+     * @param task the dexDebugTest task
+     */
     void proguardBeforeDexDebugTestTask(Task task) {
         if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
             return

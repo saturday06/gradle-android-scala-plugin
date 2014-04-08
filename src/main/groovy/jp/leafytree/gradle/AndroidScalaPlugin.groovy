@@ -86,25 +86,38 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Adds dependencies to execute plugin.
      */
     void addDependencies() {
-        def scalaLibraryDependency = project.configurations.compile.allDependencies.find {
-            it.group == 'org.scala-lang' && it.name == "scala-library"
+        if (!library) {
+            return
         }
-        if (!scalaLibraryDependency) {
-            throw new GradleException("Dependency `compile \"org.scala-lang:scala-library:\$version\"' is not defined")
+        project.repositories.maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
+        project.configurations {
+            androidScalaPluginProGuard
+            androidScalaPluginDexTools
         }
-        def version = scalaLibraryDependency.version
-        project.configurations { androidScalaPluignScalaCompiler }
-        project.dependencies.add("androidScalaPluignScalaCompiler", "org.scala-lang:scala-compiler:$version")
+        project.dependencies.add("androidScalaPluginProGuard", "net.sf.proguard:proguard-anttask:4.11")
+        project.dependencies.add("androidScalaPluginDexTools", "com.googlecode.dex2jar:dex-tools:$DEX2JAR_VERSION@zip")
+    }
 
-        if (library) {
-            project.repositories.maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
-            project.configurations {
-                androidScalaPluginProGuard
-                androidScalaPluginDexTools
-            }
-            project.dependencies.add("androidScalaPluginProGuard", "net.sf.proguard:proguard-anttask:4.11")
-            project.dependencies.add("androidScalaPluginDexTools", "com.googlecode.dex2jar:dex-tools:$DEX2JAR_VERSION@zip")
+    /**
+     * Returns scala version from scala-library in given classpath.
+     *
+     * @param classpath the classpath contains scala-library
+     * @return scala version
+     */
+    static String scalaVersionFromClasspath(String classpath) {
+        def urls = new ArrayList<URL>()
+        for (String path : classpath.split(File.pathSeparator)) {
+            urls.add(new File(path).toURI().toURL())
         }
+        def classLoader = new URLClassLoader(urls.toArray(new URL[0]))
+        def properties
+        try {
+            properties = classLoader.loadClass("scala.util.Properties\$")
+        } catch (ClassNotFoundException e) {
+            return null
+        }
+        def versionNumber = properties.MODULE$.scalaProps["maven.version.number"]
+        return versionNumber
     }
 
     /**
@@ -122,24 +135,21 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Updates AndroidPlugin's sourceSets extension to work with AndroidScalaPlugin.
      */
     void updateAndroidSourceSetsExtension() {
-        ["main", "androidTest"].each { sourceSetName ->
-            def defaultSrcDir = ["src", sourceSetName, "scala"].join(File.separator)
-            def sourceSet = androidExtension.sourceSets."$sourceSetName"
-            def scala = new DefaultSourceDirectorySet("$sourceSet.name (scala)", fileResolver)
-            sourceDirectorySetMap[sourceSetName] = scala
+        androidExtension.sourceSets.each { sourceSet ->
+            sourceSet.convention.plugins.scala = new AndroidScalaSourceSet(sourceSet.displayName, fileResolver)
+            def scala = sourceSet.scala
+            def defaultSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
+            def include = "**/*.scala"
             scala.srcDir(defaultSrcDir)
-            scala.getFilter().include("**/*.scala");
-            if (sourceSet.metaClass.getMetaMethod("scala")) {
-                throw new GradleException('android.sourceSet.$type.scala already exists')
-            }
-            sourceSet.metaClass.getScala = { sourceDirectorySetMap[sourceSetName] }
-            sourceSet.metaClass.setScala = { it -> sourceDirectorySetMap[sourceSetName] = it }
-            sourceSet.metaClass.scala = { configureClosure ->
-                ConfigureUtil.configure(configureClosure, sourceDirectorySetMap[sourceSetName])
-                sourceSet.java.srcDirs = sourceSet.java.srcDirs + sourceDirectorySetMap[sourceSetName] // TODO: More clean code
-                androidExtension.sourceSets
-            }
+            scala.getFilter().include(include);
+            sourceSet.allJava.source(scala)
+            sourceSet.allSource.source(scala)
             sourceSet.java.srcDir(defaultSrcDir) // for Android Studio
+            sourceDirectorySetMap[sourceSet.name] = scala
+
+            // TODO: more elegant way
+            sourceSet.java.getFilter().include(include);
+            sourceSet.allSource.getFilter().include(include);
         }
     }
 
@@ -158,11 +168,19 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!(task instanceof JavaCompile)) {
             throw new GradleException("\"$task\" matches /^compile(.+)Java\$/ but is not instance of JavaCompile")
         }
-        def key = (task.name ==~ /.+TestJava$/) ? "androidTest" : "main" // TODO: Use /TestJava$/ regexp
-        task.source = task.source + sourceDirectorySetMap[key]
+        def scalaVersion = scalaVersionFromClasspath(task.classpath.asPath)
+        if (!scalaVersion) {
+            return;
+        }
+
         def options = [target: extension.target]
-        def scalacClasspath = project.configurations.androidScalaPluignScalaCompiler.asPath
-        task.javaCompiler = new AndroidScalaJavaJointCompiler(project, task.javaCompiler, options, scalacClasspath)
+        def configurationName = "androidScalaPluginScalaCompilerFor" + task.name
+        def configuration = project.configurations.findByName(configurationName)
+        if (!configuration) {
+            configuration = project.configurations.create(configurationName)
+            project.dependencies.add(configurationName, "org.scala-lang:scala-compiler:$scalaVersion")
+        }
+        task.javaCompiler = new AndroidScalaJavaJointCompiler(project, task.javaCompiler, options, configuration.asPath)
     }
 
     /**
@@ -181,6 +199,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontwarn junit.framework.**
         -dontwarn scala.**
         -dontwarn **.R$*
+        -dontnote android.**
+        -dontnote scala.**
         -ignorewarnings
         -keep class !scala.collection.** { *; }
         '''
@@ -195,10 +215,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
             return
         }
-        if (!library || task.name != 'dexDebugTest') {
+        if (!library || !task.name.startsWith("dex") || !(task.metaClass.respondsTo(task, 'variant'))) {
             return
         }
-        def jarDir = new File([project.buildDir.absolutePath, 'pre-dexed', 'test', 'debug'].join(File.separator))
+        def variant = task.variant
+        if (variant?.class?.simpleName != "TestVariantData") { // TODO: More elegant way
+            return
+        }
+        def flavorName = variant.variantConfiguration.flavorName
+        def buildTypeName = variant.variantConfiguration.buildType.name
+        def jarDir = new File([project.buildDir.absolutePath, 'pre-dexed', 'test', flavorName, buildTypeName].join(File.separator))
         if (!jarDir.isDirectory()) {
             throw new GradleException("Unexpected directory structure: `$jarDir' not found")
         }
@@ -207,7 +233,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             file.name.startsWith("scala-library-") && file.name.endsWith(".jar")
         }
         if (!scalaLibraryJar) {
-            throw new GradleException("Unexpected directory structure: `$jarDir' has no scala-library-*.jar")
+            return
         }
         libraryJars.remove(scalaLibraryJar)
 

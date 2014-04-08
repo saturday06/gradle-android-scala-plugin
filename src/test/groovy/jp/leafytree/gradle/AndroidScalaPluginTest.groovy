@@ -30,6 +30,10 @@ class AndroidScalaPluginTest {
         project = ProjectBuilder.builder().build()
     }
 
+    public String androidPluginName() {
+        "android"
+    }
+
     @Test
     public void applyingBeforeAndroidPluginShouldThrowException() {
         try {
@@ -41,18 +45,12 @@ class AndroidScalaPluginTest {
 
     @Test
     public void applyingAfterAndroidPluginShouldNeverThrowException() {
-        project.apply plugin: 'android'
-        project.apply plugin: 'android-scala' // never throw Exception
-    }
-
-    @Test
-    public void applyingAfterAndroidLibraryPluginShouldNeverThrowException() {
-        project.apply plugin: 'android-library'
+        project.apply plugin: androidPluginName()
         project.apply plugin: 'android-scala' // never throw Exception
     }
 
     def getPlugin() {
-        project.apply plugin: 'android'
+        project.apply plugin: androidPluginName()
         project.apply plugin: 'android-scala'
         project.plugins.findPlugin(AndroidScalaPlugin.class)
     }

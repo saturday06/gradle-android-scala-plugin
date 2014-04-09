@@ -65,10 +65,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         updateAndroidSourceSetsExtension()
         project.gradle.taskGraph.whenReady { taskGraph ->
             addDependencies()
-            taskGraph.allTasks.each { Task task ->
-                updateAndroidJavaCompileTask(task)
-            }
             taskGraph.beforeTask { Task task ->
+                updateAndroidJavaCompileTask(task)
                 proguardBeforeDexDebugTestTask(task)
             }
         }

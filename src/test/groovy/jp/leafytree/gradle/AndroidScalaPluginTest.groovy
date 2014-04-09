@@ -28,6 +28,7 @@ class AndroidScalaPluginTest {
     @Before
     public void setUp() {
         project = ProjectBuilder.builder().build()
+        project.apply plugin: androidPluginName()
     }
 
     public String androidPluginName() {
@@ -36,6 +37,7 @@ class AndroidScalaPluginTest {
 
     @Test
     public void applyingBeforeAndroidPluginShouldThrowException() {
+        project = ProjectBuilder.builder().build()
         try {
             project.apply plugin: 'android-scala'
             Assert.fail("Should throw Exception")
@@ -45,12 +47,12 @@ class AndroidScalaPluginTest {
 
     @Test
     public void applyingAfterAndroidPluginShouldNeverThrowException() {
+        project = ProjectBuilder.builder().build()
         project.apply plugin: androidPluginName()
         project.apply plugin: 'android-scala' // never throw Exception
     }
 
     def getPlugin() {
-        project.apply plugin: androidPluginName()
         project.apply plugin: 'android-scala'
         project.plugins.findPlugin(AndroidScalaPlugin.class)
     }
@@ -64,6 +66,24 @@ class AndroidScalaPluginTest {
         src1.withWriter { it.write("class Src1{}") }
         Assert.assertEquals([src1], plugin.sourceDirectorySetMap["main"].files.toList())
         Assert.assertEquals([], plugin.sourceDirectorySetMap["androidTest"].files.toList())
+    }
+
+    @Test
+    public void addCustomFlavorScalaSourceSetToAndroidPlugin() {
+        project.android { productFlavors { customFlavor { } } }
+        def plugin = getPlugin()
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["customFlavor"].files.toList())
+
+        def src = new File(project.file("."), ["src", "customFlavor", "scala", "Src.scala"].join(File.separator))
+        src.parentFile.mkdirs()
+        src.withWriter { it.write("class Src{}") }
+
+        def testSrc = new File(project.file("."), ["src", "androidTestCustomFlavor", "scala", "TestSrc.scala"].join(File.separator))
+        testSrc.parentFile.mkdirs()
+        testSrc.withWriter { it.write("class TestSrc{}") }
+
+        Assert.assertEquals([src], plugin.sourceDirectorySetMap["customFlavor"].files.toList())
+        Assert.assertEquals([testSrc], plugin.sourceDirectorySetMap["androidTestCustomFlavor"].files.toList())
     }
 
     @Test

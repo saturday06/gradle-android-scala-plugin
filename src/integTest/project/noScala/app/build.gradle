@@ -1,0 +1,26 @@
+apply plugin: "android"
+apply plugin: "android-scala"
+
+android {
+    compileSdkVersion Integer.decode(androidPluginCompileSdkVersion)
+    buildToolsVersion androidPluginBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.decode(androidPluginMinSdkVersion)
+        targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        debug {
+            runProguard true
+            proguardFiles "proguard-rules.txt"
+        }
+    }
+}
+
+dependencies {
+    compile project(":lib")
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.1"
+}

@@ -192,14 +192,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontoptimize
         -dontobfuscate
         -dontpreverify
-        -dontwarn android.**
-        -dontwarn java.**
-        -dontwarn javax.microedition.khronos.**
-        -dontwarn junit.framework.**
-        -dontwarn scala.**
-        -dontwarn **.R$*
-        -dontnote android.**
-        -dontnote scala.**
+        -dontwarn android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
+        -dontnote android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
         -ignorewarnings
         -keep class !scala.collection.** { *; }
         '''

@@ -16,6 +16,7 @@
 package jp.leafytree.gradle
 
 import com.google.common.annotations.VisibleForTesting
+import org.apache.commons.io.FileUtils
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -36,9 +37,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     @VisibleForTesting
     final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
     private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
-    private Boolean library
     private Project project
     private Object androidExtension
+    private Class dexClass
+    private Class testVariantDataClass
 
     /**
      * Creates a new AndroidScalaJavaJointCompiler with given file resolver.
@@ -59,14 +61,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     void apply(Project project, Object androidExtension) {
         this.project = project
         this.androidExtension = androidExtension
-        library = project.plugins.hasPlugin("android-library")
+        def classLoader = androidExtension.class.classLoader
+        dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
+        testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.gradle.taskGraph.whenReady { taskGraph ->
             addDependencies()
             taskGraph.beforeTask { Task task ->
                 updateAndroidJavaCompileTask(task)
-                proguardBeforeDexDebugTestTask(task)
+                proguardBeforeDexTestTask(task)
             }
         }
     }
@@ -85,9 +89,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Adds dependencies to execute plugin.
      */
     void addDependencies() {
-        if (!library) {
-            return
-        }
         project.repositories.maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
         project.configurations {
             androidScalaPluginProGuard
@@ -195,49 +196,90 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontwarn android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
         -dontnote android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
         -ignorewarnings
-        -keep class !scala.collection.** { *; }
+        -keep class !scala.** { *; }
+        -keep class scala.beans.ScalaBeanInfo
         '''
     }
 
     /**
-     * Executes proguard for pre-dexed jars.
+     * Executes proguard before task.Dex
      *
      * @param task the dexDebugTest task
+     * @param workDir working directory
+     * @param jars target jars
      */
-    void proguardBeforeDexDebugTestTask(Task task) {
-        if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
+    void proguardBeforeDexApplicationTestTask(Task task, File workDir, List<File> jars) {
+        def outputJar = jars.find { it.name == "classes.jar" }
+        if (!outputJar) {
+            project.logger.error("class.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
             return
         }
-        if (!library || !task.name.startsWith("dex") || !(task.metaClass.respondsTo(task, 'variant'))) {
-            return
+        def tempOutputDir = new File(workDir, "proguard-classes")
+        def tempOutputJar = new File(tempOutputDir, outputJar.name)
+        FileUtils.deleteDirectory(tempOutputDir)
+        def ant = new AntBuilder()
+        ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
+                classpath: project.configurations.androidScalaPluginProGuard.asPath)
+        def proguardConfigFile = new File(project.buildDir, "proguard-config-app.txt")
+        proguardConfigFile.withWriter { it.write getProGuardConfig() }
+        ant.proguard(configuration: proguardConfigFile) {
+            jars.each {
+                injar(file: it)
+            }
+            outjar(file: tempOutputDir)
         }
-        def variant = task.variant
-        if (variant?.class?.simpleName != "TestVariantData") { // TODO: More elegant way
-            return
-        }
-        def flavorName = variant.variantConfiguration.flavorName
-        def buildTypeName = variant.variantConfiguration.buildType.name
-        def jarDir = new File([project.buildDir.absolutePath, 'pre-dexed', 'test', flavorName, buildTypeName].join(File.separator))
-        if (!jarDir.isDirectory()) {
-            throw new GradleException("Unexpected directory structure: `$jarDir' not found")
-        }
-        def libraryJars = jarDir.listFiles().toList()
-        def scalaLibraryJar = libraryJars.find { file ->
-            file.name.startsWith("scala-library-") && file.name.endsWith(".jar")
-        }
+        ant.copy(file: tempOutputJar, toFile: outputJar)
+    }
+
+    /**
+     * Executes proguard before task.Dex
+     *
+     * @param task the dexDebugTest task
+     * @param workDir working directory
+     * @param jars target jars
+     */
+    void proguardBeforeDexLibraryTestTask(Task task, File workDir, List<File> jars) {
+        def scalaLibraryJar = jars.find { it.name.startsWith("scala-library-") }
         if (!scalaLibraryJar) {
             return
         }
-        libraryJars.remove(scalaLibraryJar)
-
+        jars.remove(scalaLibraryJar)
         def dexToolsZip = project.configurations.androidScalaPluginDexTools.find { it.name.startsWith("dex-tools-") }
-        def unzipDir = new File(project.buildDir, "android-scala-plugin-dex-tools")
+        def unzipDir = new File(workDir, "dex-tools")
         def dexToolsDir = new File([unzipDir.absolutePath, "dex2jar-" + DEX2JAR_VERSION].join(File.separator))
         if (!dexToolsDir.isDirectory()) {
             project.ant.unzip(src: dexToolsZip, dest: unzipDir)
         }
-        def dexProguard = new DexProguard(project, dexToolsDir)
+        def dexProguard = new DexProguard(workDir, dexToolsDir, project.logger)
         def proguardClasspath = project.configurations.androidScalaPluginProGuard.asPath
-        dexProguard.execute(scalaLibraryJar, libraryJars, getProGuardConfig(), proguardClasspath)
+        dexProguard.execute(scalaLibraryJar, jars, getProGuardConfig(), proguardClasspath)
+    }
+
+    /**
+     * Executes proguard before task.Dex
+     *
+     * @param task the dexDebugTest task
+     */
+    void proguardBeforeDexTestTask(Task task) {
+        if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
+            return
+        }
+        if (!dexClass.isInstance(task)) {
+            return
+        }
+        def variant = task.variant
+        if (!testVariantDataClass.isInstance(variant)) {
+            return
+        }
+        def jars = task.inputs.files.findAll { it.name.endsWith(".jar") }
+        if (jars.empty) {
+            return
+        }
+        def workDir = new File([project.buildDir, "android-scala", variant.name].join(File.separator))
+        if (project.plugins.hasPlugin("android")) {
+            proguardBeforeDexApplicationTestTask(task, workDir, jars)
+        } else {
+            proguardBeforeDexLibraryTestTask(task, workDir, jars)
+        }
     }
 }

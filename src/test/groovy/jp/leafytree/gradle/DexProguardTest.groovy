@@ -44,7 +44,7 @@ class DexProguardTest {
         def dexToolsDir = new File([unzipDir.absolutePath, "dex2jar-0.0.9.15"].join(File.separator))
         project.ant.unzip(src: dexToolsZip, dest: unzipDir)
 
-        dexProguard = new DexProguard(project, dexToolsDir)
+        dexProguard = new DexProguard(project.buildDir, dexToolsDir, project.logger)
         def testDir = dexProguard.mkdirsOrThrow("proguardTest")
         testDexJar = new File(testDir, "test.dex.jar")
         testDexJar.withOutputStream {

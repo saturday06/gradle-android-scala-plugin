@@ -18,7 +18,6 @@ package jp.leafytree.gradle
 import com.google.common.io.ByteStreams
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
 /**
@@ -29,16 +28,6 @@ class DexProguard {
     private final File workDir
     private final File dexToolsDir
     private final Logger logger
-
-    /**
-     * Creates a new DexProguard with given parameters.
-     *
-     * @param project current project
-     * @param dexToolsDir the directory contains dex tools
-     */
-    DexProguard(Project project, File dexToolsDir) {
-        this(new File(project.buildDir, "android-scala-plugin-dex"), dexToolsDir, project.logger)
-    }
 
     /**
      * Creates a new DexProguard with given parameters.

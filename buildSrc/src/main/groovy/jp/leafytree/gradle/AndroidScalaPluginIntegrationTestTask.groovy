@@ -26,7 +26,8 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         [
                 ["app", ["connectedAndroidTest"], false],
                 ["lib", ["connectedAndroidTest"], false],
-                ["appAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], true],
+                ["appAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
+                ["appAndLib", ["connectedAndroidTest"], true],
                 ["noScala", ["connectedAndroidTest"], false],
                 ["useScalaOnlyTest", ["connectedAndroidTest"], false],
         ].findAll { x, y, runOnTravis -> (!travis || runOnTravis) }.each { projectName, gradleArgs, runOnTravis ->

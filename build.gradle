@@ -114,6 +114,6 @@ signing {
     }
 }
 
-task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask)
-task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask)
+task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: 'uploadArchives')
+task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: 'uploadArchives')
 task sample(type: jp.leafytree.gradle.AndroidScalaPluginSampleTask)

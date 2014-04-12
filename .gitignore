@@ -9,7 +9,7 @@
 /*.ipr
 /*.iws
 /gh-pages/
-
+/gradle.properties
 /buildSrc/.gradle/
 /buildSrc/build/
 /buildSrc/*.iml

@@ -1,6 +1,8 @@
 language: java
 jdk: oraclejdk7
 before_install:
+  - echo "org.gradle.jvmargs=-Xmx1024m -XX:MaxPermSize=1024m -XX:+HeapDumpOnOutOfMemoryError" > gradle.properties
+
   # Install base Android SDK
   - sudo apt-get update -qq
   - sudo apt-get install -qq expect libstdc++6:i386 lib32z1

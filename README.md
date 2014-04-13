@@ -90,4 +90,5 @@ dependencies {
 -dontpreverify
 -dontwarn scala.**
 -keep class !scala.collection.** { *; }
+-ignorewarnings
 ```

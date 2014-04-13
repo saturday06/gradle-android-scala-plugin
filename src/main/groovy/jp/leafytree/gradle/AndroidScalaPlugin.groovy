@@ -211,7 +211,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     void proguardBeforeDexApplicationTestTask(Task task, File workDir, List<File> jars) {
         def outputJar = jars.find { it.name == "classes.jar" }
         if (!outputJar) {
-            project.logger.error("class.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
+            project.logger.error("classes.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
             return
         }
         def tempOutputDir = new File(workDir, "proguard-classes")

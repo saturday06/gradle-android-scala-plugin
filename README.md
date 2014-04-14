@@ -1,3 +1,5 @@
+Since it's still unstable and under development, please don't use it in production app.
+
 # gradle-android-scala-plugin [![Build Status](https://travis-ci.org/saturday06/gradle-android-scala-plugin.png?branch=master)](https://travis-ci.org/saturday06/gradle-android-scala-plugin)
 
 gradle-android-scala-plugin adds scala language support to official gradle android plugin.

@@ -197,7 +197,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontnote android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
         -ignorewarnings
         -keep class !scala.** { *; }
-        -keep class scala.beans.ScalaBeanInfo
+        -keep class scala.Predef { *; }
+        -keep class scala.Predef$* { *; }
         '''
     }
 

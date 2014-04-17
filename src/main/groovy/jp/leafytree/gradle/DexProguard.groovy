@@ -64,18 +64,18 @@ class DexProguard {
      * Executes proguard.
      *
      * @param dexJar the jar file contains dex
-     * @param dependencyDexJars dependency files of dexJar
+     * @param dexOrDirectoryInputs dependency files of dexJar
      * @param config configuration for proguard
      * @param proguardClasspath classpath of proguard
      */
-    void execute(File dexJar, List<File> dependencyDexJars, String config, String proguardClasspath = null) {
+    void execute(File dexJar, Collection<File> dexOrDirectoryInputs, String config, String proguardClasspath = null) {
         // extract jars
         def extractDir = new File(workDir, "proguard-extract" + File.separator + dexJar.name)
         if (!extractDir.exists()) {
             ant.unzip(src: dexJar, dest: extractDir)
         }
         def jar = undex(dexJar)
-        def dependencyJars = dependencyDexJars.collect { undex(it) }
+        def inputs = dexOrDirectoryInputs.collect { it.isDirectory() ? it : undex(it) }
 
         // proguard
         def proguardDir = mkdirsOrThrow("proguard")
@@ -86,7 +86,7 @@ class DexProguard {
         proguardConfigFile.withWriter { it.write config }
         ant.proguard(configuration: proguardConfigFile) {
             injar(file: jar)
-            dependencyJars.each {
+            inputs.each {
                 injar(file: it)
             }
             outjar(file: proguardDir)

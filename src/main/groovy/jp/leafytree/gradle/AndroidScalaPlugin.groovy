@@ -242,8 +242,12 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param variantWorkDir working directory
      * @param jars target jars
      */
-    void proguardBeforeDexApplicationTestTask(Task task, File variantWorkDir, List<File> jars) {
-        def outputJar = jars.find { it.name == "classes.jar" }
+    void proguardBeforeDexApplicationTestTask(Task task, File variantWorkDir) {
+        def inputs = task.inputs.files.files
+        if (inputs.empty) {
+            return
+        }
+        def outputJar = inputs.find { it.name == "classes.jar" }
         if (!outputJar) {
             project.logger.error("classes.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
             return
@@ -257,7 +261,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def proguardConfigFile = new File(variantWorkDir, "proguard-config-app.txt")
         proguardConfigFile.withWriter { it.write getProGuardConfig() }
         ant.proguard(configuration: proguardConfigFile) {
-            jars.each {
+            inputs.each {
                 injar(file: it)
             }
             outjar(file: tempOutputDir)
@@ -272,12 +276,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param variantWorkDir working directory
      * @param jars target jars
      */
-    void proguardBeforeDexLibraryTestTask(Task task, File variantWorkDir, List<File> jars) {
-        def scalaLibraryJar = jars.find { it.name.startsWith("scala-library-") }
+    void proguardBeforeDexLibraryTestTask(Task task, File variantWorkDir) {
+        def inputs = task.inputs.files.files
+        if (inputs.empty) {
+            return
+        }
+        def scalaLibraryJar = inputs.find { it.name.startsWith("scala-library-") }
         if (!scalaLibraryJar) {
             return
         }
-        jars.remove(scalaLibraryJar)
+        inputs.remove(scalaLibraryJar)
         def dexToolsZip = project.configurations.androidScalaPluginDexTools.find { it.name.startsWith("dex-tools-") }
         def unzipDir = new File(workDir, "dex-tools")
         def dexToolsDir = new File([unzipDir.absolutePath, "dex2jar-" + DEX2JAR_VERSION].join(File.separator))
@@ -286,7 +294,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
         def dexProguard = new DexProguard(variantWorkDir, dexToolsDir, project.logger)
         def proguardClasspath = project.configurations.androidScalaPluginProGuard.asPath
-        dexProguard.execute(scalaLibraryJar, jars, getProGuardConfig(), proguardClasspath)
+        dexProguard.execute(scalaLibraryJar, inputs, getProGuardConfig(), proguardClasspath)
     }
 
     /**
@@ -302,16 +310,12 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!testVariantDataClass.isInstance(variant)) {
             return
         }
-        def jars = task.inputs.files.findAll { it.name.endsWith(".jar") }
-        if (jars.empty) {
-            return
-        }
         def variantWorkDir = new File([workDir, "variant", variant.name].join(File.separator))
         FileUtils.forceMkdir(variantWorkDir)
         if (project.plugins.hasPlugin("android")) {
-            proguardBeforeDexApplicationTestTask(task, variantWorkDir, jars)
+            proguardBeforeDexApplicationTestTask(task, variantWorkDir)
         } else {
-            proguardBeforeDexLibraryTestTask(task, variantWorkDir, jars)
+            proguardBeforeDexLibraryTestTask(task, variantWorkDir)
         }
     }
 }

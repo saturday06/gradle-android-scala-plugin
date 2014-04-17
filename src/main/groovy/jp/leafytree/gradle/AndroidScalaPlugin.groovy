@@ -68,8 +68,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
-        project.gradle.taskGraph.whenReady { taskGraph ->
+        project.afterEvaluate {
             addDependencies()
+        }
+        project.gradle.taskGraph.whenReady { taskGraph ->
             taskGraph.beforeTask { Task task ->
                 if (project.buildFile == task.project.buildFile) { // TODO: More elegant way
                     updateAndroidJavaCompileTask(task)

@@ -69,8 +69,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         project.gradle.taskGraph.whenReady { taskGraph ->
             addDependencies()
             taskGraph.beforeTask { Task task ->
-                updateAndroidJavaCompileTask(task)
-                proguardBeforeDexTestTask(task)
+                if (project.buildFile == task.project.buildFile) { // TODO: More elegant way
+                    updateAndroidJavaCompileTask(task)
+                    proguardBeforeDexTestTask(task)
+                }
             }
         }
     }
@@ -159,9 +161,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param task the Task to update
      */
     void updateAndroidJavaCompileTask(Task task) {
-        if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
-            return
-        }
         if (!(task.name ==~ /^compile(.+)Java$/)) { // TODO: Use !=~ operator
             return
         }
@@ -262,9 +261,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param task the dexDebugTest task
      */
     void proguardBeforeDexTestTask(Task task) {
-        if (project.buildFile != task.project.buildFile) { // TODO: More elegant way
-            return
-        }
         if (!dexClass.isInstance(task)) {
             return
         }

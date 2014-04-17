@@ -41,6 +41,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private Object androidExtension
     private Class dexClass
     private Class testVariantDataClass
+    private File workDir
 
     /**
      * Creates a new AndroidScalaJavaJointCompiler with given file resolver.
@@ -61,6 +62,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     void apply(Project project, Object androidExtension) {
         this.project = project
         this.androidExtension = androidExtension
+        this.workDir = new File(project.buildDir, "android-scala")
         def classLoader = androidExtension.class.classLoader
         dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
@@ -205,22 +207,22 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Executes proguard before task.Dex
      *
      * @param task the dexDebugTest task
-     * @param workDir working directory
+     * @param variantWorkDir working directory
      * @param jars target jars
      */
-    void proguardBeforeDexApplicationTestTask(Task task, File workDir, List<File> jars) {
+    void proguardBeforeDexApplicationTestTask(Task task, File variantWorkDir, List<File> jars) {
         def outputJar = jars.find { it.name == "classes.jar" }
         if (!outputJar) {
             project.logger.error("classes.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
             return
         }
-        def tempOutputDir = new File(workDir, "proguard-classes")
+        def tempOutputDir = new File(variantWorkDir, "proguard-classes")
         def tempOutputJar = new File(tempOutputDir, outputJar.name)
         FileUtils.deleteDirectory(tempOutputDir)
         def ant = new AntBuilder()
         ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                 classpath: project.configurations.androidScalaPluginProGuard.asPath)
-        def proguardConfigFile = new File(project.buildDir, "proguard-config-app.txt")
+        def proguardConfigFile = new File(variantWorkDir, "proguard-config-app.txt")
         proguardConfigFile.withWriter { it.write getProGuardConfig() }
         ant.proguard(configuration: proguardConfigFile) {
             jars.each {
@@ -235,10 +237,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * Executes proguard before task.Dex
      *
      * @param task the dexDebugTest task
-     * @param workDir working directory
+     * @param variantWorkDir working directory
      * @param jars target jars
      */
-    void proguardBeforeDexLibraryTestTask(Task task, File workDir, List<File> jars) {
+    void proguardBeforeDexLibraryTestTask(Task task, File variantWorkDir, List<File> jars) {
         def scalaLibraryJar = jars.find { it.name.startsWith("scala-library-") }
         if (!scalaLibraryJar) {
             return
@@ -250,7 +252,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!dexToolsDir.isDirectory()) {
             project.ant.unzip(src: dexToolsZip, dest: unzipDir)
         }
-        def dexProguard = new DexProguard(workDir, dexToolsDir, project.logger)
+        def dexProguard = new DexProguard(variantWorkDir, dexToolsDir, project.logger)
         def proguardClasspath = project.configurations.androidScalaPluginProGuard.asPath
         dexProguard.execute(scalaLibraryJar, jars, getProGuardConfig(), proguardClasspath)
     }
@@ -272,11 +274,12 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (jars.empty) {
             return
         }
-        def workDir = new File([project.buildDir, "android-scala", variant.name].join(File.separator))
+        def variantWorkDir = new File([workDir, "variant", variant.name].join(File.separator))
+        FileUtils.forceMkdir(variantWorkDir)
         if (project.plugins.hasPlugin("android")) {
-            proguardBeforeDexApplicationTestTask(task, workDir, jars)
+            proguardBeforeDexApplicationTestTask(task, variantWorkDir, jars)
         } else {
-            proguardBeforeDexLibraryTestTask(task, workDir, jars)
+            proguardBeforeDexLibraryTestTask(task, variantWorkDir, jars)
         }
     }
 }

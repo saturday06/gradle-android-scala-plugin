@@ -41,6 +41,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private Object androidExtension
     private Class dexClass
     private Class testVariantDataClass
+    private Class libraryVariantClass
+    private Class jarDependencyClass
     private File workDir
 
     /**
@@ -66,10 +68,15 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def classLoader = androidExtension.class.classLoader
         dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
+        libraryVariantClass =  classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
+        jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
             addDependencies()
+            androidExtension.testVariants.each { testVariant ->
+                updateTestVariantDependencies(testVariant)
+            }
         }
         project.gradle.taskGraph.whenReady { taskGraph ->
             taskGraph.beforeTask { Task task ->
@@ -102,6 +109,29 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
         project.dependencies.add("androidScalaPluginProGuard", "net.sf.proguard:proguard-anttask:4.11")
         project.dependencies.add("androidScalaPluginDexTools", "com.googlecode.dex2jar:dex-tools:$DEX2JAR_VERSION@zip")
+    }
+
+    /**
+     * Update test variant's dependencies
+     */
+    void updateTestVariantDependencies(Object testVariant) {
+        def testedVariant = testVariant.testedVariant
+        if (libraryVariantClass.isInstance(testedVariant)) {
+            return
+        }
+        def variantConfiguration = testVariant.variantData.variantConfiguration
+        if (variantConfiguration.compileClasspath.find { it.name.startsWith("scala-library-") }) {
+            return
+        }
+        def scalaLibrary = testedVariant.variantData.variantConfiguration.compileClasspath.find {
+            it.name.startsWith("scala-library-")
+        }
+        if (!scalaLibrary) {
+            return
+        }
+        def jarDependencyConstructor = jarDependencyClass.getConstructor(File.class, boolean.class, boolean.class)
+        def jarDependency = jarDependencyConstructor.newInstance(scalaLibrary, true, true)
+        variantConfiguration.jars.add(jarDependency)
     }
 
     /**

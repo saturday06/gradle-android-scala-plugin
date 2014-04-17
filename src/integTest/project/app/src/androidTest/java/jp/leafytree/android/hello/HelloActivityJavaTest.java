@@ -2,6 +2,7 @@ package jp.leafytree.android.hello;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
+import scala.collection.concurrent.TrieMap;
 
 public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<HelloActivity> {
     public Solo solo;
@@ -16,11 +17,17 @@ public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<Hell
         solo = new Solo(getInstrumentation(), getActivity());
     }
 
-    public void test1() {
+    public void testSimpleAssertion() {
         assertTrue(true);
     }
 
-    public void test2() {
+    public void testSimpleActivityAssertion() {
         solo.waitForText("Hello. I'm Java !");
+    }
+
+    public void testCallScalaLibraryClassOfNotUsedByMainApp() {
+        TrieMap<String, String> map = new TrieMap<String, String>();
+        map.put("x", "Hello. I'm Java !");
+        solo.waitForText(map.apply("x"));
     }
 }

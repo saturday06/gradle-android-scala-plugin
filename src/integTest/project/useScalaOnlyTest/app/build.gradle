@@ -23,6 +23,12 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
 }
 
 dependencies {

@@ -32,6 +32,12 @@ android {
     scala {
         target androidScalaTarget
     }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
 }
 
 dependencies {

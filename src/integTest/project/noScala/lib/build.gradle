@@ -11,6 +11,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
 }
 
 dependencies {

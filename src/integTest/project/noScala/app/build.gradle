@@ -18,6 +18,12 @@ android {
             proguardFiles "proguard-rules.txt"
         }
     }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
 }
 
 dependencies {

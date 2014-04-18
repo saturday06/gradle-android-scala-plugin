@@ -70,6 +70,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
         libraryVariantClass =  classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
         jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
+        if (!androidExtension.dexOptions.preDexLibraries) {
+            throw new GradleException("Currently, android-scala plugin doesn't support disabling dexOptions.preDexLibraries")
+        }
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
@@ -95,6 +98,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param androidExtension extension of Android Plugin
      */
     public void apply(Project project) {
+        if (!project.plugins.findPlugin("android") && !project.plugins.findPlugin("android-library")) {
+            throw new GradleException("Please apply 'android' or 'android-library' plugin before applying 'android-scala' plugin")
+        }
         apply(project, project.extensions.getByName("android"))
     }
 

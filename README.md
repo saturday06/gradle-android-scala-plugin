@@ -7,10 +7,10 @@ See also http://code.google.com/p/android/issues/detail?id=56232
 
 ## Supported versions
 
-| Scala      | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
-| ---------- | ------ | -------------- | ----------------- | ----------------- |
-| 2.10.4     | 1.11   | 0.9.2          | 19                | 19.0.3            |
-| 2.11.0-RC4 | 1.11   | 0.9.2          | 19                | 19.0.3            |
+| Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
+| ------ | ------ | -------------- | ----------------- | ----------------- |
+| 2.10.4 | 1.11   | 0.9.2          | 19                | 19.0.3            |
+| 2.11.0 | 1.11   | 0.9.2          | 19                | 19.0.3            |
 
 ## Configuration example
 

@@ -12,13 +12,6 @@ android {
         versionName "1.0"
     }
 
-    buildTypes {
-        debug {
-            runProguard true
-            proguardFiles "proguard-rules.txt"
-        }
-    }
-
     dexOptions {
         incremental androidPluginIncremental.toBoolean()
         preDexLibraries androidPluginPreDexLibraries.toBoolean()

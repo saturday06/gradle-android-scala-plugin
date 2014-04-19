@@ -3,6 +3,5 @@
 -dontpreverify
 -dontwarn scala.**
 -keep class !scala.** { *; }
--keep class scala.Predef { *; }
--keep class scala.Predef$* { *; }
+-keep class scala.Predef$** { *; }
 -ignorewarnings

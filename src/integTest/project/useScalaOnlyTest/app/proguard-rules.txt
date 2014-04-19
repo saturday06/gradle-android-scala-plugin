@@ -3,9 +3,6 @@
 -dontpreverify
 -dontwarn scala.**
 -dontwarn jp.leafytree.android.libproject.lib1.**
--dontwarn org.apache.commons.math3.**
--dontwarn com.robotium.solo.**
--dontwarn sun.misc.Unsafe
--dontwarn org.apache.poi.**
+-keep class !scala.** { *; }
+-keep class scala.Predef$** { *; }
 -ignorewarnings
--keep class !scala.collection.** { *; }

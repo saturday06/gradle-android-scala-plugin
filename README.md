@@ -91,6 +91,7 @@ dependencies {
 -dontobfuscate
 -dontpreverify
 -dontwarn scala.**
--keep class !scala.collection.** { *; }
+-keep class !scala.** { *; }
+-keep class scala.Predef$** { *; }
 -ignorewarnings
 ```

@@ -152,13 +152,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             urls.add(new File(path).toURI().toURL())
         }
         def classLoader = new URLClassLoader(urls.toArray(new URL[0]))
-        def properties
+        def propertiesClass
         try {
-            properties = classLoader.loadClass("scala.util.Properties\$")
+            propertiesClass = classLoader.loadClass("scala.util.Properties\$")
         } catch (ClassNotFoundException e) {
             return null
         }
-        def versionNumber = properties.MODULE$.scalaProps["maven.version.number"]
+        def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
         return versionNumber
     }
 
@@ -209,7 +209,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
         def scalaVersion = scalaVersionFromClasspath(task.classpath.asPath)
         if (!scalaVersion) {
-            return;
+            return
         }
 
         def options = [target: extension.target]

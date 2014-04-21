@@ -43,5 +43,6 @@ android {
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     compile 'com.android.support:support-v4:19.1.0'
+    androidTestCompile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
 }

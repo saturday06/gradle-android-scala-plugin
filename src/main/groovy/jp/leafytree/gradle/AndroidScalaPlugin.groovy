@@ -229,14 +229,65 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     String getProGuardConfig() {
         '''
+        -ignorewarnings
+
+        # execute shrinking only
         -dontoptimize
         -dontobfuscate
         -dontpreverify
+
+        # standard libraries
         -dontwarn android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
         -dontnote android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
-        -ignorewarnings
-        -keep class !scala.** { *; }
+
+        # test libraries
+        -dontwarn com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
+        -dontnote com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
+
+        # for android. see also http://proguard.sourceforge.net/manual/examples.html#androidapplication
+        -keep class * extends android.** { *; }
+        -keep class * extends junit.** { *; }
+        -keep class * implements android.** { *; }
+        -keepclasseswithmembers class * {
+            public <init>(android.content.Context, android.util.AttributeSet);
+        }
+        -keepclasseswithmembers class * {
+            public <init>(android.content.Context, android.util.AttributeSet, int);
+        }
+        -keepclassmembers class * {
+            @android.webkit.JavascriptInterface <methods>;
+        }
+
+        # for scala. see also http://proguard.sourceforge.net/manual/examples.html#scala
+        -keep scala.reflect.ScalaSignature;
+        -keep scala.reflect.ScalaLongSignature;
         -keep class scala.Predef$** { *; }
+        -keepclassmembers class * { ** MODULE$; }
+        -keep class * implements org.xml.sax.EntityResolver
+        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
+            long eventCount;
+            int  workerCounts;
+            int  runControl;
+            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
+            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
+        }
+        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
+            int base;
+            int sp;
+            int runState;
+        }
+        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
+            int status;
+        }
+        -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
+            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
+            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
+            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
+        }
+
+        # miscellaneous. see also http://proguard.sourceforge.net/index.html#manual
+        -keepattributes *Annotation*
+        -keepclasseswithmembernames class * { native <methods>; }
         '''
     }
 

@@ -15,7 +15,6 @@
  */
 package jp.leafytree.gradle
 
-import com.google.common.io.ByteStreams
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
@@ -128,9 +127,8 @@ class DexProguard {
         def processBuilder = new ProcessBuilder(command)
         processBuilder.directory(dexToolsDir)
         def process = processBuilder.start()
-        Thread.start { ByteStreams.copy(process.in, System.out) }
-        Thread.start { ByteStreams.copy(process.err, System.err) }
-        // process.waitForProcessOutput(System.out, System.err)
+        Thread.start { process.in.eachLine { logger.info(it) } }
+        Thread.start { process.err.eachLine { logger.warn(it) } }
         process.waitFor()
         if (process.exitValue() != 0) {
             throw new GradleException("process.exitValue != 0 but ${process.exitValue()}")

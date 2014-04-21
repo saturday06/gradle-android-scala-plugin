@@ -211,7 +211,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!scalaVersion) {
             return
         }
-
+        project.logger.info("scala-library version=$scalaVersion detected")
         def options = [target: extension.target]
         def configurationName = "androidScalaPluginScalaCompilerFor" + task.name
         def configuration = project.configurations.findByName(configurationName)
@@ -250,6 +250,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     void proguardBeforeDexApplicationTestTask(Task task, File variantWorkDir) {
         def inputs = task.inputs.files.files
         if (inputs.empty) {
+            project.logger.error("inputs are empty")
             return
         }
         def outputJar = inputs.find { it.name == "classes.jar" }
@@ -284,10 +285,12 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     void proguardBeforeDexLibraryTestTask(Task task, File variantWorkDir) {
         def inputs = task.inputs.files.files
         if (inputs.empty) {
+            project.logger.error("inputs are empty")
             return
         }
         def scalaLibraryJar = inputs.find { it.name.startsWith("scala-library-") }
         if (!scalaLibraryJar) {
+            project.logger.info("scala-library not found")
             return
         }
         inputs.remove(scalaLibraryJar)
@@ -315,6 +318,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!testVariantDataClass.isInstance(variant)) {
             return
         }
+        project.logger.info("Dex task for TestVariant detected")
         def variantWorkDir = new File([workDir, "variant", variant.name].join(File.separator))
         FileUtils.forceMkdir(variantWorkDir)
         if (project.plugins.hasPlugin("android")) {

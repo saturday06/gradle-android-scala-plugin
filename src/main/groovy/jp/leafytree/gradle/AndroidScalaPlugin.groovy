@@ -70,15 +70,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
         libraryVariantClass =  classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
         jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
-        if (!androidExtension.dexOptions.preDexLibraries) {
-            throw new GradleException("Currently, android-scala plugin doesn't support disabling dexOptions.preDexLibraries")
-        }
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
+        androidExtension.dexOptions.preDexLibraries = false
         project.afterEvaluate {
             addDependencies()
             androidExtension.testVariants.each { testVariant ->
                 updateTestVariantDependencies(testVariant)
+            }
+            if (androidExtension.dexOptions.preDexLibraries) {
+                throw new GradleException("Currently, android-scala plugin doesn't support enabling dexOptions.preDexLibraries")
             }
         }
         project.gradle.taskGraph.whenReady { taskGraph ->
@@ -125,19 +126,14 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (libraryVariantClass.isInstance(testedVariant)) {
             return
         }
-        def variantConfiguration = testVariant.variantData.variantConfiguration
-        if (variantConfiguration.compileClasspath.find { it.name.startsWith("scala-library-") }) {
-            return
+        def jars = testVariant.variantData.variantConfiguration.jars
+        testedVariant.variantData.variantConfiguration.compileClasspath.findAll {
+            it.name.endsWith(".jar")
+        }.each { file ->
+            def jarDependencyConstructor = jarDependencyClass.getConstructor(File.class, boolean.class, boolean.class)
+            def jarDependency = jarDependencyConstructor.newInstance(file, true, true)
+            jars.add(jarDependency)
         }
-        def scalaLibrary = testedVariant.variantData.variantConfiguration.compileClasspath.find {
-            it.name.startsWith("scala-library-")
-        }
-        if (!scalaLibrary) {
-            return
-        }
-        def jarDependencyConstructor = jarDependencyClass.getConstructor(File.class, boolean.class, boolean.class)
-        def jarDependency = jarDependencyConstructor.newInstance(scalaLibrary, true, true)
-        variantConfiguration.jars.add(jarDependency)
     }
 
     /**
@@ -235,6 +231,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -dontoptimize
         -dontobfuscate
         -dontpreverify
+        #-dontshrink
 
         # standard libraries
         -dontwarn android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
@@ -257,10 +254,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         -keepclassmembers class * {
             @android.webkit.JavascriptInterface <methods>;
         }
+        -keep public class com.google.vending.licensing.ILicensingService
+        -keep public class com.android.vending.licensing.ILicensingService
+        -keepclassmembers enum * {
+            public static **[] values();
+            public static ** valueOf(java.lang.String);
+        }
 
         # for scala. see also http://proguard.sourceforge.net/manual/examples.html#scala
-        -keep scala.reflect.ScalaSignature;
-        -keep scala.reflect.ScalaLongSignature;
+        -keep class scala.reflect.ScalaSignature { *; }
+        -keep class scala.reflect.ScalaLongSignature { *; }
         -keep class scala.Predef$** { *; }
         -keepclassmembers class * { ** MODULE$; }
         -keep class * implements org.xml.sax.EntityResolver
@@ -294,72 +297,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     /**
      * Executes proguard before task.Dex
      *
-     * @param task the dexDebugTest task
-     * @param variantWorkDir working directory
-     * @param jars target jars
-     */
-    void proguardBeforeDexApplicationTestTask(Task task, File variantWorkDir) {
-        def inputs = task.inputs.files.files
-        if (inputs.empty) {
-            project.logger.error("inputs are empty")
-            return
-        }
-        def outputJar = inputs.find { it.name == "classes.jar" }
-        if (!outputJar) {
-            project.logger.error("classes.jar is not found in tasks.Dex.inputs.files ($task.inputs.files)")
-            return
-        }
-        def tempOutputDir = new File(variantWorkDir, "proguard-classes")
-        def tempOutputJar = new File(tempOutputDir, outputJar.name)
-        FileUtils.deleteDirectory(tempOutputDir)
-        def ant = new AntBuilder()
-        ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
-                classpath: project.configurations.androidScalaPluginProGuard.asPath)
-        def proguardConfigFile = new File(variantWorkDir, "proguard-config-app.txt")
-        proguardConfigFile.withWriter { it.write getProGuardConfig() }
-        ant.proguard(configuration: proguardConfigFile) {
-            inputs.each {
-                injar(file: it)
-            }
-            outjar(file: tempOutputDir)
-        }
-        ant.copy(file: tempOutputJar, toFile: outputJar)
-    }
-
-    /**
-     * Executes proguard before task.Dex
-     *
-     * @param task the dexDebugTest task
-     * @param variantWorkDir working directory
-     * @param jars target jars
-     */
-    void proguardBeforeDexLibraryTestTask(Task task, File variantWorkDir) {
-        def inputs = task.inputs.files.files
-        if (inputs.empty) {
-            project.logger.error("inputs are empty")
-            return
-        }
-        def scalaLibraryJar = inputs.find { it.name.startsWith("scala-library-") }
-        if (!scalaLibraryJar) {
-            project.logger.info("scala-library not found")
-            return
-        }
-        inputs.remove(scalaLibraryJar)
-        def dexToolsZip = project.configurations.androidScalaPluginDexTools.find { it.name.startsWith("dex-tools-") }
-        def unzipDir = new File(workDir, "dex-tools")
-        def dexToolsDir = new File([unzipDir.absolutePath, "dex2jar-" + DEX2JAR_VERSION].join(File.separator))
-        if (!dexToolsDir.isDirectory()) {
-            project.ant.unzip(src: dexToolsZip, dest: unzipDir)
-        }
-        def dexProguard = new DexProguard(variantWorkDir, dexToolsDir, project.logger)
-        def proguardClasspath = project.configurations.androidScalaPluginProGuard.asPath
-        dexProguard.execute(scalaLibraryJar, inputs, getProGuardConfig(), proguardClasspath)
-    }
-
-    /**
-     * Executes proguard before task.Dex
-     *
-     * @param task the dexDebugTest task
+     * @param task the Dex task
      */
     void proguardBeforeDexTestTask(Task task) {
         if (!dexClass.isInstance(task)) {
@@ -369,13 +307,30 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!testVariantDataClass.isInstance(variant)) {
             return
         }
+
         project.logger.info("Dex task for TestVariant detected")
         def variantWorkDir = new File([workDir, "variant", variant.name].join(File.separator))
         FileUtils.forceMkdir(variantWorkDir)
-        if (project.plugins.hasPlugin("android")) {
-            proguardBeforeDexApplicationTestTask(task, variantWorkDir)
-        } else {
-            proguardBeforeDexLibraryTestTask(task, variantWorkDir)
+        def inputs = task.inputFiles + task.libraries
+        def outputFile = new File(variantWorkDir, "proguarded-classes.jar")
+        if (outputFile.exists()) {
+            FileUtils.forceDelete(outputFile)
         }
+        def ant = new AntBuilder()
+        ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
+                classpath: project.configurations.androidScalaPluginProGuard.asPath)
+        def proguardConfigFile = new File(variantWorkDir, "proguard-config.txt")
+        proguardConfigFile.withWriter { it.write getProGuardConfig() }
+        ant.proguard(configuration: proguardConfigFile) {
+            inputs.each {
+                injar(file: it)
+            }
+            variant.javaCompileTask.options.bootClasspath.split(File.pathSeparator).each {
+                libraryJar(file: new File(it))
+            }
+            outjar(file: outputFile)
+        }
+        task.inputFiles = [outputFile]
+        task.libraries = []
     }
 }

@@ -68,6 +68,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 "org.gradle.jvmargs": "-Xmx2048m -XX:MaxPermSize=1024m -XX:+HeapDumpOnOutOfMemoryError",
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 scalaLibraryVersion: scalaLibraryVersion,
+                scalaDependencyVersion: scalaLibraryVersion.split("\\.").take(2).join("."),
                 androidScalaTarget: "jvm-1.6",
                 androidScalaPluginVersion: "1.0-SNAPSHOT",
                 androidPluginVersion: androidPluginVersion,

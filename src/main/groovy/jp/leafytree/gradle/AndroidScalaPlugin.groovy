@@ -205,7 +205,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             return
         }
         if (!(task instanceof JavaCompile)) {
-            throw new GradleException("\"$task\" matches /^compile(.+)Java\$/ but is not instance of JavaCompile")
+            return
         }
         def scalaVersion = scalaVersionFromClasspath(task.classpath.asPath)
         if (!scalaVersion) {

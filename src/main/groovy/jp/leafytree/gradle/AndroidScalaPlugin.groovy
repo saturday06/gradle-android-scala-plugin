@@ -147,7 +147,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @return scala version
      */
     static String scalaVersionFromClasspath(String classpath) {
-        def urls = new ArrayList<URL>()
+        def urls = new LinkedList<URL>()
         for (String path : classpath.split(File.pathSeparator)) {
             urls.add(new File(path).toURI().toURL())
         }

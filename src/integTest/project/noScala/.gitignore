@@ -2,4 +2,4 @@
 /.idea/
 /*.iml
 /local.properties
-.DS_Store
+/gradle.properties

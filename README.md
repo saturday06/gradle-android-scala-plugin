@@ -93,5 +93,6 @@ dependencies {
 -dontwarn scala.**
 -keep class !scala.** { *; }
 -keep class scala.Predef$** { *; }
+-keep class scala.collection.SeqLike { public protected *; } # https://issues.scala-lang.org/browse/SI-5397
 -ignorewarnings
 ```

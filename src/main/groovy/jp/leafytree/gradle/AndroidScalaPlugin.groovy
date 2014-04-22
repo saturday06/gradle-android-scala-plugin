@@ -72,17 +72,17 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
-        androidExtension.dexOptions.preDexLibraries = false
         project.afterEvaluate {
             addDependencies()
             androidExtension.testVariants.each { testVariant ->
                 updateTestVariantDependencies(testVariant)
             }
+        }
+        androidExtension.dexOptions.preDexLibraries = false
+        project.gradle.taskGraph.whenReady { taskGraph ->
             if (androidExtension.dexOptions.preDexLibraries) {
                 throw new GradleException("Currently, android-scala plugin doesn't support enabling dexOptions.preDexLibraries")
             }
-        }
-        project.gradle.taskGraph.whenReady { taskGraph ->
             taskGraph.beforeTask { Task task ->
                 if (project.buildFile == task.project.buildFile) { // TODO: More elegant way
                     updateAndroidJavaCompileTask(task)
@@ -262,6 +262,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
 
         # for scala. see also http://proguard.sourceforge.net/manual/examples.html#scala
+        -keep class scala.collection.SeqLike { public protected *; } # https://issues.scala-lang.org/browse/SI-5397
         -keep class scala.reflect.ScalaSignature { *; }
         -keep class scala.reflect.ScalaLongSignature { *; }
         -keep class scala.Predef$** { *; }

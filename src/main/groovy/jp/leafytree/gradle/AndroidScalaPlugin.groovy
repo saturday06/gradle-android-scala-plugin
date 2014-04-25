@@ -223,7 +223,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      *
      * @return the proguard configuration text
      */
-    String getProGuardConfig() {
+    String getDefaultProGuardConfig() {
         '''
         -ignorewarnings
 
@@ -321,7 +321,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                 classpath: project.configurations.androidScalaPluginProGuard.asPath)
         def proguardConfigFile = new File(variantWorkDir, "proguard-config.txt")
-        proguardConfigFile.withWriter { it.write getProGuardConfig() }
+        proguardConfigFile.withWriter { it.write defaultProGuardConfig }
         ant.proguard(configuration: proguardConfigFile) {
             inputs.each {
                 injar(file: it)

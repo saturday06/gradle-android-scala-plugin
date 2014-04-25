@@ -301,6 +301,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param task the Dex task
      */
     void proguardBeforeDexTestTask(Task task) {
+        if (!extension.runAndroidTestProguard) {
+            return
+        }
         if (!dexClass.isInstance(task)) {
             return
         }
@@ -320,9 +323,21 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def ant = new AntBuilder()
         ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                 classpath: project.configurations.androidScalaPluginProGuard.asPath)
-        def proguardConfigFile = new File(variantWorkDir, "proguard-config.txt")
-        proguardConfigFile.withWriter { it.write defaultProGuardConfig }
-        ant.proguard(configuration: proguardConfigFile) {
+        def proguardFile = extension.androidTestProguardFile
+        if (!proguardFile) {
+            proguardFile = new File(variantWorkDir, "proguard-config.txt")
+            proguardFile.withWriter {
+                it.write """
+                ${defaultProGuardConfig}
+                -keep class ${variantData.variantConfiguration.packageName}.** { *; }
+              """
+                String testedPackageName = variantData.variantConfiguration.testedPackageName
+                if (testedPackageName) {
+                    it.write("-keep class ${testedPackageName}.** { *; }\n")
+                }
+            }
+        }
+        ant.proguard(configuration: proguardFile) {
             inputs.each {
                 injar(file: it)
             }

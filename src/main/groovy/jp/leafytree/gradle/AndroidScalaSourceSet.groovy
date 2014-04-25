@@ -3,7 +3,6 @@ package jp.leafytree.gradle
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.DefaultSourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.tasks.ScalaSourceSet
 import org.gradle.util.ConfigureUtil
 
 /**
@@ -15,7 +14,7 @@ import org.gradle.util.ConfigureUtil
  * A {@code ScalaSourceSetConvention} defines the properties and methods added to a {@link
  * org.gradle.api.tasks.SourceSet} by the {@code ScalaPlugin}.
  */
-public class AndroidScalaSourceSet implements ScalaSourceSet {
+public class AndroidScalaSourceSet {
     private final SourceDirectorySet scala;
     private final SourceDirectorySet allScala;
 
@@ -45,7 +44,7 @@ public class AndroidScalaSourceSet implements ScalaSourceSet {
      * @param configureClosure The closure to use to configure the Scala source.
      * @return this
      */
-    public ScalaSourceSet scala(Closure configureClosure) {
+    public AndroidScalaSourceSet scala(Closure configureClosure) {
         ConfigureUtil.configure(configureClosure, getScala());
         return this;
     }

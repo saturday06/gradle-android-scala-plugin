@@ -6,7 +6,7 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.util.ConfigureUtil
 
 /**
- * Its original source were taken from official scala plugin:
+ * Its original source was taken from official scala plugin:
  * <a href="https://github.com/gradle/gradle/blob/68df6c2e40232b6f9ea93b5ee825a50158baaeb6/subprojects/scala/src/main/groovy/org/gradle/api/internal/tasks/DefaultScalaSourceSet.java">
  *     DefaultScalaSourceSet.java
  * </a>

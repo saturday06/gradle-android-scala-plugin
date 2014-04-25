@@ -304,13 +304,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!dexClass.isInstance(task)) {
             return
         }
-        def variant = task.variant
-        if (!testVariantDataClass.isInstance(variant)) {
+        def variantData = task.variant
+        if (!testVariantDataClass.isInstance(variantData)) {
             return
         }
 
         project.logger.info("Dex task for TestVariant detected")
-        def variantWorkDir = new File([workDir, "variant", variant.name].join(File.separator))
+        def variantWorkDir = new File([workDir, "variant", variantData.name].join(File.separator))
         FileUtils.forceMkdir(variantWorkDir)
         def inputs = task.inputFiles + task.libraries
         def outputFile = new File(variantWorkDir, "proguarded-classes.jar")
@@ -326,7 +326,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             inputs.each {
                 injar(file: it)
             }
-            variant.javaCompileTask.options.bootClasspath.split(File.pathSeparator).each {
+            variantData.javaCompileTask.options.bootClasspath.split(File.pathSeparator).each {
                 libraryJar(file: new File(it))
             }
             outjar(file: outputFile)

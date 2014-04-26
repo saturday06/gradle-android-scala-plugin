@@ -121,22 +121,52 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     /**
      * Update test variant's dependencies
      */
-    void updateTestVariantDependencies(Object testVariant) {
+    void updateTestVariantDependencies(final Object testVariant) {
         def testedVariant = testVariant.testedVariant
         if (libraryVariantClass.isInstance(testedVariant)) {
             return
         }
-        def proguardTask = testedVariant.variantData.proguardTask
+        final def proguardTask = testedVariant.variantData.proguardTask
         if (!proguardTask) {
             return
         }
         def testJavaCompileTask = testVariant.variantData.javaCompileTask
-        def destinationDir = testJavaCompileTask.destinationDir
+        final def javaCompileDestinationDir = testJavaCompileTask.destinationDir
         proguardTask.dependsOn(testJavaCompileTask)
-        proguardTask.injars(destinationDir)
-        proguardTask.keepdirectories(destinationDir.toString())
+        proguardTask.injars(javaCompileDestinationDir)
+        proguardTask.keepdirectories(javaCompileDestinationDir.toString())
         testVariant.variantData.variantConfiguration.compileClasspath.each {
             proguardTask.libraryjars(it)
+        }
+        proguardTask.doLast {
+            // TODO: More elegant way
+            def testFiles = []
+            def baseLength = javaCompileDestinationDir.canonicalPath.length()
+            javaCompileDestinationDir.traverse { file ->
+                if (!file.isDirectory()) {
+                    testFiles.add(file.canonicalPath.substring(baseLength))
+                }
+            }
+            proguardTask.outJarFiles.each { file ->
+                if (file.isDirectory()) {
+                    testFiles.clone().each { testFile ->
+                        if (new File(file, testFile).delete()) {
+                            testFiles.remove(testFile)
+                        }
+                    }
+                } else {
+                    def dir = new File(workDir, "testUnzip$File.separator$testVariant.name")
+                    FileUtils.deleteDirectory(dir)
+                    project.ant.unzip(src: file, dest: dir)
+                    testFiles.clone().each { testFile ->
+                        if (new File(dir, testFile).delete()) {
+                            testFiles.remove(testFile)
+                        }
+                    }
+                    FileUtils.forceDelete(file)
+                    project.ant.zip(basedir: dir, destfile: file)
+                }
+            }
         }
     }
 

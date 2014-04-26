@@ -75,7 +75,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         project.afterEvaluate {
             addDependencies()
             androidExtension.testVariants.each { testVariant ->
-                updateTestVariantDependencies(testVariant)
+                updateTestVariantProguard(testVariant)
             }
         }
         androidExtension.dexOptions.preDexLibraries = false
@@ -119,9 +119,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     /**
-     * Update test variant's dependencies
+     * Update test variant's proguard
      */
-    void updateTestVariantDependencies(final Object testVariant) {
+    void updateTestVariantProguard(final Object testVariant) {
         def testedVariant = testVariant.testedVariant
         if (libraryVariantClass.isInstance(testedVariant)) {
             return

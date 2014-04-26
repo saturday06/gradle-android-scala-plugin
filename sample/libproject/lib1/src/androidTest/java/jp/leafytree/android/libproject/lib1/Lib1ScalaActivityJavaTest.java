@@ -2,18 +2,19 @@ package jp.leafytree.android.libproject.lib1;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.robotium.solo.Solo;
+import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
+import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
 public class Lib1ScalaActivityJavaTest extends ActivityInstrumentationTestCase2<Lib1ScalaActivity> {
-    public Solo solo;
-
     public Lib1ScalaActivityJavaTest() {
         super(Lib1ScalaActivity.class);
     }
 
     @Override
     public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
+        getActivity();
     }
 
     public void test1() {
@@ -21,6 +22,6 @@ public class Lib1ScalaActivityJavaTest extends ActivityInstrumentationTestCase2<
     }
 
     public void test2() {
-        solo.waitForText("Lib1Java");
+        onView(withText("Lib1Java")).check(matches(isDisplayed()));
     }
 }

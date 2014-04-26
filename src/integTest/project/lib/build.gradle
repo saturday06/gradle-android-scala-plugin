@@ -27,10 +27,15 @@ android {
         targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
 
     scala {
         target androidScalaTarget
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
 
     dexOptions {
@@ -44,5 +49,8 @@ dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     compile 'com.android.support:support-v4:19.1.0'
     androidTestCompile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
+    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r2') {
+        exclude module: 'guava'
+    }
+    androidTestCompile 'com.google.guava:guava-jdk5:16.0'
 }

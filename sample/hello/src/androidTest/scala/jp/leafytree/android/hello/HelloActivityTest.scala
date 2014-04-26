@@ -1,14 +1,15 @@
 package jp.leafytree.android.hello
 
-import android.test.ActivityInstrumentationTestCase2
-import com.robotium.solo.Solo
 import junit.framework.Assert
+import android.test.ActivityInstrumentationTestCase2
+import com.google.android.apps.common.testing.ui.espresso.Espresso.onView
+import com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText
 
 class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](classOf[HelloActivity]) {
-  var solo: Solo = _
-
   override def setUp() {
-    solo = new Solo(getInstrumentation(), getActivity())
+    getActivity()
   }
 
   def test1() {
@@ -16,6 +17,6 @@ class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](
   }
 
   def test2() {
-    solo.waitForText("Hello. I'm Java !")
+    onView(withText("Hello. I'm Java !")).check(matches(isDisplayed))
   }
 }

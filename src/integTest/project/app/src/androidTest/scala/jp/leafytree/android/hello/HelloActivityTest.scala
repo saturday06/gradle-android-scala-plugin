@@ -1,15 +1,15 @@
 package jp.leafytree.android.hello
 
-import android.test.ActivityInstrumentationTestCase2
-import com.robotium.solo.Solo
 import junit.framework.Assert
-import scala.collection.concurrent.TrieMap
+import android.test.ActivityInstrumentationTestCase2
+import com.google.android.apps.common.testing.ui.espresso.Espresso.onView
+import com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed
+import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText
 
-class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity]("jp.leafytree.android.hello", classOf[HelloActivity]) {
-  var solo: Solo = _
-
+class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](classOf[HelloActivity]) {
   override def setUp() {
-    solo = new Solo(getInstrumentation(), getActivity())
+    getActivity()
   }
 
   def testSimpleAssertion() {
@@ -17,7 +17,7 @@ class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](
   }
 
   def testSimpleActivityAssertion() {
-    solo.waitForText("Hello. I'm Java !")
+    onView(withText("Hello. I'm Java !")).check(matches(isDisplayed))
   }
 
   def testCallScalaLibraryClassOfNotUsedByMainApp() {

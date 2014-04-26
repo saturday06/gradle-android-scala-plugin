@@ -377,6 +377,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             inputs.each {
                 injar(file: it)
             }
+            (variantData.javaCompileTask.classpath.collect { it.canonicalPath } - task.libraries.collect { it.canonicalPath }).each {
+                libraryJar(file: new File(it))
+            }
             variantData.javaCompileTask.options.bootClasspath.split(File.pathSeparator).each {
                 libraryJar(file: new File(it))
             }

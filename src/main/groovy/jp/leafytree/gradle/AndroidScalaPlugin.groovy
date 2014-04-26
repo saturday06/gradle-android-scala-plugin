@@ -260,6 +260,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
         -keep public class com.google.vending.licensing.ILicensingService
         -keep public class com.android.vending.licensing.ILicensingService
+        -dontnote com.google.vending.licensing.ILicensingService
+        -dontnote com.android.vending.licensing.ILicensingService
         -keepclassmembers enum * {
             public static **[] values();
             public static ** valueOf(java.lang.String);

@@ -2,6 +2,8 @@
 -dontobfuscate
 -dontpreverify
 -dontwarn scala.**
+-dontwarn sun.misc.Unsafe
+-dontwarn com.google.android.apps.common.testing.**
 -keep class !scala.** { *; }
 -keep class scala.Predef$** { *; }
 -ignorewarnings

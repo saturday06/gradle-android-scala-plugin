@@ -126,13 +126,17 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (libraryVariantClass.isInstance(testedVariant)) {
             return
         }
-        def jars = testVariant.variantData.variantConfiguration.jars
-        testedVariant.variantData.variantConfiguration.compileClasspath.findAll {
-            it.name.endsWith(".jar")
-        }.each { file ->
-            def jarDependencyConstructor = jarDependencyClass.getConstructor(File.class, boolean.class, boolean.class)
-            def jarDependency = jarDependencyConstructor.newInstance(file, true, true)
-            jars.add(jarDependency)
+        def proguardTask = testedVariant.variantData.proguardTask
+        if (!proguardTask) {
+            return
+        }
+        def testJavaCompileTask = testVariant.variantData.javaCompileTask
+        def destinationDir = testJavaCompileTask.destinationDir
+        proguardTask.dependsOn(testJavaCompileTask)
+        proguardTask.injars(destinationDir)
+        proguardTask.keepdirectories(destinationDir.toString())
+        testVariant.variantData.variantConfiguration.compileClasspath.each {
+            proguardTask.libraryjars(it)
         }
     }
 

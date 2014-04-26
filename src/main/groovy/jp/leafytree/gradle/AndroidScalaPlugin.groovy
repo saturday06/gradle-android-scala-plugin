@@ -332,7 +332,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     /**
-     * Executes proguard before task.Dex
+     * Executes additional proguard before task.Dex
      *
      * @param task the Dex task
      */

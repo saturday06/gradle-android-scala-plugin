@@ -4,5 +4,5 @@
 /lib/build/
 /gradle.properties
 /.idea/
-/*.iml
+*.iml
 /local.properties

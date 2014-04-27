@@ -365,7 +365,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 }).each {
                     libraryJar(file: new File(it))
                 }
-                variantData.javaCompileTask.options.bootClasspath.split(File.pathSeparator).each {
+                def options = variantData.javaCompileTask.options.optionMap()
+                def bootClasspath = options["bootClasspath"] ?: options["bootclasspath"]
+                bootClasspath?.split(File.pathSeparator).each {
                     libraryJar(file: new File(it))
                 }
                 outjar(file: outputFile)

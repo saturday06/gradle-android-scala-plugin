@@ -21,7 +21,6 @@ apply plugin: 'idea'
 
 repositories {
     mavenCentral()
-    maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
 }
 
 buildscript {
@@ -36,7 +35,6 @@ dependencies {
     compile "commons-io:commons-io:2.4"
     testCompile "com.android.tools.build:gradle:0.9.2"
     testCompile "com.google.guava:guava:16.0.1"
-    testCompile "com.googlecode.dex2jar:dex-tools:0.0.9.15@zip"
     testCompile "net.sf.proguard:proguard-anttask:4.11"
     testCompile "org.scala-lang:scala-compiler:2.10.4"
     testCompile "org.mockito:mockito-core:1.9.5"

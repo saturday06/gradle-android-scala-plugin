@@ -33,7 +33,6 @@ import java.nio.file.Files
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
  */
 public class AndroidScalaPlugin implements Plugin<Project> {
-    private static final String DEX2JAR_VERSION = "0.0.9.15"
     private final FileResolver fileResolver
     @VisibleForTesting
     final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
@@ -114,10 +113,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         project.repositories.maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
         project.configurations {
             androidScalaPluginProGuard
-            androidScalaPluginDexTools
         }
         project.dependencies.add("androidScalaPluginProGuard", "net.sf.proguard:proguard-anttask:4.11")
-        project.dependencies.add("androidScalaPluginDexTools", "com.googlecode.dex2jar:dex-tools:$DEX2JAR_VERSION@zip")
     }
 
     /**

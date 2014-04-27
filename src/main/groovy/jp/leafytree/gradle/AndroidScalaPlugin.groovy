@@ -357,9 +357,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 proguardFile = new File(variantWorkDir, "proguard-config.txt")
                 proguardFile.withWriter {
                     it.write """
-                ${defaultProGuardConfig}
-                -keep class ${variantData.variantConfiguration.packageName}.** { *; }
-              """
+                        ${defaultProGuardConfig}
+                        -keep class ${variantData.variantConfiguration.packageName}.** { *; }
+                    """
                     String testedPackageName = variantData.variantConfiguration.testedPackageName
                     if (testedPackageName) {
                         it.write("-keep class ${testedPackageName}.** { *; }\n")

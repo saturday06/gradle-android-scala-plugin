@@ -183,9 +183,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         for (String path : classpath.split(File.pathSeparator)) {
             urls.add(new File(path).toURI().toURL())
         }
-        def classLoader
+        def classLoader = new URLClassLoader(urls.toArray(new URL[0]))
         try {
-            classLoader = new URLClassLoader(urls.toArray(new URL[0]))
             def propertiesClass
             try {
                 propertiesClass = classLoader.loadClass("scala.util.Properties\$")
@@ -195,7 +194,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
             return versionNumber
         } finally {
-            classLoader?.close()
+            classLoader.close()
         }
     }
 

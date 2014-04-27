@@ -67,7 +67,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def classLoader = androidExtension.class.classLoader
         dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
         testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
-        libraryVariantClass =  classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
+        libraryVariantClass = classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
         jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()

@@ -79,7 +79,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                     updateTestVariantDexTask(variant)
                 }
             }
-            def allVariants = (androidExtension.testVariants + (project.plugins.hasPlugin("android") ? androidExtension.applicationVariants : androidExtension.libraryVariants))
+            def allVariants = androidExtension.testVariants + (project.plugins.hasPlugin("android") ? androidExtension.applicationVariants : androidExtension.libraryVariants)
             allVariants.each { variant ->
                 updateAndroidJavaCompileTask(variant.variantData.javaCompileTask)
             }

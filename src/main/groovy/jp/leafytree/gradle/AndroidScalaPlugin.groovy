@@ -26,6 +26,8 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.util.ConfigureUtil
 
 import javax.inject.Inject
+import java.nio.file.FileSystems
+import java.nio.file.Files
 
 /**
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
@@ -150,23 +152,15 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 }
             }
             proguardTask.outJarFiles.each { file ->
-                if (file.isDirectory()) {
+                def fileSystem = FileSystems.newFileSystem(file.toPath(), null)
+                try {
                     testFiles.clone().each { testFile ->
-                        if (new File(file, testFile).delete()) {
+                        if (Files.deleteIfExists(fileSystem.getPath(testFile))) {
                             testFiles.remove(testFile)
                         }
                     }
-                } else {
-                    def dir = new File(workDir, "testUnzip$File.separator$testVariant.name")
-                    FileUtils.deleteDirectory(dir)
-                    project.ant.unzip(src: file, dest: dir)
-                    testFiles.clone().each { testFile ->
-                        if (new File(dir, testFile).delete()) {
-                            testFiles.remove(testFile)
-                        }
-                    }
-                    FileUtils.forceDelete(file)
-                    project.ant.zip(basedir: dir, destfile: file)
+                } finally {
+                    fileSystem.close()
                 }
             }
         }

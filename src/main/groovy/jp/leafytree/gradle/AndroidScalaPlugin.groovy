@@ -183,15 +183,20 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         for (String path : classpath.split(File.pathSeparator)) {
             urls.add(new File(path).toURI().toURL())
         }
-        def classLoader = new URLClassLoader(urls.toArray(new URL[0]))
-        def propertiesClass
+        def classLoader
         try {
-            propertiesClass = classLoader.loadClass("scala.util.Properties\$")
-        } catch (ClassNotFoundException e) {
-            return null
+            classLoader = new URLClassLoader(urls.toArray(new URL[0]))
+            def propertiesClass
+            try {
+                propertiesClass = classLoader.loadClass("scala.util.Properties\$")
+            } catch (ClassNotFoundException e) {
+                return null
+            }
+            def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
+            return versionNumber
+        } finally {
+            classLoader?.close()
         }
-        def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
-        return versionNumber
     }
 
     /**

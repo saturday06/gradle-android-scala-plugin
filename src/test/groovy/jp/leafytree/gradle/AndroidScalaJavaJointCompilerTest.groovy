@@ -16,7 +16,6 @@
 package jp.leafytree.gradle
 import org.gradle.api.Project
 import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec
-import org.gradle.api.internal.tasks.compile.JavaCompileSpec
 import org.gradle.api.tasks.compile.CompileOptions
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
@@ -46,7 +45,6 @@ class AndroidScalaJavaJointCompilerTest {
 
     @Test
     public void getScalacOptionsRemovesJavaOnlyOptions() {
-        Compiler<JavaCompileSpec> compileSpec
         def compiler = new AndroidScalaJavaJointCompiler(project, null, [:])
         def spec = new DefaultJavaCompileSpec()
         def options = new CompileOptions()

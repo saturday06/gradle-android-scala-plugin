@@ -39,9 +39,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
     private Project project
     private Object androidExtension
-    private Class dexClass
-    private Class libraryVariantClass
-    private Class jarDependencyClass
     private File workDir
 
     /**
@@ -64,21 +61,20 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         this.project = project
         this.androidExtension = androidExtension
         this.workDir = new File(project.buildDir, "android-scala")
-        def classLoader = androidExtension.class.classLoader
-        dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
-        libraryVariantClass = classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
-        jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
             addDependencies()
+            def isApplication = project.plugins.hasPlugin("android")
             androidExtension.testVariants.each { variant ->
-                updateTestedVariantProguardTask(variant)
+                if (isApplication) {
+                    updateTestedVariantProguardTask(variant)
+                }
                 if (extension.runAndroidTestProguard) {
                     updateTestVariantDexTask(variant)
                 }
             }
-            def allVariants = androidExtension.testVariants + (project.plugins.hasPlugin("android") ? androidExtension.applicationVariants : androidExtension.libraryVariants)
+            def allVariants = androidExtension.testVariants + (isApplication ? androidExtension.applicationVariants : androidExtension.libraryVariants)
             allVariants.each { variant ->
                 updateAndroidJavaCompileTask(variant.javaCompile)
             }
@@ -121,11 +117,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param testVariant the TestVariant
      */
     void updateTestedVariantProguardTask(final Object testVariant) {
-        def testedVariant = testVariant.testedVariant
-        if (libraryVariantClass.isInstance(testedVariant)) {
-            return
-        }
-        final def proguardTask = testedVariant.proguard
+        final def proguardTask = testVariant.testedVariant.proguard
         if (!proguardTask) {
             return
         }
@@ -361,7 +353,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 }
                 def options = testVariant.javaCompile.options.optionMap()
                 def bootClasspath = options["bootClasspath"] ?: options["bootclasspath"]
-                bootClasspath?.split(File.pathSeparator).each {
+                bootClasspath?.split(File.pathSeparator)?.each {
                     libraryJar(file: new File(it))
                 }
                 outjar(file: outputFile)

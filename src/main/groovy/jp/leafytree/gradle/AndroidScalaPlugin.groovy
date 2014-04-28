@@ -332,8 +332,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             def ant = new AntBuilder()
             ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                     classpath: project.configurations.androidScalaPluginProGuard.asPath)
-            def proguardFile = extension.androidTestProguardFile
-            if (!proguardFile) {
+            def proguardFile
+            if (extension.androidTestProguardFile) {
+                proguardFile = project.file(extension.androidTestProguardFile)
+            } else {
                 proguardFile = new File(variantWorkDir, "proguard-config.txt")
                 proguardFile.withWriter {
                     it.write """

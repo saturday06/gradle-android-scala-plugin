@@ -26,7 +26,7 @@ class AndroidScalaPluginExtension {
     public boolean runAndroidTestProguard = true
 
     /** proguard config file for android test */
-    public File androidTestProguardFile
+    public String androidTestProguardFile
 
     /**
      * Sets scalac target option.
@@ -51,7 +51,7 @@ class AndroidScalaPluginExtension {
      *
      * @param androidTestProguardFile
      */
-    public void androidTestProguardFile(File androidTestProguardFile) {
+    public void androidTestProguardFile(String androidTestProguardFile) {
         this.androidTestProguardFile = androidTestProguardFile
     }
 }

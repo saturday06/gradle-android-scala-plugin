@@ -255,6 +255,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         # test libraries
         -dontwarn com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
         -dontnote com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
+        -keep class com.google.dexmaker.mockito.** { *; }
 
         # for android. see also http://proguard.sourceforge.net/manual/examples.html#androidapplication
         -keep class * extends android.** { *; }

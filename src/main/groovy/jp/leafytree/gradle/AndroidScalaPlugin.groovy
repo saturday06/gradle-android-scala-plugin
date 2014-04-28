@@ -40,7 +40,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private Project project
     private Object androidExtension
     private Class dexClass
-    private Class testVariantDataClass
     private Class libraryVariantClass
     private Class jarDependencyClass
     private File workDir
@@ -67,7 +66,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         this.workDir = new File(project.buildDir, "android-scala")
         def classLoader = androidExtension.class.classLoader
         dexClass = classLoader.loadClass("com.android.build.gradle.tasks.Dex")
-        testVariantDataClass = classLoader.loadClass("com.android.build.gradle.internal.variant.TestVariantData")
         libraryVariantClass = classLoader.loadClass("com.android.build.gradle.api.LibraryVariant")
         jarDependencyClass = classLoader.loadClass("com.android.builder.dependency.JarDependency")
         updateAndroidExtension()
@@ -82,7 +80,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             }
             def allVariants = androidExtension.testVariants + (project.plugins.hasPlugin("android") ? androidExtension.applicationVariants : androidExtension.libraryVariants)
             allVariants.each { variant ->
-                updateAndroidJavaCompileTask(variant.variantData.javaCompileTask)
+                updateAndroidJavaCompileTask(variant.javaCompile)
             }
         }
         androidExtension.dexOptions.preDexLibraries = false
@@ -127,11 +125,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (libraryVariantClass.isInstance(testedVariant)) {
             return
         }
-        final def proguardTask = testedVariant.variantData.proguardTask
+        final def proguardTask = testedVariant.proguard
         if (!proguardTask) {
             return
         }
-        def testJavaCompileTask = testVariant.variantData.javaCompileTask
+        def testJavaCompileTask = testVariant.javaCompile
         final def javaCompileDestinationDir = testJavaCompileTask.destinationDir
         proguardTask.dependsOn(testJavaCompileTask)
         proguardTask.injars(javaCompileDestinationDir)
@@ -327,12 +325,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      *
      * @param testVariant the TestVariant
      */
-    void updateTestVariantDexTask(Object testVariant) {
-        final def variantData = testVariant.variantData
-        final def task = variantData.dexTask
+    void updateTestVariantDexTask(final Object testVariant) {
+        final def task = testVariant.dex
         task.doFirst {
             project.logger.info("Dex task for TestVariant detected")
-            def variantWorkDir = new File([workDir, "variant", variantData.name].join(File.separator))
+            def variantWorkDir = new File([workDir, "variant", testVariant.name].join(File.separator))
             FileUtils.forceMkdir(variantWorkDir)
             def inputs = task.inputFiles + task.libraries
             def outputFile = new File(variantWorkDir, "proguarded-classes.jar")
@@ -348,24 +345,21 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 proguardFile.withWriter {
                     it.write """
                         ${defaultProGuardConfig}
-                        -keep class ${variantData.variantConfiguration.packageName}.** { *; }
+                        -keep class ${testVariant.packageName}.** { *; }
+                        -keep class ${testVariant.testedVariant.packageName}.** { *; }
                     """
-                    String testedPackageName = variantData.variantConfiguration.testedPackageName
-                    if (testedPackageName) {
-                        it.write("-keep class ${testedPackageName}.** { *; }\n")
-                    }
                 }
             }
             ant.proguard(configuration: proguardFile) {
                 inputs.each {
                     injar(file: it)
                 }
-                (variantData.javaCompileTask.classpath.collect { it.canonicalPath } - task.libraries.collect {
+                (testVariant.javaCompile.classpath.collect { it.canonicalPath } - task.libraries.collect {
                     it.canonicalPath
                 }).each {
                     libraryJar(file: new File(it))
                 }
-                def options = variantData.javaCompileTask.options.optionMap()
+                def options = testVariant.javaCompile.options.optionMap()
                 def bootClasspath = options["bootClasspath"] ?: options["bootclasspath"]
                 bootClasspath?.split(File.pathSeparator).each {
                     libraryJar(file: new File(it))

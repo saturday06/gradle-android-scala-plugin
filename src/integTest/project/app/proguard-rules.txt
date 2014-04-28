@@ -4,4 +4,5 @@
 -dontwarn scala.**
 -keep class !scala.** { *; }
 -keep class scala.Predef$** { *; }
+-keep class scala.reflect.ScalaSignature { *; }
 -ignorewarnings

@@ -80,7 +80,7 @@ android {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.10.4'
+    compile 'org.scala-lang:scala-library:2.11.0'
 }
 ```
 

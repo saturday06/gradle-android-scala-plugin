@@ -70,7 +70,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 if (isApplication) {
                     updateTestedVariantProguardTask(variant)
                 }
-                if (extension.runAndroidTestProguard) {
+                if (variant.testedVariant.proguard) {
                     updateTestVariantDexTask(variant)
                 }
             }
@@ -332,18 +332,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             def ant = new AntBuilder()
             ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
                     classpath: project.configurations.androidScalaPluginProGuard.asPath)
-            def proguardFile
-            if (extension.androidTestProguardFile) {
-                proguardFile = project.file(extension.androidTestProguardFile)
-            } else {
-                proguardFile = new File(variantWorkDir, "proguard-config.txt")
-                proguardFile.withWriter {
-                    it.write """
-                        ${defaultProGuardConfig}
-                        -keep class ${testVariant.packageName}.** { *; }
-                        -keep class ${testVariant.testedVariant.packageName}.** { *; }
-                    """
-                }
+            def proguardFile = new File(variantWorkDir, "proguard-config.txt")
+            proguardFile.withWriter {
+                it.write """
+                    ${defaultProGuardConfig}
+                    -keep class ${testVariant.packageName}.** { *; }
+                    -keep class ${testVariant.testedVariant.packageName}.** { *; }
+                """
             }
             ant.proguard(configuration: proguardFile) {
                 inputs.each {

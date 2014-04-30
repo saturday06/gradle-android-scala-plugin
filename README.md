@@ -91,6 +91,6 @@ dependencies {
 -dontobfuscate
 -dontpreverify
 -dontwarn scala.**
--keep class !scala.** { *; }
+-keep class !scala.**, !scalaz.** { *; }
 -ignorewarnings
 ```

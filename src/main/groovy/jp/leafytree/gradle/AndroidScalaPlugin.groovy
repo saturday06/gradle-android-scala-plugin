@@ -24,6 +24,7 @@ import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.util.ConfigureUtil
+import proguard.gradle.ProGuardTask
 
 import javax.inject.Inject
 import java.nio.file.FileSystems
@@ -40,6 +41,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private Project project
     private Object androidExtension
     private File workDir
+    private File scalaProguardFile
+    private File testProguardFile
 
     /**
      * Creates a new AndroidScalaJavaJointCompiler with given file resolver.
@@ -61,24 +64,32 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         this.project = project
         this.androidExtension = androidExtension
         this.workDir = new File(project.buildDir, "android-scala")
+        this.scalaProguardFile = new File(workDir, "proguard-scala-config.txt")
+        this.testProguardFile = new File(workDir, "proguard-test-config.txt")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
             addDependencies()
             def isApplication = project.plugins.hasPlugin("android")
             androidExtension.testVariants.each { variant ->
-                if (isApplication) {
-                    updateTestedVariantProguardTask(variant)
-                }
-                if (variant.testedVariant.proguard) {
-                    updateTestVariantDexTask(variant)
-                }
+                updateTestedVariantProguardTask(variant)
+                updateTestVariantProguardTask(variant)
             }
             def allVariants = androidExtension.testVariants + (isApplication ? androidExtension.applicationVariants : androidExtension.libraryVariants)
             allVariants.each { variant ->
                 updateAndroidJavaCompileTask(variant.javaCompile)
             }
         }
+
+        // Create proguard configurations
+        androidExtension.defaultConfig { proguardFile scalaProguardFile }
+        project.tasks.findByName("preBuild").doLast {
+            FileUtils.forceMkdir(workDir)
+            scalaProguardFile.withWriter { it.write defaultScalaProguardConfig }
+            testProguardFile.withWriter { it.write defaultTestProguardConfig }
+        }
+
+        // Disable preDexLibraries
         androidExtension.dexOptions.preDexLibraries = false
         project.gradle.taskGraph.whenReady { taskGraph ->
             if (androidExtension.dexOptions.preDexLibraries) {
@@ -116,8 +127,75 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      *
      * @param testVariant the TestVariant
      */
+    void updateTestVariantProguardTask(final Object testVariant) {
+        def variantWorkDir = new File([workDir, "variant", testVariant.name].join(File.separator))
+        def dexTask = testVariant.dex
+        def proguardTask = project.tasks.create("proguard${testVariant.name.capitalize()}ByAndroidScalaPlugin", ProGuardTask)
+        def sourceProguardTask
+        if (project.plugins.hasPlugin("android-library")) {
+            sourceProguardTask = testVariant.testedVariant.obfuscation
+            if (!sourceProguardTask) {
+                return
+            }
+            proguardTask.injars(dexTask.inputFiles)
+        } else {
+            sourceProguardTask = testVariant.obfuscation
+            if (!sourceProguardTask) {
+                return
+            }
+            proguardTask.dependsOn sourceProguardTask
+            sourceProguardTask.outJarFiles.each {
+                proguardTask.injars(it)
+            }
+        }
+        proguardTask.dependsOn testVariant.javaCompile
+        sourceProguardTask.configurationFiles.each { // TODO: Clone all options
+            proguardTask.configuration(it)
+        }
+        proguardTask.configuration(testProguardFile)
+        dexTask.dependsOn proguardTask
+        def proguardedFile = new File(variantWorkDir, "proguarded-classes.jar")
+        proguardTask.doFirst {
+            proguardTask.outjars(proguardedFile, filter: "!META-INF/MANIFEST.MF") // TODO: outjars should be delayed ?
+        }
+        dexTask.inputFiles = [proguardedFile]
+        proguardTask.verbose()
+        proguardTask.keep("class ${testVariant.packageName}.** { *; }")
+        proguardTask.keep("class ${testVariant.testedVariant.packageName}.** { *; }")
+        proguardTask.printconfiguration(new File(variantWorkDir, "proguard-all-config.txt"))
+        dexTask.libraries.each {
+            proguardTask.injars(it)
+        }
+        (testVariant.javaCompile.classpath.collect { it.canonicalPath } - dexTask.libraries.collect {
+            it.canonicalPath
+        }).each {
+            proguardTask.libraryjars(it)
+        }
+        dexTask.libraries = []
+        proguardTask.doFirst {
+            FileUtils.forceMkdir(variantWorkDir)
+            Object androidPlugin
+            if (project.plugins.hasPlugin("android-library")) {
+                androidPlugin = project.plugins.findPlugin("android-library")
+            } else {
+                androidPlugin = project.plugins.findPlugin("android")
+            }
+            androidPlugin.bootClasspath.each {
+                proguardTask.libraryjars(it)
+            }
+        }
+    }
+
+    /**
+     * Update tested variant's proguard task to keep classes which test classes depend on
+     *
+     * @param testVariant the TestVariant
+     */
     void updateTestedVariantProguardTask(final Object testVariant) {
-        final def proguardTask = testVariant.testedVariant.proguard
+        if (project.plugins.hasPlugin("android-library")) {
+            return
+        }
+        final def proguardTask = testVariant.testedVariant.obfuscation
         if (!proguardTask) {
             return
         }
@@ -234,12 +312,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     /**
-     * Returns the proguard configuration text.
+     * Returns the proguard configuration text for test.
      *
-     * @return the proguard configuration text
+     * @return the proguard configuration text for test
      */
-    String getDefaultProGuardConfig() {
+    String getDefaultTestProguardConfig() {
         '''
+        -dontwarn scala.**
         -ignorewarnings
 
         # execute shrinking only
@@ -279,6 +358,19 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             public static ** valueOf(java.lang.String);
         }
 
+        # miscellaneous. see also http://proguard.sourceforge.net/index.html#manual
+        -keepattributes *Annotation*
+        -keepclasseswithmembernames class * { native <methods>; }
+        '''
+    }
+
+    /**
+     * Returns the proguard configuration text for scala.
+     *
+     * @return the proguard configuration text for scala
+     */
+    String getDefaultScalaProguardConfig() {
+        '''
         # for scala. see also http://proguard.sourceforge.net/manual/examples.html#scala
         -keep class scala.collection.SeqLike { public protected *; } # https://issues.scala-lang.org/browse/SI-5397
         -keep class scala.reflect.ScalaSignature { *; }
@@ -306,58 +398,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
             scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
         }
-
-        # miscellaneous. see also http://proguard.sourceforge.net/index.html#manual
-        -keepattributes *Annotation*
-        -keepclasseswithmembernames class * { native <methods>; }
         '''
-    }
-
-    /**
-     * Executes additional proguard before task.Dex
-     *
-     * @param testVariant the TestVariant
-     */
-    void updateTestVariantDexTask(final Object testVariant) {
-        final def task = testVariant.dex
-        task.doFirst {
-            project.logger.info("Dex task for TestVariant detected")
-            def variantWorkDir = new File([workDir, "variant", testVariant.name].join(File.separator))
-            FileUtils.forceMkdir(variantWorkDir)
-            def inputs = task.inputFiles + task.libraries
-            def outputFile = new File(variantWorkDir, "proguarded-classes.jar")
-            if (outputFile.exists()) {
-                FileUtils.forceDelete(outputFile)
-            }
-            def ant = new AntBuilder()
-            ant.taskdef(name: 'proguard', classname: 'proguard.ant.ProGuardTask', // TODO: use properties
-                    classpath: project.configurations.androidScalaPluginProGuard.asPath)
-            def proguardFile = new File(variantWorkDir, "proguard-config.txt")
-            proguardFile.withWriter {
-                it.write """
-                    ${defaultProGuardConfig}
-                    -keep class ${testVariant.packageName}.** { *; }
-                    -keep class ${testVariant.testedVariant.packageName}.** { *; }
-                """
-            }
-            ant.proguard(configuration: proguardFile) {
-                inputs.each {
-                    injar(file: it)
-                }
-                (testVariant.javaCompile.classpath.collect { it.canonicalPath } - task.libraries.collect {
-                    it.canonicalPath
-                }).each {
-                    libraryJar(file: new File(it))
-                }
-                def options = testVariant.javaCompile.options.optionMap()
-                def bootClasspath = options["bootClasspath"] ?: options["bootclasspath"]
-                bootClasspath?.split(File.pathSeparator)?.each {
-                    libraryJar(file: new File(it))
-                }
-                outjar(file: outputFile)
-            }
-            task.inputFiles = [outputFile]
-            task.libraries = []
-        }
     }
 }

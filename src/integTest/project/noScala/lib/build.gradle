@@ -17,6 +17,13 @@ android {
         preDexLibraries androidPluginPreDexLibraries.toBoolean()
         jumboMode androidPluginJumboMode.toBoolean()
     }
+
+    buildTypes {
+        debug {
+            runProguard true
+            proguardFiles "proguard-rules.txt"
+        }
+    }
 }
 
 dependencies {

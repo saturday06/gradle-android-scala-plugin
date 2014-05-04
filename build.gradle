@@ -35,8 +35,8 @@ dependencies {
     compile "commons-io:commons-io:2.4"
     compile "net.sf.proguard:proguard-gradle:4.11"
     testCompile "com.android.tools.build:gradle:0.10.0"
-    testCompile "com.google.guava:guava:16.0.1"
-    testCompile "org.scala-lang:scala-compiler:2.10.4"
+    testCompile "com.google.guava:guava:17.0"
+    testCompile "org.scala-lang:scala-compiler:2.11.0"
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 

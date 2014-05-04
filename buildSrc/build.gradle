@@ -22,5 +22,5 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "com.google.guava:guava:16.0.1"
+    compile "com.google.guava:guava:17.0"
 }

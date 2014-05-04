@@ -31,7 +31,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 ["noScala", ["connectedAndroidTest"], false],
                 ["useScalaOnlyTest", ["connectedAndroidTest"], false],
         ].each { projectName, gradleArgs, runOnTravis ->
-            gradleArgs = ["clean", *gradleArgs]
+            gradleArgs = ["clean", *gradleArgs, "uninstallAll"]
             [
                     ["1.12", false, "2.10.4", "0.10.0", "19", "19.0.3", "4", "19"],
                     ["1.12", true,  "2.11.0", "0.10.0", "19", "19.0.3", "4", "19"],

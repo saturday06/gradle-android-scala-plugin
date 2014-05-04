@@ -73,10 +73,6 @@ android {
             proguardFile file('proguard-rules.txt')
         }
     }
-
-    scala {
-        target "jvm-1.6" // default: "jvm-1.6"
-    }
 }
 
 dependencies {

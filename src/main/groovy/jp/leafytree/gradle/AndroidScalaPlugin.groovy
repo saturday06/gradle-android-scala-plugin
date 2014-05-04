@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 package jp.leafytree.gradle
-
 import com.google.common.annotations.VisibleForTesting
 import org.apache.commons.io.FileUtils
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.tasks.DefaultScalaSourceSet
+import org.gradle.api.tasks.scala.ScalaCompile
 import org.gradle.util.ConfigureUtil
 import proguard.gradle.ProGuardTask
 
 import javax.inject.Inject
 import java.nio.file.FileSystems
 import java.nio.file.Files
-
 /**
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
  */
@@ -38,15 +36,17 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     private final FileResolver fileResolver
     @VisibleForTesting
     final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
-    private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
     private Project project
+    private Object androidPlugin
     private Object androidExtension
+    private boolean isLibrary
     private File workDir
     private File scalaProguardFile
     private File testProguardFile
+    private final AndroidScalaPluginExtension extension = new AndroidScalaPluginExtension()
 
     /**
-     * Creates a new AndroidScalaJavaJointCompiler with given file resolver.
+     * Creates a new AndroidScalaPlugin with given file resolver.
      *
      * @param fileResolver the FileResolver
      */
@@ -63,6 +63,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     void apply(Project project, Object androidExtension) {
         this.project = project
+        if (project.plugins.hasPlugin("android-library")) {
+            isLibrary = true
+            androidPlugin = project.plugins.findPlugin("android-library")
+        } else {
+            isLibrary = false
+            androidPlugin = project.plugins.findPlugin("android")
+        }
         this.androidExtension = androidExtension
         this.workDir = new File(project.buildDir, "android-scala")
         this.scalaProguardFile = new File(workDir, "proguard-scala-config.txt")
@@ -70,15 +77,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
-            addDependencies()
-            def isApplication = project.plugins.hasPlugin("android")
             androidExtension.testVariants.each { variant ->
                 updateTestedVariantProguardTask(variant)
                 updateTestVariantProguardTask(variant)
             }
-            def allVariants = androidExtension.testVariants + (isApplication ? androidExtension.applicationVariants : androidExtension.libraryVariants)
+            def allVariants = androidExtension.testVariants + (isLibrary ? androidExtension.libraryVariants : androidExtension.applicationVariants)
             allVariants.each { variant ->
-                updateAndroidJavaCompileTask(variant.javaCompile)
+                addAndroidScalaCompileTask(variant)
             }
         }
 
@@ -113,14 +118,13 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     /**
-     * Adds dependencies to execute plugin.
+     * Returns directory for plugin's private working directory for argument
+     *
+     * @param variant the Variant
+     * @return
      */
-    void addDependencies() {
-        project.repositories.maven { url "http://repository-dex2jar.forge.cloudbees.com/release/" }
-        project.configurations {
-            androidScalaPluginProGuard
-        }
-        project.dependencies.add("androidScalaPluginProGuard", "net.sf.proguard:proguard-anttask:4.11")
+    File getVariantWorkDir(Object variant) {
+        new File([workDir, "variant", variant.name].join(File.separator))
     }
 
     /**
@@ -129,11 +133,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param testVariant the TestVariant
      */
     void updateTestVariantProguardTask(final Object testVariant) {
-        def variantWorkDir = new File([workDir, "variant", testVariant.name].join(File.separator))
+        def variantWorkDir = getVariantWorkDir(testVariant)
         def dexTask = testVariant.dex
         def proguardTask = project.tasks.create("proguard${testVariant.name.capitalize()}ByAndroidScalaPlugin", ProGuardTask)
         def sourceProguardTask
-        if (project.plugins.hasPlugin("android-library")) {
+        if (isLibrary) {
             sourceProguardTask = testVariant.testedVariant.obfuscation
             if (!sourceProguardTask) {
                 return
@@ -175,12 +179,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         dexTask.libraries = []
         proguardTask.doFirst {
             FileUtils.forceMkdir(variantWorkDir)
-            Object androidPlugin
-            if (project.plugins.hasPlugin("android-library")) {
-                androidPlugin = project.plugins.findPlugin("android-library")
-            } else {
-                androidPlugin = project.plugins.findPlugin("android")
-            }
             androidPlugin.bootClasspath.each {
                 proguardTask.libraryjars(it)
             }
@@ -193,7 +191,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param testVariant the TestVariant
      */
     void updateTestedVariantProguardTask(final Object testVariant) {
-        if (project.plugins.hasPlugin("android-library")) {
+        if (isLibrary) {
             return
         }
         final def proguardTask = testVariant.testedVariant.obfuscation
@@ -296,20 +294,48 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      *
      * @param task the JavaCompile task
      */
-    void updateAndroidJavaCompileTask(Task task) {
-        def scalaVersion = scalaVersionFromClasspath(task.classpath.asPath)
+    void addAndroidScalaCompileTask(Object variant) {
+        def javaCompileTask = variant.javaCompile
+        def scalaVersion = scalaVersionFromClasspath(javaCompileTask.classpath.asPath)
         if (!scalaVersion) {
             return
         }
         project.logger.info("scala-library version=$scalaVersion detected")
-        def options = [target: extension.target, addparams: extension.addparams]
-        def configurationName = "androidScalaPluginScalaCompilerFor" + task.name
+        def configurationName = "androidScalaPluginScalaCompilerFor" + javaCompileTask.name
         def configuration = project.configurations.findByName(configurationName)
         if (!configuration) {
             configuration = project.configurations.create(configurationName)
             project.dependencies.add(configurationName, "org.scala-lang:scala-compiler:$scalaVersion")
+            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.2")
         }
-        task.javaCompiler = new AndroidScalaJavaJointCompiler(project, task.javaCompiler, options, configuration.asPath)
+        def variantWorkDir = getVariantWorkDir(variant)
+        def destinationDir = new File(variantWorkDir, "scalaCompile") // TODO: More elegant way
+        def scalaCompileTask = project.tasks.create("compile${variant.name.capitalize()}Scala", ScalaCompile)
+        scalaCompileTask.source = javaCompileTask.source
+        scalaCompileTask.destinationDir = destinationDir
+        scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
+        scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
+        scalaCompileTask.options.bootClasspath = androidPlugin.bootClasspath.join(File.pathSeparator)
+        scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath) // TODO: Remove bootClasspath
+        scalaCompileTask.scalaClasspath = configuration.asFileTree
+        scalaCompileTask.zincClasspath = configuration.asFileTree
+        scalaCompileTask.scalaCompileOptions.incrementalOptions.analysisFile = new File(variantWorkDir, "analysis.txt")
+        if (extension.addparams) {
+            scalaCompileTask.scalaCompileOptions.additionalParameters = [extension.addparams]
+        }
+        scalaCompileTask.doFirst {
+            FileUtils.forceMkdir(destinationDir)
+        }
+        javaCompileTask.dependsOn.each {
+            scalaCompileTask.dependsOn it
+        }
+        javaCompileTask.classpath = javaCompileTask.classpath + project.files(destinationDir)
+        javaCompileTask.dependsOn scalaCompileTask
+        javaCompileTask.doLast {
+            project.ant.move(todir: javaCompileTask.destinationDir, preservelastmodified: true) {
+                fileset(dir: destinationDir)
+            }
+        }
     }
 
     /**

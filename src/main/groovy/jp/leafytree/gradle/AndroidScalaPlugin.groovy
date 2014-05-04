@@ -23,6 +23,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.internal.tasks.DefaultScalaSourceSet
 import org.gradle.util.ConfigureUtil
 import proguard.gradle.ProGuardTask
 
@@ -273,7 +274,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     void updateAndroidSourceSetsExtension() {
         androidExtension.sourceSets.each { sourceSet ->
-            sourceSet.convention.plugins.scala = new AndroidScalaSourceSet(sourceSet.displayName, fileResolver)
+            sourceSet.convention.plugins.scala = new DefaultScalaSourceSet(sourceSet.displayName, fileResolver)
             def scala = sourceSet.scala
             def defaultSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
             def include = "**/*.scala"

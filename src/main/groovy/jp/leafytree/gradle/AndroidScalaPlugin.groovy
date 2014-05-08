@@ -302,7 +302,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             return
         }
         project.logger.info("scala-library version=$scalaVersion detected")
-        def options = [target: extension.target]
+        def options = [target: extension.target, addparams: extension.addparams]
         def configurationName = "androidScalaPluginScalaCompilerFor" + task.name
         def configuration = project.configurations.findByName(configurationName)
         if (!configuration) {

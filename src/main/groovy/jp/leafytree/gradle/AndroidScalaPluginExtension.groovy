@@ -30,4 +30,10 @@ class AndroidScalaPluginExtension {
     public void target(String target) {
         this.target = target
     }
+
+    public String addparams = ""
+
+    public void addparams(String addparams) {
+	this.addparams = addparams
+    }
 }

@@ -9,8 +9,8 @@ See also http://code.google.com/p/android/issues/detail?id=56232
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.10.4 | 1.12   | 0.10.0         | 19                | 19.0.3            |
-| 2.11.0 | 1.12   | 0.10.0         | 19                | 19.0.3            |
+| 2.10.4 | 1.12   | 0.10.1         | 19                | 19.0.3            |
+| 2.11.0 | 1.12   | 0.10.1         | 19                | 19.0.3            |
 
 ## Configuration example
 
@@ -25,7 +25,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.2'
+        classpath 'com.android.tools.build:gradle:0.10.1'
         classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
     }
 }

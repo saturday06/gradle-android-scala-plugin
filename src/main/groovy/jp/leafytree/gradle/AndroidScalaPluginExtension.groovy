@@ -30,4 +30,13 @@ class AndroidScalaPluginExtension {
     public void addparams(String addparams) {
         this.addparams = addparams
     }
+
+    /**
+     * Sets scalac additional parameters
+     *
+     * @param target the additional parameters.
+     */
+    public void additionalParameters(String addparams) {
+        this.addparams(addparams)
+    }
 }

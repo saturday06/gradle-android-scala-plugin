@@ -69,7 +69,6 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 scalaLibraryVersion: scalaLibraryVersion,
                 scalaDependencyVersion: scalaLibraryVersion.split("\\.").take(2).join("."),
-                androidScalaTarget: "jvm-1.6",
                 androidScalaPluginVersion: "1.0-SNAPSHOT",
                 androidPluginVersion: androidPluginVersion,
                 androidPluginCompileSdkVersion: androidPluginCompileSdkVersion,

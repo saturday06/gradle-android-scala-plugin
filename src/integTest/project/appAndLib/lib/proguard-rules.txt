@@ -1,6 +1,2 @@
--dontoptimize
--dontobfuscate
--dontpreverify
 -dontwarn scala.**
--keep class !scala.**, !scalaz.** { *; }
 -ignorewarnings

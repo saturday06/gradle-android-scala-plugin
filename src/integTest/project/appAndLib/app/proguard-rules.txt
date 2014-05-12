@@ -1,7 +1,4 @@
--dontoptimize
--dontobfuscate
--dontpreverify
 -dontwarn scala.**
--dontwarn jp.leafytree.android.libproject.lib1.**
--keep class !scala.**, !scalaz.** { *; }
+-dontwarn sun.misc.Unsafe
+-dontwarn java.awt.geom.AffineTransform
 -ignorewarnings

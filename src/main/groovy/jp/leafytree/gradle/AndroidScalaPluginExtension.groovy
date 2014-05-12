@@ -19,18 +19,6 @@ package jp.leafytree.gradle
  * AndroidScalaPluginExtension has the configuration of scala.
  */
 class AndroidScalaPluginExtension {
-    /** scalac target option */
-    public String target = "jvm-1.6"
-
-    /**
-     * Sets scalac target option.
-     *
-     * @param target the scalac target option.
-     */
-    public void target(String target) {
-        this.target = target
-    }
-
     public String addparams = ""
 
     public void addparams(String addparams) {

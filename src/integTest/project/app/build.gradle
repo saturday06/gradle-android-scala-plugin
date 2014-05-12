@@ -46,10 +46,6 @@ android {
         preDexLibraries androidPluginPreDexLibraries.toBoolean()
         jumboMode androidPluginJumboMode.toBoolean()
     }
-
-    scala {
-        target androidScalaTarget
-    }
 }
 
 dependencies {

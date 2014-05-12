@@ -29,10 +29,6 @@ android {
         versionName "1.0"
     }
 
-    scala {
-        target androidScalaTarget
-    }
-
     dexOptions {
         incremental androidPluginIncremental.toBoolean()
         preDexLibraries androidPluginPreDexLibraries.toBoolean()

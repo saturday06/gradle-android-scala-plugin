@@ -19,9 +19,15 @@ package jp.leafytree.gradle
  * AndroidScalaPluginExtension has the configuration of scala.
  */
 class AndroidScalaPluginExtension {
+    /** scalac additional parameters */
     public String addparams = ""
 
+    /**
+     * Sets scalac additional parameters
+     *
+     * @param addparams the additional parameters.
+     */
     public void addparams(String addparams) {
-	this.addparams = addparams
+        this.addparams = addparams
     }
 }

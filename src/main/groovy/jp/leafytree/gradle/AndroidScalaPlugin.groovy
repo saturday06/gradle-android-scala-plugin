@@ -128,7 +128,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
     }
 
     /**
-     * Update tested variant's proguard task to keep classes which test classes depend on
+     * Update test variant's proguard task to execute shrinking
      *
      * @param testVariant the TestVariant
      */

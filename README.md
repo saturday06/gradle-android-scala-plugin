@@ -3,7 +3,11 @@
 # gradle-android-scala-plugin [![Build Status](https://travis-ci.org/saturday06/gradle-android-scala-plugin.png?branch=master)](https://travis-ci.org/saturday06/gradle-android-scala-plugin)
 
 gradle-android-scala-plugin adds scala language support to official gradle android plugin.
-See also http://code.google.com/p/android/issues/detail?id=56232
+
+See also:
+- https://code.google.com/p/android/issues/detail?id=56231
+- https://code.google.com/p/android/issues/detail?id=56232
+- https://code.google.com/p/android/issues/detail?id=63936
 
 ## Supported versions
 

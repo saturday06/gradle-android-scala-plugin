@@ -266,7 +266,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
             return versionNumber
         } finally {
-            classLoader.close()
+            if (classLoader instanceof Closeable) {
+                classLoader.close()
+            }
         }
     }
 

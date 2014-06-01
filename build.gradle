@@ -33,6 +33,7 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     compile "commons-io:commons-io:2.4"
+    compile "net.lingala.zip4j:zip4j:1.3.2"
     compile "net.sf.proguard:proguard-gradle:4.11"
     testCompile "com.android.tools.build:gradle:0.10.1"
     testCompile "com.google.guava:guava:17.0"

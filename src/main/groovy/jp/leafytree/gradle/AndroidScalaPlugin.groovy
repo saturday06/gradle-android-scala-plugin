@@ -16,6 +16,8 @@
 package jp.leafytree.gradle
 
 import com.google.common.annotations.VisibleForTesting
+import net.lingala.zip4j.core.ZipFile
+import net.lingala.zip4j.exception.ZipException
 import org.apache.commons.io.FileUtils
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -28,8 +30,6 @@ import org.gradle.util.ConfigureUtil
 import proguard.gradle.ProGuardTask
 
 import javax.inject.Inject
-import java.nio.file.FileSystems
-import java.nio.file.Files
 
 /**
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
@@ -222,23 +222,31 @@ public class AndroidScalaPlugin implements Plugin<Project> {
 
         proguardTask.doLast {
             // TODO: More elegant way
-            def testFiles = []
-            def baseLength = javaCompileDestinationDir.canonicalPath.length()
+            def relativeTestFiles = []
+            def destinationDirLength = javaCompileDestinationDir.canonicalPath.length()
             javaCompileDestinationDir.traverse { file ->
                 if (!file.isDirectory()) {
-                    testFiles.add(file.canonicalPath.substring(baseLength))
+                    relativeTestFiles.add(file.canonicalPath.substring(destinationDirLength))
                 }
             }
-            proguardTask.outJarFiles.each { file ->
-                def fileSystem = FileSystems.newFileSystem(file.toPath(), null)
-                try {
-                    testFiles.clone().each { testFile ->
-                        if (Files.deleteIfExists(fileSystem.getPath(testFile))) {
-                            testFiles.remove(testFile)
+            proguardTask.outJarFiles.each { baseFile ->
+                relativeTestFiles.clone().each { relativeTestFile ->
+                    if (baseFile.directory) {
+                        def testFile = new File(baseFile, relativeTestFile)
+                        if (testFile.exists()) {
+                            if (!testFile.delete()) {
+                                project.logger.warn("Can't delete '$testFile'")
+                            }
+                            relativeTestFiles.remove(relativeTestFile)
+                        }
+                    } else {
+                        try {
+                            def zipFile = new ZipFile(baseFile)
+                            zipFile.removeFile(relativeTestFile)
+                            relativeTestFiles.remove(relativeTestFile)
+                        } catch (ZipException e) {
                         }
                     }
-                } finally {
-                    fileSystem.close()
                 }
             }
         }

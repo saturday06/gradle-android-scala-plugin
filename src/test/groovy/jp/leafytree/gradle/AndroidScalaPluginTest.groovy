@@ -148,7 +148,8 @@ class AndroidScalaPluginTest {
     }
 
     @Test
-    public void getScalaVersionFromClasspath() {
-        Assert.assertEquals("2.11.0", AndroidScalaPlugin.scalaVersionFromClasspath(System.getProperty("java.class.path")))
+    public void scalaVersionFromClasspath() {
+        def classpath = System.getProperty("java.class.path").split(File.pathSeparator).collect { new File(it) }
+        Assert.assertEquals("2.11.0", AndroidScalaPlugin.scalaVersionFromClasspath(classpath))
     }
 }

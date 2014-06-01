@@ -258,11 +258,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param classpath the classpath contains scala-library
      * @return scala version
      */
-    static String scalaVersionFromClasspath(String classpath) {
-        def urls = new LinkedList<URL>()
-        for (String path : classpath.split(File.pathSeparator)) {
-            urls.add(new File(path).toURI().toURL())
-        }
+    static String scalaVersionFromClasspath(Collection<File> classpath) {
+        def urls = classpath.collect { it.toURI().toURL() }
         def classLoader = new URLClassLoader(urls.toArray(new URL[0]))
         try {
             def propertiesClass
@@ -320,7 +317,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     void addAndroidScalaCompileTask(Object variant) {
         def javaCompileTask = variant.javaCompile
-        def scalaVersion = scalaVersionFromClasspath(javaCompileTask.classpath.asPath)
+        def scalaVersion = scalaVersionFromClasspath(javaCompileTask.classpath)
         if (!scalaVersion) {
             return
         }

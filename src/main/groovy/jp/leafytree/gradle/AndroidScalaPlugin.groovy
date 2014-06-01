@@ -269,7 +269,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 return null
             }
             def versionNumber = propertiesClass.MODULE$.scalaProps["maven.version.number"]
-            return versionNumber
+            return new String(versionNumber) // Remove reference from ClassLoader
         } finally {
             if (classLoader instanceof Closeable) {
                 classLoader.close()
@@ -317,7 +317,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     void addAndroidScalaCompileTask(Object variant) {
         def javaCompileTask = variant.javaCompile
-        def scalaVersion = scalaVersionFromClasspath(javaCompileTask.classpath)
+        // To prevent locking classes.jar by JDK6's URLClassLoader
+        def libraryClasspath = javaCompileTask.classpath.grep { it.name != "classes.jar" }
+        def scalaVersion = scalaVersionFromClasspath(libraryClasspath)
         if (!scalaVersion) {
             return
         }

@@ -3,7 +3,7 @@ apply plugin: 'android-scala'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1"
 
     defaultConfig {
         minSdkVersion 4
@@ -21,7 +21,7 @@ android {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.11.0'
+    compile 'org.scala-lang:scala-library:2.11.1'
     compile 'com.android.support:support-v4:19.1.0'
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
 }

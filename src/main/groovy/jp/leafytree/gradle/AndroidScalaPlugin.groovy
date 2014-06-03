@@ -329,7 +329,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!configuration) {
             configuration = project.configurations.create(configurationName)
             project.dependencies.add(configurationName, "org.scala-lang:scala-compiler:$scalaVersion")
-            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.2")
+            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.5")
         }
         def variantWorkDir = getVariantWorkDir(variant)
         def destinationDir = new File(variantWorkDir, "scalaCompile") // TODO: More elegant way

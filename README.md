@@ -77,11 +77,6 @@ android {
             proguardFile file('proguard-rules.txt')
         }
     }
-
-    scala {
-        addparams "-deprecation"             // default: null
-        additionalParameters "-deprecation"  // alias of addparams
-    }
 }
 
 dependencies {

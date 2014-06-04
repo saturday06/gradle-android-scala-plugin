@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>jp.leafytree.gradle</groupId>
+  <artifactId>gradle-android-scala-plugin</artifactId>
+  <version>1.0-BETA1</version>
+  <versioning>
+    <versions>
+      <version>1.0-BETA1</version>
+    </versions>
+    <lastUpdated>20140604111251</lastUpdated>
+  </versioning>
+</metadata>

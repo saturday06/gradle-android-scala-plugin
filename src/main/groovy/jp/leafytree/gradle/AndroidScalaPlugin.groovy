@@ -299,14 +299,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             def include = "**/*.scala"
             scala.srcDir(defaultSrcDir)
             scala.getFilter().include(include);
-            sourceSet.allJava.source(scala)
-            sourceSet.allSource.source(scala)
             sourceSet.java.srcDir(defaultSrcDir) // for Android Studio
             sourceDirectorySetMap[sourceSet.name] = scala
 
             // TODO: more elegant way
             sourceSet.java.getFilter().include(include);
-            sourceSet.allSource.getFilter().include(include);
         }
     }
 

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'idea'
+apply plugin: "java"
+apply plugin: "groovy"
+apply plugin: "maven"
+apply plugin: "signing"
+apply plugin: "idea"
 
 repositories {
     mavenCentral()
@@ -41,16 +41,16 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 
-description 'Gradle Android Scala Plugin adds scala language support to official gradle android plugin.'
-group = 'jp.leafytree.gradle'
-version = '1.0-SNAPSHOT'
+description "Gradle Android Scala Plugin adds scala language support to official gradle android plugin."
+group = "jp.leafytree.gradle"
+version = "1.0-SNAPSHOT"
 
-def uploadToSonatypeRepository = hasProperty('sonatypeUserName')
+def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
 
 uploadArchives {
     repositories {
         mavenDeployer {
-            snapshotRepository(url: uri('gh-pages/repository/snapshot'))
+            snapshotRepository(url: uri("gh-pages/repository/snapshot"))
 
             if (uploadToSonatypeRepository) {
                 def repositoryUrl = version.endsWith("-SNAPSHOT") ? "https://oss.sonatype.org/content/repositories/snapshots"
@@ -61,29 +61,29 @@ uploadArchives {
                     authentication(userName: sonatypeUserName, password: sonatypePassword)
                 }
                 pom.project {
-                    name 'Gradle Android Scala Plugin'
-                    packaging 'jar'
+                    name "Gradle Android Scala Plugin"
+                    packaging "jar"
                     description project.description
-                    url 'https://github.com/saturday06/gradle-android-scala-plugin'
+                    url "https://github.com/saturday06/gradle-android-scala-plugin"
 
                     scm {
-                        url 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
-                        connection 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
-                        developerConnection 'scm:git@github.com:saturday06/gradle-android-scala-plugin.git'
+                        url "scm:git@github.com:saturday06/gradle-android-scala-plugin.git"
+                        connection "scm:git@github.com:saturday06/gradle-android-scala-plugin.git"
+                        developerConnection "scm:git@github.com:saturday06/gradle-android-scala-plugin.git"
                     }
 
                     licenses {
                         license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
+                            name "The Apache Software License, Version 2.0"
+                            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                            distribution "repo"
                         }
                     }
 
                     developers {
                         developer {
-                            id 'saturday06'
-                            name 'Isamu Mogi'
+                            id "saturday06"
+                            name "Isamu Mogi"
                         }
                     }
                 }
@@ -94,12 +94,12 @@ uploadArchives {
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
     from groovydoc.destinationDir
-    classifier = 'javadoc'
+    classifier = "javadoc"
 }
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    classifier = "sources"
 }
 
 artifacts {
@@ -114,6 +114,6 @@ signing {
     }
 }
 
-task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: 'uploadArchives')
-task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: 'uploadArchives')
+task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: "uploadArchives")
+task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: "uploadArchives")
 task sample(type: jp.leafytree.gradle.AndroidScalaPluginSampleTask)

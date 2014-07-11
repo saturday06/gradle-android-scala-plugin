@@ -15,8 +15,8 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'android-scala'
+apply plugin: "com.android.application"
+apply plugin: "android-scala"
 
 android {
     compileSdkVersion androidPluginCompileSdkVersion
@@ -26,18 +26,18 @@ android {
         minSdkVersion Integer.decode(androidPluginMinSdkVersion)
         targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
         versionCode 1
-        versionName '1.0'
+        versionName "1.0"
     }
 
     buildTypes {
         debug {
             runProguard true
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
 
         release {
             runProguard true
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
     }
 

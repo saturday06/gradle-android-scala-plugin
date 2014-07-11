@@ -29,8 +29,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.1'
-        classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
+        classpath "com.android.tools.build:gradle:0.12.1"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT"
     }
 }
 
@@ -38,18 +38,18 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'android-scala'
+apply plugin: "com.android.application"
+apply plugin: "android-scala"
 
 android {
-    compileSdkVersion 'android-20'
-    buildToolsVersion '20.0.0'
+    compileSdkVersion "android-20"
+    buildToolsVersion "20.0.0"
 
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 20
         versionCode 1
-        versionName '1.0'
+        versionName "1.0"
     }
 
     sourceSets {
@@ -69,18 +69,18 @@ android {
     buildTypes {
         debug {
             runProguard true // required
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
 
         release {
             runProguard true
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
     }
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.11.1'
+    compile "org.scala-lang:scala-library:2.11.1"
 }
 ```
 

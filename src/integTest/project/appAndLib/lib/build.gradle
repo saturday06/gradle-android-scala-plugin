@@ -1,5 +1,5 @@
-apply plugin: 'com.android.library'
-apply plugin: 'android-scala'
+apply plugin: "com.android.library"
+apply plugin: "android-scala"
 
 android {
     compileSdkVersion androidPluginCompileSdkVersion
@@ -21,13 +21,13 @@ android {
     buildTypes {
         debug {
             runProguard true
-            proguardFiles 'proguard-rules.txt'
+            proguardFiles "proguard-rules.txt"
         }
     }
 }
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-    compile 'com.android.support:support-v4:20.0.0'
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
+    compile "com.android.support:support-v4:20.0.0"
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

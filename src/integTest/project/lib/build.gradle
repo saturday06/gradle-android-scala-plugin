@@ -15,8 +15,8 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'android-scala'
+apply plugin: "com.android.library"
+apply plugin: "android-scala"
 
 android {
     compileSdkVersion androidPluginCompileSdkVersion
@@ -45,7 +45,7 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-    compile 'com.android.support:support-v4:20.0.0'
+    compile "com.android.support:support-v4:20.0.0"
     androidTestCompile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

@@ -1,16 +1,17 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'android-scala'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1"
+    compileSdkVersion "android-20"
+    buildToolsVersion "20.0.0"
 
     defaultConfig {
-        minSdkVersion 4
-        targetSdkVersion 19
+        minSdkVersion 8
+        targetSdkVersion 20
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         debug {
             runProguard true
@@ -22,5 +23,5 @@ android {
 dependencies {
     compile 'org.scala-lang:scala-library:2.11.1'
     compile project(':lib1')
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
 }

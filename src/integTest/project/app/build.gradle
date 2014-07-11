@@ -15,11 +15,11 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'android-scala'
 
 android {
-    compileSdkVersion Integer.decode(androidPluginCompileSdkVersion)
+    compileSdkVersion androidPluginCompileSdkVersion
     buildToolsVersion androidPluginBuildToolsVersion
 
     defaultConfig {
@@ -50,6 +50,6 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-    compile "com.android.support:support-v4:19.1.0"
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.1"
+    compile "com.android.support:support-v4:20.0.0"
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

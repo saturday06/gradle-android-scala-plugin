@@ -13,8 +13,8 @@ See also:
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.10.4 | 1.12   | 0.11.1         | 19                | 19.1              |
-| 2.11.1 | 1.12   | 0.11.1         | 19                | 19.1              |
+| 2.10.4 | 1.12   | 0.12.1         | android-20        | 20.0.0            |
+| 2.11.1 | 1.12   | 0.12.1         | android-20        | 20.0.0            |
 
 ## Configuration example
 
@@ -29,7 +29,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.1'
+        classpath 'com.android.tools.build:gradle:0.12.1'
         classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
     }
 }
@@ -38,16 +38,16 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'android-scala'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1'
+    compileSdkVersion 'android-20'
+    buildToolsVersion '20.0.0'
 
     defaultConfig {
-        minSdkVersion 4
-        targetSdkVersion 19
+        minSdkVersion 8
+        targetSdkVersion 20
         versionCode 1
         versionName '1.0'
     }

@@ -15,29 +15,29 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'android'
-apply plugin: 'android-scala'
+apply plugin: "com.android.application"
+apply plugin: "android-scala"
 
 android {
-    compileSdkVersion Integer.decode(androidPluginCompileSdkVersion)
+    compileSdkVersion androidPluginCompileSdkVersion
     buildToolsVersion androidPluginBuildToolsVersion
 
     defaultConfig {
         minSdkVersion Integer.decode(androidPluginMinSdkVersion)
         targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
         versionCode 1
-        versionName '1.0'
+        versionName "1.0"
     }
 
     buildTypes {
         debug {
             runProguard true
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
 
         release {
             runProguard true
-            proguardFile file('proguard-rules.txt')
+            proguardFile file("proguard-rules.txt")
         }
     }
 
@@ -50,6 +50,5 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-    compile "com.android.support:support-v4:19.1.0"
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.1"
+    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

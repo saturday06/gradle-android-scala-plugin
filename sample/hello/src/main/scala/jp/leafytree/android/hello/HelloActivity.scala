@@ -1,10 +1,10 @@
 package jp.leafytree.android.hello
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.TextView
-import android.support.v4.app.FragmentActivity
 
-class HelloActivity extends FragmentActivity {
+class HelloActivity extends Activity {
   override def onCreate(savedInstanceState: Bundle) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_hello)

@@ -337,6 +337,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.destinationDir = destinationDir
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
+        scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
+        scalaCompileTask.options.encoding = javaCompileTask.options.encoding
         scalaCompileTask.options.bootClasspath = androidPlugin.bootClasspath.join(File.pathSeparator)
         // TODO: Remove bootClasspath
         scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath)

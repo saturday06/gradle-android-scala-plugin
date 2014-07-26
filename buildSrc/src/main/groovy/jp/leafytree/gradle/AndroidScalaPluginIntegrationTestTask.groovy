@@ -65,7 +65,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         def snaphotRepositoryUrl = [project.buildFile.parentFile.absolutePath, "gh-pages", "repository", "snapshot"].join(File.separator)
         def gradleProperties = new Properties()
         gradleProperties.putAll([
-                "org.gradle.jvmargs": "-Xmx2048m -XX:MaxPermSize=1024m -XX:+HeapDumpOnOutOfMemoryError",
+                "org.gradle.jvmargs": "-Xmx1024m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError",
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 scalaLibraryVersion: scalaLibraryVersion,
                 scalaDependencyVersion: scalaLibraryVersion.split("\\.").take(2).join("."),

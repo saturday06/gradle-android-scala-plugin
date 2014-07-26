@@ -92,13 +92,11 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
             gradleProperties.store(it, getClass().getName())
         }
         def gradleWrapper = new GradleWrapper(baseDir)
-        def stdout = new StringBuilder()
-        def stderr = new StringBuilder()
         def args = ["--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
-        Thread.start { ByteStreams.copy(process.in, System.out) }
-        Thread.start { ByteStreams.copy(process.err, System.err) }
+        [Thread.start { ByteStreams.copy(process.in, System.out) },
+         Thread.start { ByteStreams.copy(process.err, System.err) }].each { it.join() }
         process.waitFor()
         // process.waitForProcessOutput(System.out, System.err)
         if (process.exitValue() != 0) {

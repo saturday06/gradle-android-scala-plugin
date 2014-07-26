@@ -32,8 +32,8 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
             def gradleWrapper = new GradleWrapper(dir)
             println "gradlew $gradleArgs"
             def process = gradleWrapper.execute(gradleArgs)
-            Thread.start { ByteStreams.copy(process.in, System.out) }
-            Thread.start { ByteStreams.copy(process.err, System.err) }
+            [Thread.start { ByteStreams.copy(process.in, System.out) },
+             Thread.start { ByteStreams.copy(process.err, System.err) }].each { it.join() }
             process.waitFor()
             // process.waitForProcessOutput(System.out, System.err)
             if (process.exitValue() != 0) {

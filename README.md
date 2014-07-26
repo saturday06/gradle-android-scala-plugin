@@ -14,7 +14,7 @@ See also:
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
 | 2.10.4 | 1.12   | 0.12.1         | android-20        | 20.0.0            |
-| 2.11.1 | 1.12   | 0.12.1         | android-20        | 20.0.0            |
+| 2.11.2 | 1.12   | 0.12.1         | android-20        | 20.0.0            |
 
 ## Configuration example
 
@@ -80,7 +80,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.1"
+    compile "org.scala-lang:scala-library:2.11.2"
 }
 ```
 

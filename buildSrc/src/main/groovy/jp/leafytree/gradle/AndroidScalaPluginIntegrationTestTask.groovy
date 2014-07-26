@@ -34,7 +34,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
             gradleArgs = ["clean", *gradleArgs, "uninstallAll"]
             [
                     ["1.12", false, "2.10.4", "0.12.1", "android-20", "20.0.0", "8", "20"],
-                    ["1.12", true,  "2.11.1", "0.12.1", "android-20", "20.0.0", "8", "20"],
+                    ["1.12", true,  "2.11.2", "0.12.1", "android-20", "20.0.0", "8", "20"],
             ].each { testParameters ->
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]

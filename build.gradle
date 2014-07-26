@@ -37,7 +37,7 @@ dependencies {
     compile "net.sf.proguard:proguard-gradle:4.11"
     testCompile "com.android.tools.build:gradle:0.12.1"
     testCompile "com.google.guava:guava:17.0"
-    testCompile "org.scala-lang:scala-compiler:2.11.1"
+    testCompile "org.scala-lang:scala-compiler:2.11.2"
     testCompile "org.mockito:mockito-core:1.9.5"
 }
 

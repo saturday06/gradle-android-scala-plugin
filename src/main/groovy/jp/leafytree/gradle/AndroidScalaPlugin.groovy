@@ -16,6 +16,8 @@
 package jp.leafytree.gradle
 
 import com.google.common.annotations.VisibleForTesting
+import com.google.common.base.Charsets
+import com.google.common.io.Resources
 import net.lingala.zip4j.core.ZipFile
 import net.lingala.zip4j.exception.ZipException
 import org.apache.commons.io.FileUtils
@@ -365,51 +367,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @return the proguard configuration text for test
      */
     String getDefaultTestProguardConfig() {
-        '''
-        -dontwarn scala.**
-        -ignorewarnings
-
-        # execute shrinking only
-        -dontoptimize
-        -dontobfuscate
-        -dontpreverify
-        #-dontshrink
-
-        # standard libraries
-        -dontwarn android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
-        -dontnote android.**, java.**, javax.microedition.khronos.**, junit.framework.**, scala.**, **.R$*
-
-        # test libraries
-        -dontwarn com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
-        -dontnote com.robotium.solo.**, org.mockito.**, junitx.**, com.google.android.apps.common.testing.**
-        -keep class com.google.dexmaker.mockito.** { *; }
-
-        # for android. see also http://proguard.sourceforge.net/manual/examples.html#androidapplication
-        -keep class * extends android.** { *; }
-        -keep class * extends junit.** { *; }
-        -keep class * implements android.** { *; }
-        -keepclasseswithmembers class * {
-            public <init>(android.content.Context, android.util.AttributeSet);
-        }
-        -keepclasseswithmembers class * {
-            public <init>(android.content.Context, android.util.AttributeSet, int);
-        }
-        -keepclassmembers class * {
-            @android.webkit.JavascriptInterface <methods>;
-        }
-        -keep public class com.google.vending.licensing.ILicensingService
-        -keep public class com.android.vending.licensing.ILicensingService
-        -dontnote com.google.vending.licensing.ILicensingService
-        -dontnote com.android.vending.licensing.ILicensingService
-        -keepclassmembers enum * {
-            public static **[] values();
-            public static ** valueOf(java.lang.String);
-        }
-
-        # miscellaneous. see also http://proguard.sourceforge.net/index.html#manual
-        -keepattributes *Annotation*
-        -keepclasseswithmembernames class * { native <methods>; }
-        '''
+        Resources.toString(getClass().getResource("android-test-proguard.config"), Charsets.UTF_8)
     }
 
     /**
@@ -418,34 +376,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @return the proguard configuration text for scala
      */
     String getDefaultScalaProguardConfig() {
-        '''
-        # for scala. see also http://proguard.sourceforge.net/manual/examples.html#scala
-        -keep class scala.collection.SeqLike { public protected *; } # https://issues.scala-lang.org/browse/SI-5397
-        -keep class scala.reflect.ScalaSignature { *; }
-        -keep class scala.reflect.ScalaLongSignature { *; }
-        -keep class scala.Predef$** { *; }
-        -keepclassmembers class * { ** MODULE$; }
-        -keep class * implements org.xml.sax.EntityResolver
-        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
-            long eventCount;
-            int  workerCounts;
-            int  runControl;
-            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
-            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
-        }
-        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
-            int base;
-            int sp;
-            int runState;
-        }
-        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
-            int status;
-        }
-        -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
-            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
-            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
-            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
-        }
-        '''
+        Resources.toString(getClass().getResource("android-proguard.config"), Charsets.UTF_8)
     }
 }

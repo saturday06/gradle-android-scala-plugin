@@ -9,6 +9,6 @@ class HelloActivity extends Activity {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_hello)
     val scalaTextView = findViewById(R.id.scala_text_view).asInstanceOf[TextView]
-    scalaTextView.setText(new HelloJava().say())
+    scalaTextView.setText(new HelloJava().say() + "\n℀℁ℂ℃℄℅℆ℇ℈℉ℊℋℌℍℎℏ")
   }
 }

@@ -24,13 +24,10 @@ See also:
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
-        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:0.12.2"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0"
     }
 }
 

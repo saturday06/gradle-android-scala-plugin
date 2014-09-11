@@ -1,7 +1,7 @@
 language: java
 jdk: openjdk6
 before_install:
-  - echo "org.gradle.jvmargs=-Xmx1024m -XX:MaxPermSize=1024m -XX:+HeapDumpOnOutOfMemoryError" > gradle.properties
+  - echo "org.gradle.jvmargs=-Xmx768m" > gradle.properties
 
   # Install base Android SDK
   - sudo apt-get update -qq

@@ -18,4 +18,4 @@ before_install:
 before_script:
   - wait_for_emulator
 
-script: ./gradlew clean check uploadArchives integTest sample || ((adb logcat -d | tail -n 1000) && false)
+script: ./gradlew --debug clean check uploadArchives integTest sample || ((adb logcat -d | tail -n 1000) && false)

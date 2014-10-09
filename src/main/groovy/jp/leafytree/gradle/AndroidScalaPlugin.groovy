@@ -164,8 +164,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         proguardTask.configuration(testProguardFile)
         dexTask.dependsOn proguardTask
         proguardTask.verbose()
-        proguardTask.keep("class ${testVariant.packageName}.** { *; }")
-        proguardTask.keep("class ${testVariant.testedVariant.packageName}.** { *; }")
+        def (applicationId, testedApplicationId) = testVariant.metaClass.respondsTo(testVariant, "getApplicationId") \
+          ? [testVariant.applicationId, testVariant.testedVariant.applicationId]
+          : [testVariant.packageName, testVariant.testedVariant.packageName]
+        proguardTask.keep("class ${applicationId}.** { *; }")
+        proguardTask.keep("class ${testedApplicationId}.** { *; }")
         proguardTask.printconfiguration(new File(variantWorkDir, "proguard-all-config.txt"))
         dexTask.libraries = []
         proguardTask.doFirst {

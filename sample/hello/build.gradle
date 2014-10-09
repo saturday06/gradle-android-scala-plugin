@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:0.12.2"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0"
@@ -41,5 +42,4 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.2"
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

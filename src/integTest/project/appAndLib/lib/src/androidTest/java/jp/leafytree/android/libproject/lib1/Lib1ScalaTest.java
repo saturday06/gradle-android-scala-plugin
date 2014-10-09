@@ -7,4 +7,3 @@ public class Lib1ScalaTest extends TestCase {
         assertEquals("Lib1Scala", new Lib1Scala().getName());
     }
 }
-

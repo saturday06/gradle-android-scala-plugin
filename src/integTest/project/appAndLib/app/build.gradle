@@ -45,7 +45,6 @@ dependencies {
     flavor1Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     flavor2Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     compile project(":lib")
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 
     // to break 65535 method limitation
     androidTestCompile "org.apache.commons:commons-lang3:3.3.2"

@@ -1,19 +1,11 @@
 package jp.leafytree.android.hello;
 
 import android.test.ActivityInstrumentationTestCase2;
-
-import com.robotium.solo.Solo;
+import android.widget.TextView;
 
 public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<HelloActivity> {
-    public Solo solo;
-
     public HelloActivityJavaTest() {
         super(HelloActivity.class);
-    }
-
-    @Override
-    public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
     }
 
     public void test1() {
@@ -21,6 +13,6 @@ public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<Hell
     }
 
     public void test2() {
-        solo.waitForText("Hello. I'm Java !");
+        assertEquals("Hello. I'm Java !", ((TextView) getActivity().findViewById(R.id.scala_text_view)).getText());
     }
 }

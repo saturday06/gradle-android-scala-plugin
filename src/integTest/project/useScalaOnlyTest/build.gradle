@@ -5,6 +5,7 @@ buildscript {
             url snaphotRepositoryUrl
         }
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:$androidScalaPluginVersion"

@@ -27,5 +27,4 @@ android {
 }
 
 dependencies {
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:5.2.1"
 }

@@ -1,21 +1,14 @@
 package jp.leafytree.android.libproject.app;
 
+import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-
-import com.robotium.solo.Solo;
-
+import android.widget.TextView;
 import jp.leafytree.android.libproject.AppActivity;
+import jp.leafytree.android.libproject.R;
 
 public class AppActivityJavaTest extends ActivityInstrumentationTestCase2<AppActivity> {
-    public Solo solo;
-
     public AppActivityJavaTest() {
         super(AppActivity.class);
-    }
-
-    @Override
-    public void setUp() {
-        solo = new Solo(getInstrumentation(), getActivity());
     }
 
     public void test1() {
@@ -23,6 +16,6 @@ public class AppActivityJavaTest extends ActivityInstrumentationTestCase2<AppAct
     }
 
     public void test2() {
-        solo.waitForText("Lib1Java");
+        assertEquals("Lib1Java", ((TextView) getActivity().findViewById(R.id.message_text_view)).getText());
     }
 }

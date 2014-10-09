@@ -11,12 +11,12 @@ class HelloActivityTest extends ActivityInstrumentationTestCase2[HelloActivity](
   }
 
   def testSimpleActivityAssertion() {
-    Assert.assertEquals("Hello. I'm Java !", getActivity.findViewById(R.id.scala_text_view).asInstanceOf[TextView].getText)
+    Assert.assertEquals(new HelloJava().say + "\n" + new HelloScala().say, getActivity.findViewById(R.id.scala_text_view).asInstanceOf[TextView].getText)
   }
 
   def testCallScalaLibraryClassOfNotUsedByMainApp() {
     val map = new TrieMap[String, String]
-    map.put("x", "Hello. I'm Java !")
+    map.put("x", new HelloJava().say + "\n" + new HelloScala().say)
     Assert.assertEquals(map("x"), getActivity.findViewById(R.id.scala_text_view).asInstanceOf[TextView].getText)
   }
 }

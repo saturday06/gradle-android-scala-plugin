@@ -16,12 +16,12 @@ public class HelloActivityJavaTest extends ActivityInstrumentationTestCase2<Hell
     }
 
     public void testSimpleActivityAssertion() {
-        assertEquals("Hello. I'm Java !", ((TextView) getActivity().findViewById(R.id.scala_text_view)).getText());
+        assertEquals(new HelloJava().say() + "\n" + new HelloScala().say(), ((TextView) getActivity().findViewById(R.id.scala_text_view)).getText());
     }
 
     public void testCallScalaLibraryClassOfNotUsedByMainApp() {
         TrieMap<String, String> map = new TrieMap<String, String>();
-        map.put("x", "Hello. I'm Java !");
+        map.put("x", new HelloJava().say() + "\n" + new HelloScala().say());
         assertEquals(map.apply("x"), ((TextView) getActivity().findViewById(R.id.scala_text_view)).getText());
     }
 }

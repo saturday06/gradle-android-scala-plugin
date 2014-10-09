@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url snaphotRepositoryUrl
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:$androidScalaPluginVersion"
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: "com.android.application"
+apply plugin: "android-scala"
+
+android {
+    compileSdkVersion androidPluginCompileSdkVersion
+    buildToolsVersion androidPluginBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.decode(androidPluginMinSdkVersion)
+        targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
+        versionCode 1
+        versionName "1.0"
+    }
+
+    productFlavors {
+        flavor1 {
+            applicationId "jp.leafytree.android.hello.flavor1"
+        }
+
+        flavor2 {
+            applicationId "jp.leafytree.android.hello.flavor2"
+        }
+    }
+
+    buildTypes {
+        debug {
+            runProguard true
+            proguardFile file("proguard-rules.txt")
+        }
+
+        release {
+            runProguard true
+            proguardFile file("proguard-rules.txt")
+        }
+    }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
+}
+
+dependencies {
+    compile "org.scala-lang:scala-library:$scalaLibraryVersion"
+}

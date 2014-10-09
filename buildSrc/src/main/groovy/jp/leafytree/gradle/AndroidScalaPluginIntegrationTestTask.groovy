@@ -29,6 +29,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 ["appAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
                 ["appAndLib", ["connectedAndroidTest"], true],
                 ["noScala", ["connectedAndroidTest"], false],
+                ["simpleFlavor", ["connectedAndroidTest"], false],
                 ["useScalaOnlyTest", ["connectedAndroidTest"], false],
         ].each { projectName, gradleArgs, runOnTravis ->
             gradleArgs = ["--no-daemon", "clean", *gradleArgs, "uninstallAll"]

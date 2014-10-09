@@ -81,6 +81,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
         project.afterEvaluate {
+            updateAndroidSourceSetsExtension()
             androidExtension.testVariants.each { variant ->
                 updateTestedVariantProguardTask(variant)
                 updateTestVariantProguardTask(variant)
@@ -298,17 +299,18 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     void updateAndroidSourceSetsExtension() {
         androidExtension.sourceSets.each { sourceSet ->
-            sourceSet.convention.plugins.scala = new DefaultScalaSourceSet(sourceSet.displayName, fileResolver)
-            def scala = sourceSet.scala
-            def defaultSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
+            if (sourceDirectorySetMap.containsKey(sourceSet.name)) {
+                return
+            }
             def include = "**/*.scala"
-            scala.srcDir(defaultSrcDir)
-            scala.getFilter().include(include);
-            sourceSet.java.srcDir(defaultSrcDir) // for Android Studio
+            sourceSet.java.filter.include(include);
+            sourceSet.convention.plugins.scala = new DefaultScalaSourceSet(sourceSet.name + "_AndroidScalaPlugin", fileResolver)
+            def scala = sourceSet.scala
+            scala.filter.include(include);
+            def scalaSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
+            scala.srcDir(scalaSrcDir)
+            sourceSet.java.srcDir(scalaSrcDir) // for Android Studio
             sourceDirectorySetMap[sourceSet.name] = scala
-
-            // TODO: more elegant way
-            sourceSet.java.getFilter().include(include);
         }
     }
 
@@ -336,7 +338,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def variantWorkDir = getVariantWorkDir(variant)
         def destinationDir = new File(variantWorkDir, "scalaCompile") // TODO: More elegant way
         def scalaCompileTask = project.tasks.create("compile${variant.name.capitalize()}Scala", ScalaCompile)
-        scalaCompileTask.source = javaCompileTask.source
+        def scalaSources = variant.variantData.variantConfiguration.sortedSourceProviders.inject([]) { acc, val ->
+            acc + val.java.sourceFiles
+        }
+        scalaCompileTask.source = [] + new HashSet(scalaSources + javaCompileTask.source) // unique
         scalaCompileTask.destinationDir = destinationDir
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility

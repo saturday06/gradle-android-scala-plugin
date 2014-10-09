@@ -13,7 +13,7 @@ before_install:
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t android-20 --abi armeabi-v7a --tag android-wear
-  - emulator -avd test -no-skin -no-audio -no-window -memory 64 &
+  - emulator -avd test -no-skin -no-audio -no-window -memory 64 -gpu on &
 
 before_script:
   - wait_for_emulator

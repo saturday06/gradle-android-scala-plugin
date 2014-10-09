@@ -13,9 +13,9 @@ before_install:
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t android-20 --abi armeabi-v7a --tag android-wear
-  - emulator -avd test -no-skin -no-audio -no-window -memory 64 -gpu on &
+  - emulator -avd test -no-skin -no-audio -no-window -memory 64 -gpu on > emulator.txt 2>&1 &
 
 before_script:
   - wait_for_emulator
 
-script: ./gradlew --debug --no-daemon clean check uploadArchives integTest sample || ((adb logcat -d | tail -n 1000) && false)
+script: ./gradlew --debug --no-daemon clean check uploadArchives integTest sample || ((adb logcat -d | tail -n 1000; cat emulator.txt) && false)

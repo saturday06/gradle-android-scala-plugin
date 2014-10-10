@@ -6,14 +6,14 @@ before_install:
   # Install base Android SDK
   - sudo apt-get update -qq
   - sudo apt-get install -qq expect libstdc++6:i386 lib32z1
-  - export COMPONENTS=build-tools-20.0.0,android-20,sys-img-armeabi-v7a-android-wear-20,extra-google-m2repository,extra-android-m2repository,extra-android-support
+  - export COMPONENTS=build-tools-20.0.0,android-20,android-19,sys-img-x86-android-19,extra-google-m2repository,extra-android-m2repository,extra-android-support
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
   - source ~/.android-sdk-installer/env
   - export TERM=dumb # to get clean gradle output
 
   # Create and start emulator
-  - echo no | android create avd --force -n test -t android-20 --abi armeabi-v7a --tag android-wear
-  - emulator -avd test -no-skin -no-audio -no-window -memory 64 -gpu on > emulator.txt 2>&1 &
+  - echo no | android create avd --force -n test -t android-19 --abi x86
+  - emulator -avd test -no-skin -no-audio -no-window -memory 512 -gpu on > emulator.txt 2>&1 &
 
 before_script:
   - wait_for_emulator

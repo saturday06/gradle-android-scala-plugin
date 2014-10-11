@@ -1,0 +1,4 @@
+-dontwarn scala.**
+-dontwarn sun.misc.Unsafe
+-dontwarn java.awt.geom.AffineTransform
+-ignorewarnings

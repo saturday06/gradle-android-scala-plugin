@@ -26,8 +26,8 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         [
                 ["app", ["connectedAndroidTest"], false],
                 ["lib", ["connectedAndroidTest"], false],
-                ["appAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
                 ["appAndLib", ["connectedAndroidTest"], true],
+                ["largeAppAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
                 ["noScala", ["connectedAndroidTest"], false],
                 ["simpleFlavor", ["connectedAndroidTest"], false],
                 ["useScalaOnlyTest", ["connectedAndroidTest"], false],

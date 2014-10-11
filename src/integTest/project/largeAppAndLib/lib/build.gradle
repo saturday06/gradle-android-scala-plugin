@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+apply plugin: "com.android.library"
 apply plugin: "android-scala"
 
 android {
@@ -12,21 +12,20 @@ android {
         versionName "1.0"
     }
 
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
+
     buildTypes {
         debug {
             runProguard true
             proguardFiles "proguard-rules.txt"
         }
     }
-
-    dexOptions {
-        incremental androidPluginIncremental.toBoolean()
-        preDexLibraries androidPluginPreDexLibraries.toBoolean()
-        jumboMode androidPluginJumboMode.toBoolean()
-    }
 }
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-    compile project(":lib")
 }

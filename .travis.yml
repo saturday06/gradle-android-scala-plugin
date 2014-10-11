@@ -13,9 +13,14 @@ before_install:
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t android-19 --abi x86
-  - emulator -avd test -no-skin -no-audio -no-window -memory 256 -gpu on > emulator.txt 2>&1 &
+  - emulator -avd test -no-skin -no-audio -no-window -memory 256 -gpu on > emulator.log 2>&1 &
+  - adb logcat > logcat.log &
 
 before_script:
   - wait_for_emulator
 
-script: ./gradlew --debug --no-daemon clean check uploadArchives integTest sample || ((adb logcat -d | tail -n 1000; cat emulator.txt) && false)
+script: ./gradlew --debug --no-daemon check uploadArchives integTest sample
+
+after_failure:
+  - cat emulator.log
+  - cat logcat.log

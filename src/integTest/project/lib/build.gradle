@@ -16,7 +16,7 @@ repositories {
 }
 
 apply plugin: "com.android.library"
-apply plugin: "android-scala"
+apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion androidPluginCompileSdkVersion

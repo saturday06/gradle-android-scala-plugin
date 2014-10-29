@@ -29,7 +29,7 @@ buildscript {
 `build.gradle`
 ```groovy
 apply plugin: "com.android.application"
-apply plugin: "android-scala"
+apply plugin: "jp.leafytree.android-scala"
 ```
 
 ### 3. Add scala-library dependency
@@ -171,7 +171,7 @@ repositories {
 }
 
 apply plugin: "com.android.application"
-apply plugin: "android-scala"
+apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion "android-21"

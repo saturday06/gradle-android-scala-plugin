@@ -39,7 +39,7 @@ class AndroidScalaPluginTest {
     public void applyingBeforeAndroidPluginShouldThrowException() {
         project = ProjectBuilder.builder().build()
         try {
-            project.apply plugin: 'android-scala'
+            project.apply plugin: "jp.leafytree.android-scala"
             Assert.fail("Should throw Exception")
         } catch (GradleException e) {
         }
@@ -49,11 +49,11 @@ class AndroidScalaPluginTest {
     public void applyingAfterAndroidPluginShouldNeverThrowException() {
         project = ProjectBuilder.builder().build()
         project.apply plugin: androidPluginName()
-        project.apply plugin: 'android-scala' // never throw Exception
+        project.apply plugin: "jp.leafytree.android-scala" // never throw Exception
     }
 
     def getPlugin() {
-        project.apply plugin: 'android-scala'
+        project.apply plugin: "jp.leafytree.android-scala"
         project.plugins.findPlugin(AndroidScalaPlugin.class)
     }
 

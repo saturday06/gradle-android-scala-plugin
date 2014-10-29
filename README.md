@@ -43,7 +43,31 @@ dependencies {
 }
 ```
 
-### 4. Setup MultiDexApplication
+### 4. Put scala source files
+
+Default locations are src/main/scala, src/androidTest/scala.
+You can customize those directories similar to java.
+
+`build.gradle`
+```groovy
+android {
+    sourceSets {
+        main {
+            scala {
+                srcDir "path/to/main/scala" // default: "src/main/scala"
+            }
+        }
+
+        androidTest {
+            scala {
+                srcDir "path/to/androidTest/scala" // default: "src/androidTest/scala"
+            }
+        }
+    }
+}
+```
+
+### 5. Setup MultiDexApplication
 
 To avoid https://code.google.com/p/android/issues/detail?id=20814 we should setup MultiDexApplication.
 See also https://github.com/casidiablo/multidex/blob/publishing/README.md
@@ -123,30 +147,6 @@ public class MultiDexTestRunner extends InstrumentationTestRunner {
     public void onCreate(Bundle arguments) {
         MultiDex.install(getTargetContext());
         super.onCreate(arguments);
-    }
-}
-```
-
-### 5. Put scala source files
-
-Default locations are src/main/scala, src/androidTest/scala.
-You can customize those directories similar to java.
-
-`build.gradle`
-```groovy
-android {
-    sourceSets {
-        main {
-            scala {
-                srcDir "path/to/main/scala" // default: "src/main/scala"
-            }
-        }
-
-        androidTest {
-            scala {
-                srcDir "path/to/androidTest/scala" // default: "src/androidTest/scala"
-            }
-        }
     }
 }
 ```

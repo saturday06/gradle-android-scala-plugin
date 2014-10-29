@@ -197,6 +197,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.options.bootClasspath = androidPlugin.bootClasspath.join(File.pathSeparator)
         // TODO: Remove bootClasspath
         scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath)
+        scalaCompileTask.doFirst {
+            // R.java is appended lazily
+            scalaCompileTask.source = [] + new HashSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+        }
         scalaCompileTask.scalaClasspath = configuration.asFileTree
         scalaCompileTask.zincClasspath = configuration.asFileTree
         scalaCompileTask.scalaCompileOptions.incrementalOptions.analysisFile = new File(variantWorkDir, "analysis.txt")

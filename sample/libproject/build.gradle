@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:0.12.2"
+        classpath "com.android.tools.build:gradle:0.13.3"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0"
     }
 }

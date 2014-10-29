@@ -16,9 +16,9 @@
 package jp.leafytree.gradle
 import com.google.common.annotations.VisibleForTesting
 import org.apache.commons.io.FileUtils
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.tasks.DefaultScalaSourceSet
@@ -90,7 +90,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      */
     public void apply(Project project) {
         if (!["com.android.application", "android", "com.android.library", "android-library"].any { project.plugins.findPlugin(it) }) {
-            throw new GradleException("Please apply 'com.android.application' or 'com.android.library' plugin before applying 'android-scala' plugin")
+            throw new ProjectConfigurationException("Please apply 'com.android.application' or 'com.android.library' plugin before applying 'android-scala' plugin", null)
         }
         apply(project, project.extensions.getByName("android"))
     }

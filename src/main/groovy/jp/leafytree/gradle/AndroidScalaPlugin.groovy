@@ -80,14 +80,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         project.tasks.findByName("preBuild").doLast {
             FileUtils.forceMkdir(workDir)
         }
-
-        // Disable preDexLibraries
-        androidExtension.dexOptions.preDexLibraries = false
-        project.gradle.taskGraph.whenReady { taskGraph ->
-            if (androidExtension.dexOptions.preDexLibraries) {
-                throw new GradleException("Currently, android-scala plugin doesn't support enabling dexOptions.preDexLibraries")
-            }
-        }
     }
 
     /**

@@ -89,8 +89,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
      * @param androidExtension extension of Android Plugin
      */
     public void apply(Project project) {
-        if (!project.plugins.findPlugin("android") && !project.plugins.findPlugin("android-library")) {
-            throw new GradleException("Please apply 'android' or 'android-library' plugin before applying 'android-scala' plugin")
+        if (!["com.android.application", "android", "com.android.library", "android-library"].any { project.plugins.findPlugin(it) }) {
+            throw new GradleException("Please apply 'com.android.application' or 'com.android.library' plugin before applying 'android-scala' plugin")
         }
         apply(project, project.extensions.getByName("android"))
     }

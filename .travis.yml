@@ -1,25 +1,24 @@
 language: java
-jdk: openjdk6
+jdk: oraclejdk7
 before_install:
-  - echo "org.gradle.jvmargs=-Xmx512m" > gradle.properties
+  - echo "org.gradle.jvmargs=-Xmx1024m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" > gradle.properties
 
   # Install base Android SDK
   - sudo apt-get update -qq
   - sudo apt-get install -qq expect libstdc++6:i386 lib32z1
-  - export COMPONENTS=build-tools-21.0.2,android-21,android-19,sys-img-x86-android-21,extra-google-m2repository,extra-android-m2repository,extra-android-support
+  - export COMPONENTS=build-tools-21.0.2,android-21,android-18,sys-img-armeabi-v7a-android-18,extra-google-m2repository,extra-android-m2repository,extra-android-support
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
   - source ~/.android-sdk-installer/env
   - export TERM=dumb # to get clean gradle output
 
   # Create and start emulator
-  - echo no | android create avd --force -n test -t android-21 --abi x86_64
-  - emulator -avd test -no-skin -no-audio -no-window -memory 128 -gpu on > emulator.log 2>&1 &
+  - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window -memory 256 -gpu on > emulator.log 2>&1 &
   - adb logcat > logcat.log &
-
-before_script:
   - wait_for_emulator
 
-script: ./gradlew --debug --no-daemon check uploadArchives integTest sample
+script:
+  - ./gradlew --debug --no-daemon check uploadArchives integTest sample
 
 after_failure:
   - cat emulator.log

@@ -69,6 +69,11 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         this.workDir = new File(project.buildDir, "android-scala")
         updateAndroidExtension()
         updateAndroidSourceSetsExtension()
+
+        androidExtension.buildTypes.whenObjectAdded { updateAndroidSourceSetsExtension() }
+        androidExtension.productFlavors.whenObjectAdded { updateAndroidSourceSetsExtension() }
+        androidExtension.signingConfigs.whenObjectAdded { updateAndroidSourceSetsExtension() }
+
         project.afterEvaluate {
             updateAndroidSourceSetsExtension()
             def allVariants = androidExtension.testVariants + (isLibrary ? androidExtension.libraryVariants : androidExtension.applicationVariants)

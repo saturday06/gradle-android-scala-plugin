@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:0.12.2"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0"
@@ -9,7 +10,7 @@ buildscript {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 apply plugin: "com.android.application"
@@ -25,20 +26,22 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
-    buildTypes {
-        debug {
-            runProguard true
-            proguardFile file("proguard-rules.txt")
-        }
-
-        release {
-            runProguard true
-            proguardFile file("proguard-rules.txt")
-        }
-    }
 }
 
 dependencies {
+    compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:2.11.2"
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith('dex')
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += '--multi-dex'
+        dx.additionalParameters += "--main-dex-list=$projectDir/main-dex-list.txt".toString()
+    }
+    println "prop: " + System.properties["sdk.dir"]
 }

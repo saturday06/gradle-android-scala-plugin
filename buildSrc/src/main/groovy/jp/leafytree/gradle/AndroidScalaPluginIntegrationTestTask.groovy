@@ -76,7 +76,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 androidPluginBuildToolsVersion: androidPluginBuildToolsVersion,
                 androidPluginMinSdkVersion: androidPluginMinSdkVersion,
                 androidPluginTargetSdkVersion: androidPluginTargetSdkVersion,
-                androidPluginIncremental: "true",
+                androidPluginIncremental: "false",
                 androidPluginPreDexLibraries: "false",
                 androidPluginJumboMode: "false",
         ])

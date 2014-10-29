@@ -23,14 +23,15 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:0.12.2"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.0"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.1"
     }
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 apply plugin: "com.android.application"
@@ -60,32 +61,59 @@ android {
             }
         }
     }
-
-    buildTypes {
-        debug {
-            runProguard true // required
-            proguardFile file("proguard-rules.txt")
-        }
-
-        release {
-            runProguard true
-            proguardFile file("proguard-rules.txt")
-        }
-    }
 }
 
 dependencies {
+    compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:2.11.2"
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith('dex')
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += '--multi-dex'
+        dx.additionalParameters += "--main-dex-list=$rootDir/main-dex-list.txt".toString()
+    }
 }
 ```
 
-### proguard-rules.txt
+### main-dex-list.txt
 
 ```
--dontoptimize
--dontobfuscate
--dontpreverify
--dontwarn scala.**
--keep class !scala*.** { *; }
--ignorewarnings
+android/support/multidex/BuildConfig.class
+android/support/multidex/MultiDex$V14.class
+android/support/multidex/MultiDex$V19.class
+android/support/multidex/MultiDex$V4.class
+android/support/multidex/MultiDex.class
+android/support/multidex/MultiDexApplication.class
+android/support/multidex/MultiDexExtractor$1.class
+android/support/multidex/MultiDexExtractor.class
+android/support/multidex/ZipUtil$CentralDirectory.class
+android/support/multidex/ZipUtil.class
 ```
+
+### src/androidTest/java/com/android/test/runner/MultiDexTestRunner.java
+https://github.com/casidiablo/multidex/blob/publishing/instrumentation/src/com/android/test/runner/MultiDexTestRunner.java
+```
+package com.android.test.runner;
+
+import android.os.Bundle;
+import android.support.multidex.MultiDex;
+import android.test.InstrumentationTestRunner;
+
+public class MultiDexTestRunner extends InstrumentationTestRunner {
+    @Override
+    public void onCreate(Bundle arguments) {
+        MultiDex.install(getTargetContext());
+        super.onCreate(arguments);
+    }
+}
+```
+
+### Changelog
+- 1.1 MultiDexApplication support
+- 1.0 First release

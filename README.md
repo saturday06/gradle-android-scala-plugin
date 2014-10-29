@@ -179,7 +179,7 @@ android {
 
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 20
+        targetSdkVersion 21
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"

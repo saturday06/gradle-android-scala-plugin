@@ -78,6 +78,12 @@ repositories {
     jcenter()
 }
 
+android {
+    dexOptions {
+        preDexLibraries false
+    }
+}
+
 dependencies {
     compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:2.11.2"
@@ -197,6 +203,10 @@ android {
                 srcDir "path/to/androidTest/scala" // default: "src/androidTest/scala"
             }
         }
+    }
+
+    dexOptions {
+        preDexLibraries false
     }
 }
 

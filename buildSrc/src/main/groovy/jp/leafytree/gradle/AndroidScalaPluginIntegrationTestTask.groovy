@@ -32,7 +32,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 ["simpleFlavor", ["connectedAndroidTest"], false],
                 ["useScalaOnlyTest", ["connectedAndroidTest"], false],
         ].each { projectName, gradleArgs, runOnTravis ->
-            gradleArgs = ["--no-daemon", "clean", *gradleArgs, "uninstallAll"]
+            gradleArgs = ["clean", *gradleArgs, "uninstallAll"]
             [
                     ["2.1", false, "2.10.4", "0.13.3", "android-21", "21.0.2", "8", "21"],
                     ["2.1", true,  "2.11.2", "0.13.3", "android-21", "21.0.2", "8", "21"],
@@ -66,7 +66,6 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         def snaphotRepositoryUrl = [project.buildFile.parentFile.absolutePath, "gh-pages", "repository", "snapshot"].join(File.separator)
         def gradleProperties = new Properties()
         gradleProperties.putAll([
-                "org.gradle.jvmargs": "-Xmx1024m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError",
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 scalaLibraryVersion: scalaLibraryVersion,
                 scalaDependencyVersion: scalaLibraryVersion.split("\\.").take(2).join("."),

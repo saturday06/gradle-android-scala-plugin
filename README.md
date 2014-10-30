@@ -70,7 +70,7 @@ android {
 ### 5. Setup MultiDexApplication
 
 To avoid https://code.google.com/p/android/issues/detail?id=20814 we should setup MultiDexApplication.
-See also https://github.com/casidiablo/multidex/blob/publishing/README.md
+See also https://github.com/casidiablo/multidex
 
 `build.gradle`
 ```groovy

@@ -208,6 +208,11 @@ android {
     dexOptions {
         preDexLibraries false
     }
+
+    scala {
+        addparams "-deprecation"            // default: null
+        additionalParameters "-deprecation" // alias of addparams
+    }
 }
 
 dependencies {

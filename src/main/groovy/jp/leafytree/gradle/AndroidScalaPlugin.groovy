@@ -210,7 +210,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.doFirst {
             FileUtils.forceMkdir(destinationDir)
             // R.java is appended lazily
-            scalaCompileTask.source = [] + new HashSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+            scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
         }
         javaCompileTask.dependsOn.each {
             scalaCompileTask.dependsOn it

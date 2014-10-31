@@ -192,7 +192,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def scalaSources = variant.variantData.variantConfiguration.sortedSourceProviders.inject([]) { acc, val ->
             acc + val.java.sourceFiles
         }
-        scalaCompileTask.source = [] + new HashSet(scalaSources + javaCompileTask.source) // unique
+        scalaCompileTask.source = scalaSources
         scalaCompileTask.destinationDir = destinationDir
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility

@@ -76,6 +76,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
 
         project.afterEvaluate {
             updateAndroidSourceSetsExtension()
+            androidExtension.sourceSets.each { it.java.srcDirs(it.scala.srcDirs) }
             def allVariants = androidExtension.testVariants + (isLibrary ? androidExtension.libraryVariants : androidExtension.applicationVariants)
             allVariants.each { variant ->
                 addAndroidScalaCompileTask(variant)
@@ -161,7 +162,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             scala.filter.include(include);
             def scalaSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
             scala.srcDir(scalaSrcDir)
-            sourceSet.java.srcDir(scalaSrcDir) // for Android Studio
             sourceDirectorySetMap[sourceSet.name] = scala
         }
     }

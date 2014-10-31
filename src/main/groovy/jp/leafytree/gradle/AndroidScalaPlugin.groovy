@@ -221,7 +221,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         javaCompileTask.classpath = javaCompileTask.classpath + project.files(destinationDir)
         javaCompileTask.dependsOn scalaCompileTask
         javaCompileTask.doLast {
-            project.ant.move(todir: javaCompileTask.destinationDir, preservelastmodified: true) {
+            project.ant.copy(todir: javaCompileTask.destinationDir, preservelastmodified: true) {
                 fileset(dir: destinationDir)
             }
         }

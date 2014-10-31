@@ -184,7 +184,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (!configuration) {
             configuration = project.configurations.create(configurationName)
             project.dependencies.add(configurationName, "org.scala-lang:scala-compiler:$scalaVersion")
-            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.5")
+            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.0")
         }
         def variantWorkDir = getVariantWorkDir(variant)
         def destinationDir = new File(variantWorkDir, "scalaCompile") // TODO: More elegant way
@@ -197,6 +197,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
         scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
+        if (scalaVersion.startsWith("2.10.")) {
+            scalaCompileTask.scalaCompileOptions.useAnt = false
+        }
         scalaCompileTask.options.encoding = javaCompileTask.options.encoding
         scalaCompileTask.options.bootClasspath = androidPlugin.bootClasspath.join(File.pathSeparator)
         // TODO: Remove bootClasspath

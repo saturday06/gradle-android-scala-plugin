@@ -8,7 +8,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion | Incremental compilation |
 | ------ | ------ | -------------- | ----------------- | ----------------- | ----------------------- |
 | 2.10.4 | 2.1    | 0.13.3         | android-21        | 21.0.2            | enabled                 |
-| 2.11.2 | 2.1    | 0.13.3         | android-21        | 21.0.2            | disabled                |
+| 2.11.4 | 2.1    | 0.13.3         | android-21        | 21.0.2            | disabled                |
 
 ## Installation
 
@@ -39,7 +39,7 @@ The plugin decides scala language version using scala-library's version.
 `build.gradle`
 ```groovy
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.2"
+    compile "org.scala-lang:scala-library:2.11.4"
 }
 ```
 
@@ -86,7 +86,7 @@ android {
 
 dependencies {
     compile "com.google.android:multidex:0.1"
-    compile "org.scala-lang:scala-library:2.11.2"
+    compile "org.scala-lang:scala-library:2.11.4"
 }
 
 afterEvaluate {
@@ -217,7 +217,7 @@ android {
 
 dependencies {
     compile "com.google.android:multidex:0.1"
-    compile "org.scala-lang:scala-library:2.11.2"
+    compile "org.scala-lang:scala-library:2.11.4"
 }
 
 afterEvaluate {

@@ -39,6 +39,22 @@ android {
         flavor2 {
             applicationId "jp.leafytree.android.hello.flavor2"
         }
+
+        flavor3 {
+            applicationId "jp.leafytree.android.hello.flavor3"
+        }
+    }
+
+    sourceSets {
+        flavor3 {
+            java {
+                srcDirs = ['src/flavor3Moved/java']
+            }
+
+            scala {
+                srcDirs = ['src/flavor3Moved/scala']
+            }
+        }
     }
 
     dexOptions {

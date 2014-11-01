@@ -87,6 +87,8 @@ android {
 </manifest>
 ```
 
+See also: http://developer.android.com/tools/building/multidex.html
+
 ## Complete example of build.gradle
 
 `build.gradle`

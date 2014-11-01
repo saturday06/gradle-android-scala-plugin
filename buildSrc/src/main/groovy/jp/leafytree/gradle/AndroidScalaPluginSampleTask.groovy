@@ -25,7 +25,7 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
         [
                 ["simple", ["installDebug"]],
                 ["hello", ["installDebug", "connectedAndroidTest"]],
-                ["libproject", ["installDebug", "connectedAndroidTest"]],
+                ["libproject", ["installDebug", "assemble", "app:connectedAndroidTest"]],
         ].each { projectName, gradleArgs ->
             gradleArgs = ["--stacktrace", "clean", *gradleArgs, "uninstallAll"]
             def dir = new File(project.buildFile.parentFile, "sample" + File.separator + projectName)

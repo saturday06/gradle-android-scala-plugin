@@ -25,12 +25,12 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         def travis = System.getenv("TRAVIS").toString().toBoolean()
         [
                 ["app", ["connectedAndroidTest"], false],
-                ["lib", ["connectedAndroidTest"], false],
-                ["appAndLib", ["connectedAndroidTest"], true],
-                ["largeAppAndLib", ["assembleDebug", "assembleDebug2", "connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
-                ["noScala", ["connectedAndroidTest"], false],
+                ["lib", ["assemble"], false],
+                ["appAndLib", ["assemble", "app:connectedAndroidTest"], true],
+                ["largeAppAndLib", ["assembleDebug", "assembleDebug2", "app:connectedAndroidTest", "connectedAndroidTestFlavor1Debug", "connectedAndroidTestFlavor2Debug"], false],
+                ["noScala", ["assemble", "app:connectedAndroidTest"], false],
                 ["simpleFlavor", ["connectedAndroidTest"], false],
-                ["useScalaOnlyTest", ["connectedAndroidTest"], false],
+                ["useScalaOnlyTest", ["assemble", "app:connectedAndroidTest"], false],
         ].each { projectName, gradleArgs, runOnTravis ->
             gradleArgs = ["clean", *gradleArgs, "uninstallAll"]
             [

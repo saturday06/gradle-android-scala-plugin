@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:0.13.3"
+        classpath "com.android.tools.build:gradle:0.14.0"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.1"
     }
 }
@@ -18,7 +18,7 @@ apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion "android-21"
-    buildToolsVersion "21.0.2"
+    buildToolsVersion "21.1"
 
     defaultConfig {
         minSdkVersion 8
@@ -26,26 +26,11 @@ android {
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
-    }
-
-    dexOptions {
-        preDexLibraries false
+        multiDexEnabled true
     }
 }
 
 dependencies {
-    compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:2.11.4"
 }
 
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        if (dx.additionalParameters == null) {
-            dx.additionalParameters = []
-        }
-        dx.additionalParameters += "--multi-dex"
-        dx.additionalParameters += "--main-dex-list=$projectDir/main-dex-list.txt".toString()
-    }
-}

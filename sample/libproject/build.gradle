@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:0.13.3"
+        classpath "com.android.tools.build:gradle:0.14.0"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.1"
     }
 }
@@ -12,17 +12,5 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-    }
-
-    afterEvaluate {
-        tasks.matching {
-            it.name.startsWith("dex")
-        }.each { dx ->
-            if (dx.additionalParameters == null) {
-                dx.additionalParameters = []
-            }
-            dx.additionalParameters += "--multi-dex"
-            dx.additionalParameters += "--main-dex-list=$projectDir/main-dex-list.txt".toString()
-        }
     }
 }

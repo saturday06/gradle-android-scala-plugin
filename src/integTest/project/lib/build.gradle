@@ -25,9 +25,9 @@ android {
     defaultConfig {
         minSdkVersion Integer.decode(androidPluginMinSdkVersion)
         targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
-        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     dexOptions {
@@ -38,19 +38,6 @@ android {
 }
 
 dependencies {
-    compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     androidTestCompile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        if (dx.additionalParameters == null) {
-            dx.additionalParameters = []
-        }
-        dx.additionalParameters += "--multi-dex"
-        dx.additionalParameters += "--main-dex-list=$projectDir/main-dex-list.txt".toString()
-    }
 }

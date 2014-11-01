@@ -66,6 +66,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
         def snaphotRepositoryUrl = [project.buildFile.parentFile.absolutePath, "gh-pages", "repository", "snapshot"].join(File.separator)
         def gradleProperties = new Properties()
         gradleProperties.putAll([
+                "org.gradle.jvmargs": "-Xmx2048m -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError",
                 snaphotRepositoryUrl: snaphotRepositoryUrl,
                 scalaLibraryVersion: scalaLibraryVersion,
                 scalaDependencyVersion: scalaLibraryVersion.split("\\.").take(2).join("."),
@@ -92,7 +93,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
             gradleProperties.store(it, getClass().getName())
         }
         def gradleWrapper = new GradleWrapper(baseDir)
-        def args = ["--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
+        def args = ["--no-daemon", "--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
         [Thread.start { ByteStreams.copy(process.in, System.out) },

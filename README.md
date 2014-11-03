@@ -7,8 +7,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion | Incremental compilation |
 | ------ | ------ | -------------- | ----------------- | ----------------- | ----------------------- |
-| 2.10.4 | 2.1    | 0.14.0         | android-21        | 21.1              | enabled                 |
-| 2.11.4 | 2.1    | 0.14.0         | android-21        | 21.1              | disabled                |
+| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1              | enabled                 |
+| 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1              | disabled                |
 
 ## Installation
 
@@ -18,7 +18,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 ```groovy
 buildscript {
     dependencies {
-        classpath "com.android.tools.build:gradle:0.14.0"
+        classpath "com.android.tools.build:gradle:0.14.1"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.1"
     }
 }
@@ -99,7 +99,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:0.14.0"
+        classpath "com.android.tools.build:gradle:0.14.1"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.1"
     }
 }

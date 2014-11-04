@@ -69,25 +69,95 @@ android {
 
 ### 5. Setup MultiDexApplication
 
+To avoid https://code.google.com/p/android/issues/detail?id=20814 we should setup MultiDexApplication.
+See also https://github.com/casidiablo/multidex . There is `multiDexEnabled` option but it can't be
+used because it causes `DexException: Too many classes in --main-dex-list, main dex capacity exceeded` .
+
 `build.gradle`
 ```groovy
+repositories {
+    jcenter()
+}
+
 android {
-    defaultConfig {
-        multiDexEnabled true
+    dexOptions {
+        preDexLibraries false
+    }
+}
+
+dependencies {
+    compile "com.google.android:multidex:0.1"
+    compile "org.scala-lang:scala-library:2.11.4"
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith("dex")
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += "--multi-dex"
+        dx.additionalParameters += "--main-dex-list=$rootDir/main-dex-list.txt".toString()
     }
 }
 ```
 
+Add main dex configuration.
+
+`main-dex-list.txt`
+```text
+android/support/multidex/BuildConfig.class
+android/support/multidex/MultiDex$V14.class
+android/support/multidex/MultiDex$V19.class
+android/support/multidex/MultiDex$V4.class
+android/support/multidex/MultiDex.class
+android/support/multidex/MultiDexApplication.class
+android/support/multidex/MultiDexExtractor$1.class
+android/support/multidex/MultiDexExtractor.class
+android/support/multidex/ZipUtil$CentralDirectory.class
+android/support/multidex/ZipUtil.class
+com/android/test/runner/MultiDexTestRunner.class
+```
+
+Change application class.
+
 `AndroidManifest.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="...">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="jp.leafytree.sample">
     <application android:name="android.support.multidex.MultiDexApplication">
-    </application>
 </manifest>
 ```
 
-See also: http://developer.android.com/tools/building/multidex.html
+To test MultiDexApplication, custom instrumentation test runner should be used.
+See also https://github.com/casidiablo/multidex/blob/publishing/instrumentation/src/com/android/test/runner/MultiDexTestRunner.java
+
+`build.gradle`
+```groovy
+android {
+  defaultConfig {
+    testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
+  }
+}
+```
+
+`src/androidTest/java/com/android/test/runner/MultiDexTestRunner.java`
+```java
+package com.android.test.runner;
+
+import android.os.Bundle;
+import android.support.multidex.MultiDex;
+import android.test.InstrumentationTestRunner;
+
+public class MultiDexTestRunner extends InstrumentationTestRunner {
+    @Override
+    public void onCreate(Bundle arguments) {
+        MultiDex.install(getTargetContext());
+        super.onCreate(arguments);
+    }
+}
+```
 
 ## Complete example of build.gradle
 
@@ -118,9 +188,9 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 21
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
     }
 
     sourceSets {
@@ -137,6 +207,10 @@ android {
         }
     }
 
+    dexOptions {
+        preDexLibraries false
+    }
+
     scala {
         addparams "-deprecation"            // default: null
         additionalParameters "-deprecation" // alias of addparams
@@ -144,7 +218,20 @@ android {
 }
 
 dependencies {
+    compile "com.google.android:multidex:0.1"
     compile "org.scala-lang:scala-library:2.11.4"
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith("dex")
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += "--multi-dex"
+        dx.additionalParameters += "--main-dex-list=$rootDir/main-dex-list.txt".toString()
+    }
 }
 ```
 

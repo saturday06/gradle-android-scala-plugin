@@ -16,7 +16,10 @@ before_install:
   - wait_for_emulator
 
 script:
-  - ./gradlew --debug check uploadArchives integTest sample
+  - ./gradlew --debug check
+  - ./gradlew --debug uploadArchives
+  - ./gradlew --debug integTest
+  - ./gradlew --debug sample
 
 after_failure:
   - cat emulator.log

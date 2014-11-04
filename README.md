@@ -19,7 +19,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2.1"
     }
 }
 ```
@@ -100,7 +100,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2.1"
     }
 }
 
@@ -149,6 +149,7 @@ dependencies {
 ```
 
 ### Changelog
+- 1.2.1 Fix binary compatibility with JDK6
 - 1.2 Incremental compilation support in scala 2.10 / Flavors support
 - 1.1 MultiDexApplication support
 - 1.0 First release

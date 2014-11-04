@@ -18,7 +18,9 @@ before_install:
 script:
   - ./gradlew --debug check
   - ./gradlew --debug uploadArchives
+  - ./gradlew --stop
   - ./gradlew --debug integTest
+  - ./gradlew --stop
   - ./gradlew --debug sample
 
 after_failure:

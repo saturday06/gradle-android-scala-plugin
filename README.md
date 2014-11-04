@@ -149,6 +149,6 @@ dependencies {
 ```
 
 ### Changelog
-- 1.2 Incremental compilation support in scala 2.10
+- 1.2 Incremental compilation support in scala 2.10 / Flavors support
 - 1.1 MultiDexApplication support
 - 1.0 First release

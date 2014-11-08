@@ -3,7 +3,7 @@ apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion "android-21"
-    buildToolsVersion "21.1"
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         minSdkVersion 8

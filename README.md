@@ -7,8 +7,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion | Incremental compilation |
 | ------ | ------ | -------------- | ----------------- | ----------------- | ----------------------- |
-| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1              | enabled                 |
-| 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1              | disabled                |
+| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            | enabled                 |
+| 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            | disabled                |
 
 ## Installation
 
@@ -183,7 +183,7 @@ apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion "android-21"
-    buildToolsVersion "21.1"
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         minSdkVersion 8

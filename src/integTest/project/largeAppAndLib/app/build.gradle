@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    compile "com.google.android:multidex:0.1"
+    compile "com.android.support:multidex:1.0.0"
     flavor1Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     flavor2Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     compile project(":lib")

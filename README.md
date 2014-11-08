@@ -86,7 +86,7 @@ android {
 }
 
 dependencies {
-    compile "com.google.android:multidex:0.1"
+    compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:2.11.4"
 }
 
@@ -218,7 +218,7 @@ android {
 }
 
 dependencies {
-    compile "com.google.android:multidex:0.1"
+    compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:2.11.4"
 }
 

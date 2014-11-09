@@ -210,16 +210,16 @@ android {
     dexOptions {
         preDexLibraries false
     }
-
-    scala {
-        addparams "-deprecation"            // default: null
-        additionalParameters "-deprecation" // alias of addparams
-    }
 }
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:2.11.4"
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.deprecation = false
+    scalaCompileOptions.additionalParameters = ["-feature"]
 }
 
 afterEvaluate {

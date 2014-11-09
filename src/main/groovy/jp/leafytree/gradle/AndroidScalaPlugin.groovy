@@ -216,9 +216,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def javaCompileOriginalDestinationDir = new AtomicReference<File>()
         def javaCompileOriginalSource = new AtomicReference<FileCollection>()
         javaCompileTask.doFirst {
-            // R.java is appended lazily
-            scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
-
             // Disable compiltation
             javaCompileOriginalDestinationDir.set(javaCompileTask.destinationDir)
             javaCompileOriginalSource.set(javaCompileTask.source)
@@ -233,15 +230,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             }
             javaCompileTask.source = [dummySourceFile]
         }
-        javaCompileTask.dependsOn.each {
-            scalaCompileTask.dependsOn it
-        }
-        javaCompileTask.dependsOn scalaCompileTask
         javaCompileTask.outputs.upToDateWhen { false }
         javaCompileTask.doLast {
             FileUtils.deleteDirectory(dummyDestinationDir)
             javaCompileTask.destinationDir = javaCompileOriginalDestinationDir.get()
             javaCompileTask.source = javaCompileOriginalSource.get()
+
+            // R.java is appended lazily
+            scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+            scalaCompileTask.execute()
+            project.logger.lifecycle(scalaCompileTask.path)
         }
     }
 }

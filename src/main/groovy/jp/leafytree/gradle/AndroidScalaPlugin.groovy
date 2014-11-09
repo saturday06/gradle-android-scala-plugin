@@ -19,12 +19,14 @@ import org.apache.commons.io.FileUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.tasks.DefaultScalaSourceSet
 import org.gradle.api.tasks.scala.ScalaCompile
 import org.gradle.util.ConfigureUtil
 
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 /**
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
@@ -187,13 +189,14 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.0")
         }
         def variantWorkDir = getVariantWorkDir(variant)
-        def destinationDir = new File(variantWorkDir, "scalaCompile") // TODO: More elegant way
+        def dummyDestinationDir = new File(variantWorkDir, "javaCompileDummyDestination") // TODO: More elegant way
+        def dummySourceDir = new File(variantWorkDir, "javaCompileDummySource") // TODO: More elegant way
         def scalaCompileTask = project.tasks.create("compile${variant.name.capitalize()}Scala", ScalaCompile)
         def scalaSources = variant.variantData.variantConfiguration.sortedSourceProviders.inject([]) { acc, val ->
             acc + val.java.sourceFiles
         }
         scalaCompileTask.source = scalaSources
-        scalaCompileTask.destinationDir = destinationDir
+        scalaCompileTask.destinationDir = javaCompileTask.destinationDir
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
         scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
@@ -210,20 +213,35 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (extension.addparams) {
             scalaCompileTask.scalaCompileOptions.additionalParameters = [extension.addparams]
         }
-        scalaCompileTask.doFirst {
-            FileUtils.forceMkdir(destinationDir)
+        def javaCompileOriginalDestinationDir = new AtomicReference<File>()
+        def javaCompileOriginalSource = new AtomicReference<FileCollection>()
+        javaCompileTask.doFirst {
             // R.java is appended lazily
             scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+
+            // Disable compiltation
+            javaCompileOriginalDestinationDir.set(javaCompileTask.destinationDir)
+            javaCompileOriginalSource.set(javaCompileTask.source)
+            javaCompileTask.destinationDir = dummyDestinationDir
+            if (!dummyDestinationDir.exists()) {
+                FileUtils.forceMkdir(dummyDestinationDir)
+            }
+            def dummySourceFile = new File(dummySourceDir, "Dummy.java")
+            if (!dummySourceFile.exists()) {
+                FileUtils.forceMkdir(dummySourceDir)
+                dummySourceFile.withWriter { it.write("class Dummy{}") }
+            }
+            javaCompileTask.source = [dummySourceFile]
         }
         javaCompileTask.dependsOn.each {
             scalaCompileTask.dependsOn it
         }
-        javaCompileTask.classpath = javaCompileTask.classpath + project.files(destinationDir)
         javaCompileTask.dependsOn scalaCompileTask
+        javaCompileTask.outputs.upToDateWhen { false }
         javaCompileTask.doLast {
-            project.ant.copy(todir: javaCompileTask.destinationDir, preservelastmodified: true) {
-                fileset(dir: destinationDir)
-            }
+            FileUtils.deleteDirectory(dummyDestinationDir)
+            javaCompileTask.destinationDir = javaCompileOriginalDestinationDir.get()
+            javaCompileTask.source = javaCompileOriginalSource.get()
         }
     }
 }

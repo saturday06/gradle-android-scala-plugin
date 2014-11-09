@@ -16,6 +16,7 @@
 package jp.leafytree.gradle
 import com.google.common.annotations.VisibleForTesting
 import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.runtime.InvokerHelper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
@@ -26,8 +27,8 @@ import org.gradle.api.internal.tasks.DefaultScalaSourceSet
 import org.gradle.api.tasks.scala.ScalaCompile
 import org.gradle.util.ConfigureUtil
 
-import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
+import java.util.concurrent.atomic.AtomicReference
 /**
  * AndroidScalaPlugin adds scala language support to official gradle android plugin.
  */
@@ -203,8 +204,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (scalaVersion.startsWith("2.10.")) {
             scalaCompileTask.scalaCompileOptions.useAnt = false
         }
-        scalaCompileTask.options.encoding = javaCompileTask.options.encoding
-        scalaCompileTask.options.bootClasspath = androidPlugin.bootClasspath.join(File.pathSeparator)
         // TODO: Remove bootClasspath
         scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath)
         scalaCompileTask.scalaClasspath = configuration.asFileTree
@@ -238,6 +237,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
 
             // R.java is appended lazily
             scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+            InvokerHelper.setProperties(scalaCompileTask.options,
+                javaCompileTask.options.properties.findAll { it.key != "incremental" })
             scalaCompileTask.execute()
             project.logger.lifecycle(scalaCompileTask.path)
         }

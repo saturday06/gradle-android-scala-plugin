@@ -199,8 +199,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             project.dependencies.add(compilerConfigurationName, "org.scala-lang:scala-compiler:$scalaVersion")
         }
         def variantWorkDir = getVariantWorkDir(variant)
-        def dummyDestinationDir = new File(variantWorkDir, "javaCompileDummyDestination") // TODO: More elegant way
-        def dummySourceDir = new File(variantWorkDir, "javaCompileDummySource") // TODO: More elegant way
         def scalaCompileTask = project.tasks.create("compile${variant.name.capitalize()}Scala", ScalaCompile)
         def scalaSources = variant.variantData.variantConfiguration.sortedSourceProviders.inject([]) { acc, val ->
             acc + val.java.sourceFiles
@@ -217,6 +215,9 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         if (extension.addparams) {
             scalaCompileTask.scalaCompileOptions.additionalParameters = [extension.addparams]
         }
+
+        def dummyDestinationDir = new File(variantWorkDir, "javaCompileDummyDestination") // TODO: More elegant way
+        def dummySourceDir = new File(variantWorkDir, "javaCompileDummySource") // TODO: More elegant way
         def javaCompileOriginalDestinationDir = new AtomicReference<File>()
         def javaCompileOriginalSource = new AtomicReference<FileCollection>()
         javaCompileTask.doFirst {

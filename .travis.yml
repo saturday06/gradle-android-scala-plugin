@@ -20,8 +20,6 @@ script:
   - ./gradlew --debug uploadArchives
   - ./gradlew --stop
   - ./gradlew --debug integTest
-  - ./gradlew --stop
-  - ./gradlew --debug sample
 
 after_failure:
   - cat emulator.log

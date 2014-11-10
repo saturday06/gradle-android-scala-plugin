@@ -182,12 +182,17 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             return
         }
         project.logger.info("scala-library version=$scalaVersion detected")
-        def configurationName = "androidScalaPluginScalaCompilerFor" + javaCompileTask.name
-        def configuration = project.configurations.findByName(configurationName)
-        if (!configuration) {
-            configuration = project.configurations.create(configurationName)
-            project.dependencies.add(configurationName, "org.scala-lang:scala-compiler:$scalaVersion")
-            project.dependencies.add(configurationName, "com.typesafe.zinc:zinc:0.3.0")
+        def zincConfigurationName = "androidScalaPluginZincFor" + javaCompileTask.name
+        def zincConfiguration = project.configurations.findByName(zincConfigurationName)
+        if (!zincConfiguration) {
+            zincConfiguration = project.configurations.create(zincConfigurationName)
+            project.dependencies.add(zincConfigurationName, "com.typesafe.zinc:zinc:0.3.5.3")
+        }
+        def compilerConfigurationName = "androidScalaPluginScalaCompilerFor" + javaCompileTask.name
+        def compilerConfiguration = project.configurations.findByName(compilerConfigurationName)
+        if (!compilerConfiguration) {
+            compilerConfiguration = project.configurations.create(compilerConfigurationName)
+            project.dependencies.add(compilerConfigurationName, "org.scala-lang:scala-compiler:$scalaVersion")
         }
         def variantWorkDir = getVariantWorkDir(variant)
         def dummyDestinationDir = new File(variantWorkDir, "javaCompileDummyDestination") // TODO: More elegant way
@@ -201,13 +206,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
         scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
-        if (scalaVersion.startsWith("2.10.")) {
-            scalaCompileTask.scalaCompileOptions.useAnt = false
-        }
-        // TODO: Remove bootClasspath
+        scalaCompileTask.scalaCompileOptions.useAnt = false
         scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath)
-        scalaCompileTask.scalaClasspath = configuration.asFileTree
-        scalaCompileTask.zincClasspath = configuration.asFileTree
+        scalaCompileTask.scalaClasspath = compilerConfiguration.asFileTree
+        scalaCompileTask.zincClasspath = zincConfiguration.asFileTree
         scalaCompileTask.scalaCompileOptions.incrementalOptions.analysisFile = new File(variantWorkDir, "analysis.txt")
         if (extension.addparams) {
             scalaCompileTask.scalaCompileOptions.additionalParameters = [extension.addparams]

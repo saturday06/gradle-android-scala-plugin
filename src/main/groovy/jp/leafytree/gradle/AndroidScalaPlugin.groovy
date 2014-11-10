@@ -243,11 +243,17 @@ public class AndroidScalaPlugin implements Plugin<Project> {
 
             // R.java is appended lazily
             scalaCompileTask.source = [] + new TreeSet(scalaCompileTask.source.collect { it } + javaCompileTask.source.collect { it }) // unique
-            // Suppress message from options.setIncremental() as possible
+            def noisyProperties = ["compiler", "includeJavaRuntime", "incremental", "optimize", "useAnt"]
             InvokerHelper.setProperties(scalaCompileTask.options,
-                javaCompileTask.options.properties.findAll { it.key != "incremental" })
-            if (scalaCompileTask.options.incremental != javaCompileTask.options.incremental) {
-                scalaCompileTask.options.incremental = javaCompileTask.options.incremental
+                javaCompileTask.options.properties.findAll { !noisyProperties.contains(it.key) })
+            noisyProperties.each { property ->
+                // Suppress message from deprecated/experimental property as possible
+                if (!javaCompileTask.options.hasProperty(property) || !scalaCompileTask.options.hasProperty(property)) {
+                    return
+                }
+                if (scalaCompileTask.options[property] != javaCompileTask.options[property]) {
+                    scalaCompileTask.options[property] = javaCompileTask.options[property]
+                }
             }
             scalaCompileTask.execute()
             project.logger.lifecycle(scalaCompileTask.path)

@@ -5,10 +5,10 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 ## Supported versions
 
-| Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion | Incremental compilation |
-| ------ | ------ | -------------- | ----------------- | ----------------- | ----------------------- |
-| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            | enabled                 |
-| 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            | disabled                |
+| Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
+| ------ | ------ | -------------- | ----------------- | ----------------- |
+| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            |
+| 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            |
 
 ## Installation
 
@@ -19,7 +19,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2.1"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3"
     }
 }
 ```
@@ -170,7 +170,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.2.1"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3"
     }
 }
 
@@ -236,6 +236,7 @@ afterEvaluate {
 ```
 
 ### Changelog
+- 1.3 Incremental compilation support in scala 2.11
 - 1.2.1 Fix binary compatibility with JDK6
 - 1.2 Incremental compilation support in scala 2.10 / Flavors support
 - 1.1 MultiDexApplication support

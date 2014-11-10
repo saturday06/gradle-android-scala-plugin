@@ -7,8 +7,12 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            |
 | 2.11.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            |
+| 2.10.4 | 2.1    | 0.14.1         | android-21        | 21.1.1            |
+| 2.11.4 | 1.12   | 0.12.2         | android-21        | 21.1.1            |
+| 2.10.4 | 1.12   | 0.12.2         | android-21        | 21.1.1            |
+| 2.11.4 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
+| 2.10.4 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
 
 ## Installation
 
@@ -236,6 +240,7 @@ afterEvaluate {
 ```
 
 ### Changelog
+- 1.3.1 Support android plugin 12.2
 - 1.3 Incremental compilation support in scala 2.11
 - 1.2.1 Fix binary compatibility with JDK6
 - 1.2 Incremental compilation support in scala 2.10 / Flavors support

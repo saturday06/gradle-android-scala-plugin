@@ -23,7 +23,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.1"
     }
 }
 ```
@@ -174,7 +174,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:0.14.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.1"
     }
 }
 

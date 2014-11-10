@@ -88,6 +88,10 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         project.tasks.findByName("preBuild").doLast {
             FileUtils.forceMkdir(workDir)
         }
+
+        project.tasks.withType(ScalaCompile) {
+            scalaCompileOptions.useAnt = false
+        }
     }
 
     /**
@@ -206,7 +210,6 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
         scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
-        scalaCompileTask.scalaCompileOptions.useAnt = false
         scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.bootClasspath)
         scalaCompileTask.scalaClasspath = compilerConfiguration.asFileTree
         scalaCompileTask.zincClasspath = zincConfiguration.asFileTree

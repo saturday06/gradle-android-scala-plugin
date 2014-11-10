@@ -243,8 +243,12 @@ public class AndroidScalaPlugin implements Plugin<Project> {
 
             // R.java is appended lazily
             scalaCompileTask.source = [] + new TreeSet([] + scalaCompileTask.source + javaCompileTask.source) // unique
+            // Suppress message from options.setIncremental() as possible
             InvokerHelper.setProperties(scalaCompileTask.options,
                 javaCompileTask.options.properties.findAll { it.key != "incremental" })
+            if (scalaCompileTask.options.incremental != javaCompileTask.options.incremental) {
+                scalaCompileTask.options.incremental = javaCompileTask.options.incremental
+            }
             scalaCompileTask.execute()
             project.logger.lifecycle(scalaCompileTask.path)
         }

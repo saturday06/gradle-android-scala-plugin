@@ -1,0 +1,69 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url snaphotRepositoryUrl
+        }
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:$androidScalaPluginVersion"
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4+'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+apply plugin: "com.android.application"
+apply plugin: "com.neenbedankt.android-apt"
+apply plugin: "jp.leafytree.android-scala"
+
+android {
+    compileSdkVersion androidPluginCompileSdkVersion
+    buildToolsVersion androidPluginBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion Integer.decode(androidPluginMinSdkVersion)
+        targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
+        versionCode 1
+        versionName "1.0"
+    }
+
+    dexOptions {
+        incremental androidPluginIncremental.toBoolean()
+        preDexLibraries androidPluginPreDexLibraries.toBoolean()
+        jumboMode androidPluginJumboMode.toBoolean()
+    }
+}
+
+apt {
+    arguments {
+        resourcePackageName "jp.leafytree.android.hello"
+        androidManifestFile "src/main/AndroidManifest.xml"
+    }
+}
+
+def AAVersion = "3.1"
+
+dependencies {
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile "com.android.support:multidex:1.0.0"
+    compile "org.scala-lang:scala-library:$scalaLibraryVersion"
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith("dex")
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = []
+        }
+        dx.additionalParameters += "--multi-dex"
+        dx.additionalParameters += "--main-dex-list=$projectDir/main-dex-list.txt".toString()
+    }
+}

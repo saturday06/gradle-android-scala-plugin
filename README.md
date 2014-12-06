@@ -178,19 +178,26 @@ following setup.
 The application class must extend MultiDexApplication or override
 `Application#attachBaseContext` like following.
 
-`YourCustomizedApplication.java`
-```java
-package your.customized.application;
+`MyCustomApplication.scala`
+```scala
+package my.custom.application;
 
-import android.app.Application;
-import android.content.Context;
+import android.app.Application
+import android.content.Context
+import android.support.multidex.MultiDex
+import my.custom.application.main.{ClassNotNeededToBeListed, ClassNeededToBeListed}
 
-public class YourCustomizedApplication extends Application {
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
+object MyCustomApplication {
+  var context: Context = _
+}
+
+class MyCustomApplication extends Application {
+  override protected def attachBaseContext(base: Context) = {
+    super.attachBaseContext(base)
+    MultiDex.install(this)
+  }
+
+  var variable: ClassNeededToBeListed = null
 }
 ```
 
@@ -201,8 +208,10 @@ Add your customized application class to `main-dex-list.txt`.
 android/support/multidex/BuildConfig.class
 android/support/multidex/MultiDex$V14.class
 android/support/multidex/MultiDex$V19.class
-(snip)
-your/customized/application/YourCustomizedApplication.class
+...
+my/custom/application/MyCustomApplication.class
+my/custom/application/MyCustomApplication$$anon$1.class
+my/custom/application/main/ClassNeededToBeListed.class
 ```
 
 **You need to remember:**
@@ -212,20 +221,18 @@ NOTE: The following cautions must be taken only on your android Application clas
 - The static fields in your **application class** will be loaded before the `MultiDex#install`be called! So the suggestion is to avoid static fields with types that can be placed out of main classes.dex file.
 - The methods of your **application class** may not have access to other classes that are loaded after your application class. As workaround for this, you can create another class (any class, in the example above, I use Runnable) and execute the method content inside it. Example:
 
-```java
-    @Override
-    public void onCreate() {
-        super.onCreate();
+```scala
+  override def onCreate = {
+    super.onCreate
 
-        final Context mContext = this;
-        new Runnable() {
-            @Override
-            public void run() {
-                // put your logic here!
-                // use the mContext instead of this here
-            }
-        }.run();
-    }
+    val context = this
+    new Runnable {
+      override def run = {
+        variable = new ClassNeededToBeListed(context, new ClassNotNeededToBeListed)
+        MyCustomApplication.context = context
+      }
+    }.run
+  }
 ```
 
 This section is copyed from

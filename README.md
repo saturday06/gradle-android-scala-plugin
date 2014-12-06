@@ -86,6 +86,7 @@ repositories {
 android {
     dexOptions {
         preDexLibraries false
+        javaMaxHeapSize "2g"
     }
 }
 
@@ -213,6 +214,7 @@ android {
 
     dexOptions {
         preDexLibraries false
+        javaMaxHeapSize "2g"
     }
 }
 

@@ -138,6 +138,8 @@ Change application class.
 </manifest>
 ```
 
+If you use customized application class, please read [next section](#6-setup-application-class-if-you-use-customized-one).
+
 To test MultiDexApplication, custom instrumentation test runner should be used.
 See also https://github.com/casidiablo/multidex/blob/publishing/instrumentation/src/com/android/test/runner/MultiDexTestRunner.java
 
@@ -166,6 +168,68 @@ public class MultiDexTestRunner extends InstrumentationTestRunner {
     }
 }
 ```
+
+### 6. Setup application class if you use customized one
+
+Writing custom application class by Scala is not tested yet. But it is
+safe to call scala class from application class as long as you keep
+following setup.
+
+The application class must extend MultiDexApplication or override
+`Application#attachBaseContext` like following.
+
+`YourCustomizedApplication.java`
+```java
+package your.customized.application;
+
+import android.app.Application;
+import android.content.Context;
+
+public class YourCustomizedApplication extends Application {
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+}
+```
+
+Add your customized application class to `main-dex-list.txt`.
+
+`main-dex-list.txt`
+```text
+android/support/multidex/BuildConfig.class
+android/support/multidex/MultiDex$V14.class
+android/support/multidex/MultiDex$V19.class
+(snip)
+your/customized/application/YourCustomizedApplication.class
+```
+
+**You need to remember:**
+
+NOTE: The following cautions must be taken only on your android Application class, you don't need to apply this cautions in all classes of your app
+
+- The static fields in your **application class** will be loaded before the `MultiDex#install`be called! So the suggestion is to avoid static fields with types that can be placed out of main classes.dex file.
+- The methods of your **application class** may not have access to other classes that are loaded after your application class. As workaround for this, you can create another class (any class, in the example above, I use Runnable) and execute the method content inside it. Example:
+
+```java
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        final Context mContext = this;
+        new Runnable() {
+            @Override
+            public void run() {
+                // put your logic here!
+                // use the mContext instead of this here
+            }
+        }.run();
+    }
+```
+
+This section is copyed from
+[README.md for multidex project](https://github.com/casidiablo/multidex/blob/5a6e7f6f7fb43ba41465bb99cc1de1bd9c1a3a3a/README.md#cautions)
 
 ## Complete example of build.gradle
 

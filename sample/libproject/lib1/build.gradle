@@ -8,18 +8,11 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 21
-        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
-    }
-
-    dexOptions {
-        preDexLibraries false
-        javaMaxHeapSize "2g"
     }
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:2.11.4"
 }

@@ -77,6 +77,9 @@ To avoid https://code.google.com/p/android/issues/detail?id=20814 we should setu
 See also https://github.com/casidiablo/multidex . There is `multiDexEnabled` option but it can't be
 used because it causes `DexException: Too many classes in --main-dex-list, main dex capacity exceeded` .
 
+Note: Use of multidex for creating a test APK is not currently supported.
+[Described in google's documentation](https://developer.android.com/tools/building/multidex.html#testing)
+
 `build.gradle`
 ```groovy
 repositories {

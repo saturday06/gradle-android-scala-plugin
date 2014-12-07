@@ -3,6 +3,17 @@
 gradle-android-scala-plugin adds scala language support to official gradle android plugin.
 See also sample projects at https://github.com/saturday06/gradle-android-scala-plugin/tree/master/sample
 
+- [Supported versions](#supported-versions)
+- [Installation](#installation)
+  - [1. Add buildscript's dependency](#1-add-buildscripts-dependency)
+  - [2. Apply plugin](#2-apply-plugin)
+  - [3. Add scala-library dependency](#3-add-scala-library-dependency)
+  - [4. Put scala source files](#4-put-scala-source-files)
+  - [5. Setup MultiDexApplication](#5-setup-multidexapplication)
+  - [6. Setup application class if you use customized one](#6-setup-application-class-if-you-use-customized-one)
+- [Complete example of build.gradle](#complete-example-of-buildgradle)
+- [Changelog](#changelog)
+
 ## Supported versions
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |

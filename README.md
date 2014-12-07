@@ -11,6 +11,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
   - [4. Put scala source files](#4-put-scala-source-files)
   - [5. Setup MultiDexApplication](#5-setup-multidexapplication)
   - [6. Setup application class if you use customized one](#6-setup-application-class-if-you-use-customized-one)
+- [Configuration](#configuration)
 - [Complete example of build.gradle](#complete-example-of-buildgradle)
 - [Changelog](#changelog)
 
@@ -247,6 +248,25 @@ NOTE: The following cautions must be taken only on your android Application clas
 
 This section is copyed from
 [README.md for multidex project](https://github.com/casidiablo/multidex/blob/5a6e7f6f7fb43ba41465bb99cc1de1bd9c1a3a3a/README.md#cautions)
+
+## Configuration
+
+You can configure scala compiler options as follows:
+
+`build.gradle`
+```groovy
+tasks.withType(ScalaCompile) {
+    // If you want to use scala compile daemon
+    scalaCompileOptions.useCompileDaemon = true
+    // Suppress deprecation warnings
+    scalaCompileOptions.deprecation = false
+    // Additional parameters
+    scalaCompileOptions.additionalParameters = ["-feature"]
+}
+```
+
+Complete list is described in
+http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.scala.ScalaCompileOptions.html
 
 ## Complete example of build.gradle
 

@@ -171,10 +171,6 @@ public class MultiDexTestRunner extends InstrumentationTestRunner {
 
 ### 6. Setup application class if you use customized one
 
-Writing custom application class by Scala is not tested yet. But it is
-safe to call scala class from application class as long as you keep
-following setup.
-
 The application class must extend MultiDexApplication or override
 `Application#attachBaseContext` like following.
 

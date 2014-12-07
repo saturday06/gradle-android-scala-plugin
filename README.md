@@ -314,7 +314,7 @@ afterEvaluate {
 }
 ```
 
-### Changelog
+## Changelog
 - 1.3.1 Support android plugin 12.2
 - 1.3 Incremental compilation support in scala 2.11
 - 1.2.1 Fix binary compatibility with JDK6

@@ -171,6 +171,9 @@ public class MultiDexTestRunner extends InstrumentationTestRunner {
 
 ### 6. Setup application class if you use customized one
 
+Since application class is executed **before** multidex configuration,
+Writing custom application class has stll many pitfalls.
+
 The application class must extend MultiDexApplication or override
 `Application#attachBaseContext` like following.
 

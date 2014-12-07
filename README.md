@@ -187,7 +187,7 @@ import android.support.multidex.MultiDex
 import my.custom.application.main.{ClassNotNeededToBeListed, ClassNeededToBeListed}
 
 object MyCustomApplication {
-  var context: Context = _
+  var globalVariable: Int = _
 }
 
 class MyCustomApplication extends Application {
@@ -228,7 +228,7 @@ NOTE: The following cautions must be taken only on your android Application clas
     new Runnable {
       override def run = {
         variable = new ClassNeededToBeListed(context, new ClassNotNeededToBeListed)
-        MyCustomApplication.context = context
+        MyCustomApplication.globalVariable = 100
       }
     }.run
   }

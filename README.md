@@ -179,7 +179,7 @@ The application class must extend MultiDexApplication or override
 
 `MyCustomApplication.scala`
 ```scala
-package my.custom.application;
+package my.custom.application
 
 import android.app.Application
 import android.content.Context
@@ -196,7 +196,7 @@ class MyCustomApplication extends Application {
     MultiDex.install(this)
   }
 
-  var variable: ClassNeededToBeListed = null
+  var variable: ClassNeededToBeListed = _
 }
 ```
 

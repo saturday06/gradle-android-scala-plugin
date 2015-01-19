@@ -3,17 +3,25 @@
 gradle-android-scala-plugin adds scala language support to official gradle android plugin.
 See also sample projects at https://github.com/saturday06/gradle-android-scala-plugin/tree/master/sample
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
 - [Supported versions](#supported-versions)
 - [Installation](#installation)
   - [1. Add buildscript's dependency](#1-add-buildscripts-dependency)
   - [2. Apply plugin](#2-apply-plugin)
   - [3. Add scala-library dependency](#3-add-scala-library-dependency)
   - [4. Put scala source files](#4-put-scala-source-files)
-  - [5. Setup MultiDexApplication](#5-setup-multidexapplication)
-  - [6. Setup application class if you use customized one](#6-setup-application-class-if-you-use-customized-one)
+  - [5. Implement a workaround for DEX 64K Methods Limit](#5-implement-a-workaround-for-dex-64k-methods-limit)
+    - [5.1. Option 1: Use ProGuard](#51-option-1-use-proguard)
+    - [5.2. Option 2: Setup MultiDexApplication manually](#52-option-2-setup-multidexapplication-manually)
+      - [5.2.1. Setup application class if you use customized one](#521-setup-application-class-if-you-use-customized-one)
 - [Configuration](#configuration)
-- [Complete example of build.gradle](#complete-example-of-buildgradle)
+- [Complete example of build.gradle with manually configured MultiDexApplication](#complete-example-of-buildgradle-with-manually-configured-multidexapplication)
 - [Changelog](#changelog)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Supported versions
 

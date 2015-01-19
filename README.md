@@ -83,9 +83,34 @@ android {
 }
 ```
 
-### 5. Setup MultiDexApplication
+### 5. Implement a workaround for DEX 64K Methods Limit
 
-To avoid https://code.google.com/p/android/issues/detail?id=20814 we should setup MultiDexApplication.
+The Scala Application generally suffers [DEX 64K Methods Limit](https://developer.android.com/tools/building/multidex.html).
+To avoid it we need to implement one of following workarounds.
+
+#### 5.1. Option 1: Use ProGuard
+
+If your project doesn't need to run `androidTest`, You can use `proguard` to reduce methods.
+
+Sample proguard configuration here:
+
+`proguard-rules.txt`
+```
+-dontoptimize
+-dontobfuscate
+-dontpreverify
+-dontwarn scala.**
+-ignorewarnings
+# temporary workaround; see Scala issue SI-5397
+-keep class scala.collection.SeqLike {
+    public protected *;
+}
+```
+From: [hello-scaloid-gradle](https://github.com/pocorall/hello-scaloid-gradle/blob/master/proguard-rules.txt)
+
+#### 5.2. Option 2: Setup MultiDexApplication manually
+
+If your project needs to run `androidTest`, You should setup MultiDexApplication manually.
 See also https://github.com/casidiablo/multidex . There is `multiDexEnabled` option but it can't be
 used because it causes `DexException: Too many classes in --main-dex-list, main dex capacity exceeded` .
 
@@ -181,7 +206,7 @@ public class MultiDexTestRunner extends InstrumentationTestRunner {
 }
 ```
 
-### 6. Setup application class if you use customized one
+##### 5.2.1. Setup application class if you use customized one
 
 Since application class is executed **before** multidex configuration,
 Writing custom application class has stll many pitfalls.
@@ -268,7 +293,7 @@ tasks.withType(ScalaCompile) {
 Complete list is described in
 http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.scala.ScalaCompileOptions.html
 
-## Complete example of build.gradle
+## Complete example of build.gradle with manually configured MultiDexApplication
 
 `build.gradle`
 ```groovy

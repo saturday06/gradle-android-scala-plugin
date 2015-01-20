@@ -311,7 +311,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.0.0"
+        classpath "com.android.tools.build:gradle:1.0.1"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.1"
     }
 }
@@ -325,7 +325,7 @@ apply plugin: "jp.leafytree.android-scala"
 
 android {
     compileSdkVersion "android-21"
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 8

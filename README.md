@@ -183,7 +183,7 @@ Change application class.
 </manifest>
 ```
 
-If you use customized application class, please read [next section](#6-setup-application-class-if-you-use-customized-one).
+If you use customized application class, please read [next section](#521-setup-application-class-if-you-use-customized-one).
 
 To test MultiDexApplication, custom instrumentation test runner should be used.
 See also https://github.com/casidiablo/multidex/blob/publishing/instrumentation/src/com/android/test/runner/MultiDexTestRunner.java

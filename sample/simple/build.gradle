@@ -35,7 +35,7 @@ android {
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.4"
+    compile "org.scala-lang:scala-library:2.11.5"
 }
 
 afterEvaluate {

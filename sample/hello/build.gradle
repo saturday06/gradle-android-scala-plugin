@@ -41,7 +41,7 @@ android {
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.4"
+    compile "org.scala-lang:scala-library:2.11.5"
 
     // to break 64k limit
     compile "org.scalaz:scalaz-core_2.11:7.1.0"

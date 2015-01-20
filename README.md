@@ -27,11 +27,11 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.11.4 | 2.2.1  | 1.0.0 - 1.0.1  | android-21        | 21.1.1 - 21.1.2   |
+| 2.11.5 | 2.2.1  | 1.0.0 - 1.0.1  | android-21        | 21.1.1 - 21.1.2   |
 | 2.10.4 | 2.2.1  | 1.0.0 - 1.0.1  | android-21        | 21.1.1 - 21.1.2   |
-| 2.11.4 | 1.12   | 0.12.2         | android-21        | 21.1.1            |
+| 2.11.5 | 1.12   | 0.12.2         | android-21        | 21.1.1            |
 | 2.10.4 | 1.12   | 0.12.2         | android-21        | 21.1.1            |
-| 2.11.4 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
+| 2.11.5 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
 | 2.10.4 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
 
 ## Installation
@@ -63,7 +63,7 @@ The plugin decides scala language version using scala-library's version.
 `build.gradle`
 ```groovy
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.4"
+    compile "org.scala-lang:scala-library:2.11.5"
 }
 ```
 
@@ -140,7 +140,7 @@ android {
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.4"
+    compile "org.scala-lang:scala-library:2.11.5"
 }
 
 afterEvaluate {
@@ -357,7 +357,7 @@ android {
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.4"
+    compile "org.scala-lang:scala-library:2.11.5"
 }
 
 tasks.withType(ScalaCompile) {

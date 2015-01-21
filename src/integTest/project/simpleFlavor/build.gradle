@@ -61,6 +61,7 @@ android {
         incremental androidPluginIncremental.toBoolean()
         preDexLibraries androidPluginPreDexLibraries.toBoolean()
         jumboMode androidPluginJumboMode.toBoolean()
+        javaMaxHeapSize "2g"
     }
 }
 

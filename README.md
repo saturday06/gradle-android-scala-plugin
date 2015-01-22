@@ -147,11 +147,10 @@ afterEvaluate {
     tasks.matching {
         it.name.startsWith("dex")
     }.each { dx ->
-        if (dx.additionalParameters == null) {
-            dx.additionalParameters = []
-        }
-        dx.additionalParameters += "--multi-dex"
-        dx.additionalParameters += "--main-dex-list=$rootDir/main-dex-list.txt".toString()
+        dx.additionalParameters = (dx.additionalParameters ?: []) + [
+            "--multi-dex",
+            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
+        ]
     }
 }
 ```
@@ -369,11 +368,10 @@ afterEvaluate {
     tasks.matching {
         it.name.startsWith("dex")
     }.each { dx ->
-        if (dx.additionalParameters == null) {
-            dx.additionalParameters = []
-        }
-        dx.additionalParameters += "--multi-dex"
-        dx.additionalParameters += "--main-dex-list=$rootDir/main-dex-list.txt".toString()
+        dx.additionalParameters = (dx.additionalParameters ?: []) + [
+            "--multi-dex",
+            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
+        ]
     }
 }
 ```

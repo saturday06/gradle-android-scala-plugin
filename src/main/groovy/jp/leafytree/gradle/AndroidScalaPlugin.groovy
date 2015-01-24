@@ -222,7 +222,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def javaCompileOriginalSource = new AtomicReference<FileCollection>()
         def javaCompileOriginalOptionsCompilerArgs = new AtomicReference<List<String>>()
         javaCompileTask.doFirst {
-            // Disable compiltation
+            // Disable compilation
             javaCompileOriginalDestinationDir.set(javaCompileTask.destinationDir)
             javaCompileOriginalSource.set(javaCompileTask.source)
             javaCompileTask.destinationDir = dummyDestinationDir

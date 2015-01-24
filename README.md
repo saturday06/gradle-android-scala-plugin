@@ -43,7 +43,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:1.0.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.1"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
     }
 }
 ```
@@ -311,7 +311,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:1.0.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.1"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
     }
 }
 
@@ -377,6 +377,7 @@ afterEvaluate {
 ```
 
 ## Changelog
+- 1.3.2 Fix unexpected annotation processor's warnings
 - 1.3.1 Support android plugin 12.2
 - 1.3 Incremental compilation support in scala 2.11
 - 1.2.1 Fix binary compatibility with JDK6

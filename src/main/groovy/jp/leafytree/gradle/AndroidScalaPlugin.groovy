@@ -220,6 +220,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def dummySourceDir = new File(variantWorkDir, "javaCompileDummySource") // TODO: More elegant way
         def javaCompileOriginalDestinationDir = new AtomicReference<File>()
         def javaCompileOriginalSource = new AtomicReference<FileCollection>()
+        def javaCompileOriginalOptionsCompilerArgs = new AtomicReference<List<String>>()
         javaCompileTask.doFirst {
             // Disable compiltation
             javaCompileOriginalDestinationDir.set(javaCompileTask.destinationDir)
@@ -234,12 +235,16 @@ public class AndroidScalaPlugin implements Plugin<Project> {
                 dummySourceFile.withWriter { it.write("class Dummy{}") }
             }
             javaCompileTask.source = [dummySourceFile]
+            def compilerArgs = javaCompileTask.options.compilerArgs
+            javaCompileOriginalOptionsCompilerArgs.set(compilerArgs)
+            javaCompileTask.options.compilerArgs = compilerArgs +  "-proc:none"
         }
         javaCompileTask.outputs.upToDateWhen { false }
         javaCompileTask.doLast {
             FileUtils.deleteDirectory(dummyDestinationDir)
             javaCompileTask.destinationDir = javaCompileOriginalDestinationDir.get()
             javaCompileTask.source = javaCompileOriginalSource.get()
+            javaCompileTask.options.compilerArgs = javaCompileOriginalOptionsCompilerArgs.get()
 
             // R.java is appended lazily
             scalaCompileTask.source = [] + new TreeSet(scalaCompileTask.source.collect { it } + javaCompileTask.source.collect { it }) // unique

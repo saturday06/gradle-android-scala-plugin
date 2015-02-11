@@ -115,3 +115,12 @@ signing {
 task integTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: "uploadArchives")
 task integrationTest(type: jp.leafytree.gradle.AndroidScalaPluginIntegrationTestTask, dependsOn: "uploadArchives")
 task sample(type: jp.leafytree.gradle.AndroidScalaPluginSampleTask)
+
+/**
+ * gradle wrapper scripts don't be put VCS. Because, when IntelliJ imports
+ * sample project, IntelliJ's gradle importer reads these scripts instead
+ * of sample project's one
+ */
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}

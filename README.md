@@ -27,12 +27,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.11.5 | 2.2.1  | 1.0.0 - 1.0.1  | android-21        | 21.1.1 - 21.1.2   |
-| 2.10.4 | 2.2.1  | 1.0.0 - 1.0.1  | android-21        | 21.1.1 - 21.1.2   |
-| 2.11.5 | 1.12   | 0.12.2         | android-21        | 21.1.1 - 21.1.2   |
-| 2.10.4 | 1.12   | 0.12.2         | android-21        | 21.1.1 - 21.1.2   |
-| 2.11.5 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
-| 2.10.4 | 1.12   | 0.12.2         | android-19        | 19.1.0            |
+| 2.11.6 | 2.2.1  | 1.1.0 - 1.0.3  | android-21        | 21.1.1 - 21.1.2   |
+| 2.10.4 | 2.2.1  | 1.1.0 - 1.0.3  | android-21        | 21.1.1 - 21.1.2   |
 
 ## Installation
 
@@ -63,7 +59,7 @@ The plugin decides scala language version using scala-library's version.
 `build.gradle`
 ```groovy
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.5"
+    compile "org.scala-lang:scala-library:2.11.6"
 }
 ```
 
@@ -116,14 +112,20 @@ Sample proguard configuration here:
 ```
 From: [hello-scaloid-gradle](https://github.com/pocorall/hello-scaloid-gradle/blob/master/proguard-rules.txt)
 
-#### 5.2. Option 2: Setup MultiDexApplication manually
+#### 5.2. Option 2: Use MultiDex
 
-If your project needs to run `androidTest`, You should setup MultiDexApplication manually.
-See also https://github.com/casidiablo/multidex . There is `multiDexEnabled` option but it can't be
-used because it causes `DexException: Too many classes in --main-dex-list, main dex capacity exceeded` .
+Android comes with built in support for MultiDex. You will need to use
+`MultiDexApplication` from the support library, or modify your `Application`
+subclass in order to support versions of Android prior to 5.0. You may still
+wish to use ProGuard for your production build.
 
-**NOTE: Use of multidex for creating a test APK is not currently supported.**
-[Described in google's documentation](https://developer.android.com/tools/building/multidex.html#testing)
+Using MultiDex with Scala is no different than with a normal Java application.
+See the [Android Documentation](https://github.com/casidiablo/multidex) for
+details.
+
+It is recommended that you set your `minSdkVersion` to 21 or later for
+development, as this enables an incremental multidex algorithm to be used, which
+is *significantly* faster.
 
 `build.gradle`
 ```groovy
@@ -132,44 +134,15 @@ repositories {
 }
 
 android {
-    dexOptions {
-        preDexLibraries false
-        javaMaxHeapSize "2g"
+    defaultConfig {
+        multiDexEnabled true
     }
 }
 
 dependencies {
     compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.5"
+    compile "org.scala-lang:scala-library:2.11.6"
 }
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
-}
-```
-
-Add main dex configuration.
-
-`main-dex-list.txt`
-```text
-android/support/multidex/BuildConfig.class
-android/support/multidex/MultiDex$V14.class
-android/support/multidex/MultiDex$V19.class
-android/support/multidex/MultiDex$V4.class
-android/support/multidex/MultiDex.class
-android/support/multidex/MultiDexApplication.class
-android/support/multidex/MultiDexExtractor$1.class
-android/support/multidex/MultiDexExtractor.class
-android/support/multidex/ZipUtil$CentralDirectory.class
-android/support/multidex/ZipUtil.class
-com/android/test/runner/MultiDexTestRunner.class
 ```
 
 Change application class.
@@ -228,7 +201,6 @@ package my.custom.application
 import android.app.Application
 import android.content.Context
 import android.support.multidex.MultiDex
-import my.custom.application.main.{ClassNotNeededToBeListed, ClassNeededToBeListed}
 
 object MyCustomApplication {
   var globalVariable: Int = _
@@ -239,22 +211,7 @@ class MyCustomApplication extends Application {
     super.attachBaseContext(base)
     MultiDex.install(this)
   }
-
-  var variable: ClassNeededToBeListed = _
 }
-```
-
-Add your customized application class to `main-dex-list.txt`.
-
-`main-dex-list.txt`
-```text
-android/support/multidex/BuildConfig.class
-android/support/multidex/MultiDex$V14.class
-android/support/multidex/MultiDex$V19.class
-...
-my/custom/application/MyCustomApplication.class
-my/custom/application/MyCustomApplication$$anon$1.class
-my/custom/application/main/ClassNeededToBeListed.class
 ```
 
 **You need to remember:**
@@ -310,7 +267,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.0.1"
+        classpath "com.android.tools.build:gradle:1.1.3"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
     }
 }
@@ -327,11 +284,12 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 21
         targetSdkVersion 21
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     sourceSets {
@@ -347,11 +305,6 @@ android {
             }
         }
     }
-
-    dexOptions {
-        preDexLibraries false
-        javaMaxHeapSize "2g"
-    }
 }
 
 dependencies {
@@ -362,17 +315,6 @@ dependencies {
 tasks.withType(ScalaCompile) {
     scalaCompileOptions.deprecation = false
     scalaCompileOptions.additionalParameters = ["-feature"]
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
 }
 ```
 

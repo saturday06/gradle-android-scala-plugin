@@ -27,8 +27,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.11.6 | 2.2.1  | 1.1.0 - 1.0.3  | android-21        | 21.1.1 - 21.1.2   |
-| 2.10.4 | 2.2.1  | 1.1.0 - 1.0.3  | android-21        | 21.1.1 - 21.1.2   |
+| 2.11.6 | 2.2.1  | 1.1.0 - 1.1.3  | 21 - 22           | 21.1.1 - 22.0.1   |
+| 2.10.5 | 2.2.1  | 1.1.0 - 1.1.3  | 21 - 22           | 21.1.1 - 22.0.1   |
 
 ## Installation
 

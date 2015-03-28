@@ -307,7 +307,7 @@ tasks.withType(ScalaCompile) {
 
 ## Changelog
 - 1.3.2 Fix unexpected annotation processor's warnings
-- 1.3.1 Support android plugin 12.2
+- 1.3.1 Support android plugin 0.12.2
 - 1.3 Incremental compilation support in scala 2.11
 - 1.2.1 Fix binary compatibility with JDK6
 - 1.2 Incremental compilation support in scala 2.10 / Flavors support

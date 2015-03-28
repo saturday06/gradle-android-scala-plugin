@@ -122,5 +122,5 @@ task sample(type: jp.leafytree.gradle.AndroidScalaPluginSampleTask)
  * of sample project's one
  */
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.2.1'
 }

@@ -15,7 +15,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
   - [4. Put scala source files](#4-put-scala-source-files)
   - [5. Implement a workaround for DEX 64K Methods Limit](#5-implement-a-workaround-for-dex-64k-methods-limit)
     - [5.1. Option 1: Use ProGuard](#51-option-1-use-proguard)
-    - [5.2. Option 2: Setup MultiDexApplication manually](#52-option-2-setup-multidexapplication-manually)
+    - [5.2. Option 2: Use MultiDex](#52-option-2-use-multidex)
       - [5.2.1. Setup application class if you use customized one](#521-setup-application-class-if-you-use-customized-one)
 - [Configuration](#configuration)
 - [Complete example of build.gradle with manually configured MultiDexApplication](#complete-example-of-buildgradle-with-manually-configured-multidexapplication)

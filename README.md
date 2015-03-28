@@ -120,7 +120,8 @@ subclass in order to support versions of Android prior to 5.0. You may still
 wish to use ProGuard for your production build.
 
 Using MultiDex with Scala is no different than with a normal Java application.
-See the [Android Documentation](https://github.com/casidiablo/multidex) for
+See the [Android Documentation](https://developer.android.com/tools/building/multidex.html)
+and [MultiDex author's Documentation](https://github.com/casidiablo/multidex) for
 details.
 
 It is recommended that you set your `minSdkVersion` to 21 or later for

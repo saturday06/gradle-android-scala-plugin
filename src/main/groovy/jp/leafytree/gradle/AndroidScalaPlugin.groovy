@@ -190,7 +190,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         def zincConfiguration = project.configurations.findByName(zincConfigurationName)
         if (!zincConfiguration) {
             zincConfiguration = project.configurations.create(zincConfigurationName)
-            project.dependencies.add(zincConfigurationName, "com.typesafe.zinc:zinc:0.3.5.3")
+            project.dependencies.add(zincConfigurationName, "com.typesafe.zinc:zinc:0.3.7")
         }
         def compilerConfigurationName = "androidScalaPluginScalaCompilerFor" + javaCompileTask.name
         def compilerConfiguration = project.configurations.findByName(compilerConfigurationName)

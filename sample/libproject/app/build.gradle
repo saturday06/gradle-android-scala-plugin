@@ -2,15 +2,25 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-21"
-    buildToolsVersion "21.1.2"
+    compileSdkVersion "android-22"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 22
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            minSdkVersion 21 // To reduce compilation time
+        }
+
+        prod {
+            minSdkVersion 8
+        }
     }
 
     dexOptions {
@@ -20,9 +30,10 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.5"
+    compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
     compile project(":lib1")
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 
     // to break 64k limit
     compile "org.scalaz:scalaz-core_2.11:7.1.0"
@@ -30,13 +41,3 @@ dependencies {
     compile "org.apache.commons:commons-math3:3.3"
 }
 
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
-}

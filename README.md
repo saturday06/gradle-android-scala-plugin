@@ -140,7 +140,6 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:2.11.6"
 }
 ```
@@ -167,22 +166,10 @@ android {
     testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
   }
 }
-```
 
-`src/androidTest/java/com/android/test/runner/MultiDexTestRunner.java`
-```java
-package com.android.test.runner;
-
-import android.os.Bundle;
-import android.support.multidex.MultiDex;
-import android.test.InstrumentationTestRunner;
-
-public class MultiDexTestRunner extends InstrumentationTestRunner {
-    @Override
-    public void onCreate(Bundle arguments) {
-        MultiDex.install(getTargetContext());
-        super.onCreate(arguments);
-    }
+dependencies {
+    compile "org.scala-lang:scala-library:2.11.6"
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
 ```
 

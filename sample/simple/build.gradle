@@ -4,8 +4,8 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.0.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
+        classpath "com.android.tools.build:gradle:1.1.3"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
     }
 }
 
@@ -17,34 +17,33 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-21"
-    buildToolsVersion "21.1.2"
+    compileSdkVersion "android-22"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     dexOptions {
         preDexLibraries false
         javaMaxHeapSize "2g"
     }
+
+    productFlavors {
+        dev {
+            minSdkVersion 21 // To reduce compilation time
+        }
+
+        prod {
+            minSdkVersion 8
+        }
+    }
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.5"
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
+    compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
 }

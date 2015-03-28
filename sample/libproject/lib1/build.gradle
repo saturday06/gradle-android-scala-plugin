@@ -2,17 +2,20 @@ apply plugin: "com.android.library"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-21"
-    buildToolsVersion "21.1.2"
+    compileSdkVersion "android-22"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 22
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
     }
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.5"
+    compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }

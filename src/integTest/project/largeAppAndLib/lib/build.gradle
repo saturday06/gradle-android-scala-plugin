@@ -11,6 +11,7 @@ android {
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     dexOptions {
@@ -22,17 +23,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
+    compile "com.android.support:multidex:1.0.1"
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }

@@ -8,7 +8,6 @@ android {
     defaultConfig {
         minSdkVersion Integer.decode(androidPluginMinSdkVersion)
         targetSdkVersion Integer.decode(androidPluginTargetSdkVersion)
-        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
     }
@@ -29,15 +28,4 @@ android {
 dependencies {
     compile project(":lib")
     androidTestCompile "org.scala-lang:scala-library:$scalaLibraryVersion"
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
 }

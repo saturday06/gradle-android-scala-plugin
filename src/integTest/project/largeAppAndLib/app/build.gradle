@@ -11,6 +11,7 @@ android {
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
 
     productFlavors {
@@ -37,10 +38,11 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
     flavor1Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     flavor2Compile "org.scala-lang:scala-library:$scalaLibraryVersion"
+    compile "com.android.support:multidex:1.0.1"
     compile project(":lib")
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 
     // to break 65535 method limitation
     androidTestCompile "org.apache.commons:commons-lang3:3.3.2"
@@ -48,15 +50,4 @@ dependencies {
     androidTestCompile "org.apache.commons:commons-io:1.3.2"
     androidTestCompile "com.google.guava:guava:16.0.1"
     androidTestCompile "com.google.code.findbugs:jsr305:2.0.3"
-}
-
-afterEvaluate {
-    tasks.matching {
-        it.name.startsWith("dex")
-    }.each { dx ->
-        dx.additionalParameters = (dx.additionalParameters ?: []) + [
-            "--multi-dex",
-            "--main-dex-list=$rootDir/main-dex-list.txt".toString(),
-        ]
-    }
 }

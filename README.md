@@ -41,8 +41,8 @@ please try [android-scala-plugin-1.3.2](https://github.com/saturday06/gradle-and
 ```groovy
 buildscript {
     dependencies {
-        classpath "com.android.tools.build:gradle:1.0.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
+        classpath "com.android.tools.build:gradle:1.1.3"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
     }
 }
 ```
@@ -145,6 +145,7 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
 }
 ```
 
@@ -173,6 +174,7 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
 ```
@@ -259,7 +261,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:1.1.3"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.3.2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
     }
 }
 
@@ -271,16 +273,25 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-21"
-    buildToolsVersion "21.1.2"
+    compileSdkVersion "android-22"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 21
+        targetSdkVersion 22
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+    }
+
+    productFlavors {
+        dev {
+            minSdkVersion 21 // To reduce compilation time
+        }
+
+        prod {
+            minSdkVersion 8
+        }
     }
 
     sourceSets {
@@ -299,8 +310,9 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:multidex:1.0.0"
-    compile "org.scala-lang:scala-library:2.11.5"
+    compile "org.scala-lang:scala-library:2.11.6"
+    compile "com.android.support:multidex:1.0.1"
+    androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
 
 tasks.withType(ScalaCompile) {
@@ -310,6 +322,7 @@ tasks.withType(ScalaCompile) {
 ```
 
 ## Changelog
+- 1.4 Support android plugin 1.1.3. Manual configuration for dex task is now unnecessary (contributed by [sgrif](https://github.com/sgrif))
 - 1.3.2 Fix unexpected annotation processor's warnings
 - 1.3.1 Support android plugin 0.12.2
 - 1.3 Incremental compilation support in scala 2.11

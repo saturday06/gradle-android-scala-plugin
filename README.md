@@ -163,9 +163,9 @@ See also https://github.com/casidiablo/multidex/blob/publishing/instrumentation/
 `build.gradle`
 ```groovy
 android {
-  defaultConfig {
-    testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
-  }
+    defaultConfig {
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
+    }
 }
 
 dependencies {

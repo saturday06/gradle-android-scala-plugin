@@ -1,7 +1,6 @@
 /.gradle/
 /build/
 /classes/
-/gradle/
 /out/
 /repo/
 /.idea/
@@ -11,8 +10,6 @@
 /*.iws
 /gh-pages/
 /gradle.properties
-/gradlew
-/gradlew.bat
 /buildSrc/.gradle/
 /buildSrc/build/
 /buildSrc/*.iml

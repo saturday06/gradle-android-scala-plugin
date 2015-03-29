@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import junit.framework.Assert
 import scala.collection.concurrent.TrieMap
+import scalaz._
+import Scalaz._
 
 class Lib1JavaActivityTest extends ActivityInstrumentationTestCase2[Lib1JavaActivity](classOf[Lib1JavaActivity]) {
   def test1() {
@@ -20,5 +22,9 @@ class Lib1JavaActivityTest extends ActivityInstrumentationTestCase2[Lib1JavaActi
     map.put("1", "Lib1Java")
     map.put("2", new Lib1Java().getName)
     Assert.assertEquals(map("1"), map("2"))
+  }
+
+  def test4() {
+    Assert.assertEquals(Success(123), "123".parseInt)
   }
 }

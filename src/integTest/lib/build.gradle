@@ -41,9 +41,9 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
+    compile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
-    androidTestCompile "org.scalaz:scalaz-core_$scalaDependencyVersion:7.0.6"
 }
 
 tasks.withType(ScalaCompile) {

@@ -88,15 +88,15 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
 
     def runProject(projectName, tasks, gradleWrapperProperties, gradleProperties) {
         def baseDir = new File([project.buildFile.parentFile.absolutePath, "src", "integTest"].join(File.separator))
-        def projectDir = new File([baseDir.absolutePath, "project", projectName].join(File.separator))
-        new File(baseDir, ["gradle", "wrapper", "gradle-wrapper.properties"].join(File.separator)).withWriter {
+        def projectDir = new File([baseDir.absolutePath, projectName].join(File.separator))
+        new File(projectDir, ["gradle", "wrapper", "gradle-wrapper.properties"].join(File.separator)).withWriter {
             gradleWrapperProperties.store(it, getClass().getName())
         }
         new File(projectDir, "gradle.properties").withWriter {
             gradleProperties.store(it, getClass().getName())
         }
-        def gradleWrapper = new GradleWrapper(baseDir)
-        def args = ["--no-daemon", "--stacktrace", "--project-dir", projectDir.absolutePath] + tasks
+        def gradleWrapper = new GradleWrapper(projectDir)
+        def args = ["--no-daemon", "--stacktrace"] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
         [Thread.start { ByteStreams.copy(process.in, System.out) },

@@ -6,6 +6,8 @@ import jp.leafytree.android.libproject.R
 import junit.framework.Assert
 import jp.leafytree.android.libproject.lib1.{Lib1Java, Lib1ScalaActivity}
 import scala.collection.concurrent.TrieMap
+import scalaz._
+import Scalaz._
 
 class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaActivity](classOf[Lib1ScalaActivity]) {
   def test1() {
@@ -21,5 +23,9 @@ class Lib1ScalaActivityTest extends ActivityInstrumentationTestCase2[Lib1ScalaAc
     map.put("1", "Lib1Java")
     map.put("2", new Lib1Java().getName)
     Assert.assertEquals(map("1"), map("2"))
+  }
+
+  def test4() {
+    Assert.assertEquals(Success(123), "123".parseInt)
   }
 }

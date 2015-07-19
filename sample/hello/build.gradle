@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 

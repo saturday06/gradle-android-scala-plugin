@@ -34,7 +34,7 @@ dependencies {
     compile localGroovy()
     compile "commons-io:commons-io:2.4"
     testCompile "com.android.tools.build:gradle:1.2.3"
-    testCompile "org.scala-lang:scala-compiler:2.11.6"
+    testCompile "org.scala-lang:scala-compiler:2.11.7"
 }
 
 description "Gradle Android Scala Plugin adds scala language support to official gradle android plugin."

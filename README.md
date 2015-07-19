@@ -27,7 +27,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | -------------- | ----------------- | ----------------- |
-| 2.11.6 | 2.2.1  | 1.1.3, 1.2.3   | 21, 22            | 21.1.2, 22.0.1    |
+| 2.11.7 | 2.2.1  | 1.1.3, 1.2.3   | 21, 22            | 21.1.2, 22.0.1    |
 | 2.10.5 | 2.2.1  | 1.1.3, 1.2.3   | 21, 22            | 21.1.2, 22.0.1    |
 
 If you want to use older build environment,
@@ -62,7 +62,7 @@ The plugin decides scala language version using scala-library's version.
 `build.gradle`
 ```groovy
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
 }
 ```
 
@@ -144,7 +144,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
     compile "com.android.support:multidex:1.0.1"
 }
 ```
@@ -173,7 +173,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
@@ -310,7 +310,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }

@@ -44,6 +44,6 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.6"
+    compile "org.scala-lang:scala-library:2.11.7"
     compile "com.android.support:multidex:1.0.1"
 }

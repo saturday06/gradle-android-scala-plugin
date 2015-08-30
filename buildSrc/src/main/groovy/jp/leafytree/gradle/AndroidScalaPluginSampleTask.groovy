@@ -27,7 +27,7 @@ class AndroidScalaPluginSampleTask extends DefaultTask {
                 ["hello", ["installDebug", "connectedCheck"]],
                 ["libproject", ["installDebug", "assemble", "app:connectedCheck"]],
         ].each { projectName, gradleArgs ->
-            gradleArgs = ["--stacktrace", "clean", *gradleArgs, "uninstallAll"]
+            gradleArgs = ["--stacktrace", "-Pcom.android.build.threadPoolSize=5", "clean", *gradleArgs, "uninstallAll"]
             def dir = new File(project.buildFile.parentFile, "sample" + File.separator + projectName)
             def gradleWrapper = new GradleWrapper(dir)
             println "gradlew $gradleArgs"

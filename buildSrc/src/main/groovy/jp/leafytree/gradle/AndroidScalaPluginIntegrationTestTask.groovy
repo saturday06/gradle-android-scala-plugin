@@ -96,7 +96,7 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
             gradleProperties.store(it, getClass().getName())
         }
         def gradleWrapper = new GradleWrapper(projectDir)
-        def args = ["--no-daemon", "--stacktrace"] + tasks
+        def args = ["--no-daemon", "--stacktrace", "-Pcom.android.build.threadPoolSize=5"] + tasks
         println "gradlew $args"
         def process = gradleWrapper.execute(args)
         [Thread.start { ByteStreams.copy(process.in, System.out) },

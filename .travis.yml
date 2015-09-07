@@ -1,17 +1,24 @@
 language: java
 jdk: oraclejdk7
+sudo: false
+addons:
+  apt:
+    packages:
+      - expect
+      - lib32z1
+      - libstdc++6:i386
+env:
+  - TERM=dumb # to get clean gradle output
+
 before_install:
   # Install base Android SDK
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq expect libstdc++6:i386 lib32z1
   - export COMPONENTS=build-tools-22.0.1,android-22,android-18,sys-img-armeabi-v7a-android-18,extra-google-m2repository,extra-android-m2repository,extra-android-support
   - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS
   - source ~/.android-sdk-installer/env
-  - export TERM=dumb # to get clean gradle output
 
   # Create and start emulator
   - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window -memory 256 -gpu on > emulator.log 2>&1 &
+  - emulator -avd test -no-audio -no-window -memory 512 -wipe-data > emulator.log 2>&1 &
   - adb logcat > logcat.log &
   - wait_for_emulator
 

@@ -21,13 +21,12 @@ apply plugin: "idea"
 apply plugin: "com.github.ben-manes.versions"
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
     }
 
     dependencies {

@@ -27,8 +27,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin      | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | ------------------- | ----------------- | ----------------- |
-| 2.11.7 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
-| 2.10.5 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
+| 2.11.7 | 2.9    | 1.5.0               | 23                | 23.0.2            |
+| 2.10.6 | 2.9    | 1.5.0               | 23                | 23.0.2            |
 
 If you want to use older build environment,
 please try [android-scala-plugin-1.3.2](https://github.com/saturday06/gradle-android-scala-plugin/tree/1.3.2)
@@ -41,7 +41,7 @@ please try [android-scala-plugin-1.3.2](https://github.com/saturday06/gradle-and
 ```groovy
 buildscript {
     dependencies {
-        classpath "com.android.tools.build:gradle:1.3.1"
+        classpath "com.android.tools.build:gradle:1.5.0"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
     }
 }
@@ -260,7 +260,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.3.1"
+        classpath "com.android.tools.build:gradle:1.5.0"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
     }
 }
@@ -273,11 +273,11 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-22"
-    buildToolsVersion "22.0.1"
+    compileSdkVersion "android-23"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        targetSdkVersion 22
+        targetSdkVersion 23
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
@@ -322,6 +322,7 @@ tasks.withType(ScalaCompile) {
 ```
 
 ## Changelog
+- 1.5 Support android plugin 1.5.0, dropping earlier plugins.
 - 1.4 Support android plugin 1.1.3. Manual configuration for dex task is now unnecessary (contributed by [sgrif](https://github.com/sgrif))
 - 1.3.2 Fix unexpected annotation processor's warnings
 - 1.3.1 Support android plugin 0.12.2

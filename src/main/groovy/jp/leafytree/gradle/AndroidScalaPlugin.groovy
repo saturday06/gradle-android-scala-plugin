@@ -22,6 +22,8 @@ import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.internal.file.collections.DefaultDirectoryFileTreeFactory
+import org.gradle.api.internal.file.DefaultSourceDirectorySetFactory
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.tasks.DefaultScalaSourceSet
 import org.gradle.api.tasks.scala.ScalaCompile
@@ -168,7 +170,8 @@ public class AndroidScalaPlugin implements Plugin<Project> {
             }
             def include = "**/*.scala"
             sourceSet.java.filter.include(include);
-            sourceSet.convention.plugins.scala = new DefaultScalaSourceSet(sourceSet.name + "_AndroidScalaPlugin", fileResolver)
+            def dirSetFactory = new DefaultSourceDirectorySetFactory(fileResolver, new DefaultDirectoryFileTreeFactory())
+            sourceSet.convention.plugins.scala = new DefaultScalaSourceSet(sourceSet.name + "_AndroidScalaPlugin", dirSetFactory)
             def scala = sourceSet.scala
             scala.filter.include(include);
             def scalaSrcDir = ["src", sourceSet.name, "scala"].join(File.separator)
@@ -213,7 +216,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         scalaCompileTask.sourceCompatibility = javaCompileTask.sourceCompatibility
         scalaCompileTask.targetCompatibility = javaCompileTask.targetCompatibility
         scalaCompileTask.scalaCompileOptions.encoding = javaCompileTask.options.encoding
-        scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.androidBuilder.bootClasspath)
+        scalaCompileTask.classpath = javaCompileTask.classpath + project.files(androidPlugin.androidBuilder.getBootClasspath(false))
         scalaCompileTask.scalaClasspath = compilerConfiguration.asFileTree
         scalaCompileTask.zincClasspath = zincConfiguration.asFileTree
         scalaCompileTask.scalaCompileOptions.incrementalOptions.analysisFile = new File(variantWorkDir, "analysis.txt")

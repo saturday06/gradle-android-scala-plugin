@@ -18,6 +18,7 @@ apply plugin: "groovy"
 apply plugin: "maven"
 apply plugin: "signing"
 apply plugin: "idea"
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -26,6 +27,7 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
 

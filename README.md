@@ -33,6 +33,8 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 If you want to use older build environment,
 please try [android-scala-plugin-1.3.2](https://github.com/saturday06/gradle-android-scala-plugin/tree/1.3.2)
 
+If you want to publish in local maven "gradlew install"
+
 ## Installation
 
 ### 1. Add buildscript's dependency

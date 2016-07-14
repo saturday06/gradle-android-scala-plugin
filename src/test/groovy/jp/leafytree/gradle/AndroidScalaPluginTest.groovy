@@ -148,6 +148,17 @@ class AndroidScalaPluginTest {
     }
 
     @Test
+    public void updateCustomScalaUnitTestSourceSetToAndroidPlugin() {
+        def plugin = getPlugin()
+        def customSrc = new File(project.file("."), ["custom", "testSourceSet", "Src1Test.scala"].join(File.separator))
+        customSrc.parentFile.mkdirs()
+        customSrc.withWriter { it.write("class Src2Test{}") }
+        project.android { sourceSets { test { scala { srcDirs = ["custom/testSourceSet"] } } } }
+        Assert.assertEquals([], plugin.sourceDirectorySetMap["main"].files.toList().sort())
+        Assert.assertEquals([customSrc], plugin.sourceDirectorySetMap["test"].files.toList().sort())
+    }
+
+    @Test
     public void scalaVersionFromClasspath() {
         def classpath = System.getProperty("java.class.path").split(File.pathSeparator).collect { new File(it) }
         Assert.assertEquals("2.11.7", AndroidScalaPlugin.scalaVersionFromClasspath(classpath))

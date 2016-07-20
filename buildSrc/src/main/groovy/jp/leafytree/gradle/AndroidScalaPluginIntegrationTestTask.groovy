@@ -20,6 +20,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
 public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
+
+    static def GRADLE_VERSION = "2.12"
+    static def ANDROID_GRADLE_PLUGIN_VERSION = "2.1.0"
+    static def ANDROID_BUILD_TOOLS_VERSION = "23.0.3"
+
     @TaskAction
     def run() {
         def travis = System.getenv("TRAVIS").toString().toBoolean()
@@ -33,18 +38,18 @@ public class AndroidScalaPluginIntegrationTestTask extends DefaultTask {
                 ["useScalaOnlyTest", false],
                 ["apt", false],
         ].each { projectName, runOnTravis ->
-            def gradleArgs = ["clean", "connectedCheck", "uninstallAll"]
+            def gradleArgs = ["clean", "test", "connectedCheck", "uninstallAll"]
             [
-                    ["2.2.1", true,  "2.11.7", "1.3.1", "android-22", "22.0.1", "8", "23"],
-                    ["2.2.1", false, "2.10.5", "1.3.1", "android-22", "22.0.1", "8", "23"],
-                    ["2.2.1", false, "2.11.7", "1.3.1", "android-22", "22.0.1", "21", "23"],
-                    ["2.2.1", false, "2.10.5", "1.3.1", "android-22", "22.0.1", "21", "23"],
+                    [GRADLE_VERSION, true, "2.11.7", ANDROID_GRADLE_PLUGIN_VERSION, "android-22", ANDROID_BUILD_TOOLS_VERSION, "8", "23"],
+                    [GRADLE_VERSION, false, "2.10.5", ANDROID_GRADLE_PLUGIN_VERSION, "android-22", ANDROID_BUILD_TOOLS_VERSION, "8", "23"],
+                    [GRADLE_VERSION, false, "2.11.7", ANDROID_GRADLE_PLUGIN_VERSION, "android-22", ANDROID_BUILD_TOOLS_VERSION, "21", "23"],
+                    [GRADLE_VERSION, false, "2.10.5", ANDROID_GRADLE_PLUGIN_VERSION, "android-22", ANDROID_BUILD_TOOLS_VERSION, "21", "23"],
             ].each { testParameters ->
                 if (!travis || (runOnTravis && testParameters[1])) {
                     def gradleVersion = testParameters[0]
                     def gradleWrapperProperties = getGradleWrapperProperties(gradleVersion)
                     def gradleProperties = getGradleProperties(testParameters.drop(2))
-                    println "Test $gradleArgs gradleVersion:$gradleVersion $gradleProperties"
+                    println "Test $gradleArgs GRADLE_VERSION:$gradleVersion $gradleProperties"
                     runProject(projectName, gradleArgs, gradleWrapperProperties, gradleProperties)
                 }
             }

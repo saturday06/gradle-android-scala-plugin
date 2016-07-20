@@ -43,6 +43,7 @@ android {
 dependencies {
     compile "org.scala-lang:scala-library:$scalaLibraryVersion"
     compile "com.android.support:multidex:1.0.1"
+    testCompile "junit:junit:4.12"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
 

@@ -27,6 +27,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin      | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | ------------------- | ----------------- | ----------------- |
+| 2.11.8 | 3.3    | 2.3.0-beta2         | 25                | 25.0.2            |
 | 2.11.7 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 | 2.10.5 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 
@@ -41,8 +42,8 @@ please try [android-scala-plugin-1.3.2](https://github.com/saturday06/gradle-and
 ```groovy
 buildscript {
     dependencies {
-        classpath "com.android.tools.build:gradle:1.3.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
+        classpath "com.android.tools.build:gradle:2.3.0-beta2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.6"
     }
 }
 ```
@@ -62,7 +63,7 @@ The plugin decides scala language version using scala-library's version.
 `build.gradle`
 ```groovy
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile "org.scala-lang:scala-library:2.11.8"
 }
 ```
 
@@ -144,7 +145,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile "org.scala-lang:scala-library:2.11.8"
     compile "com.android.support:multidex:1.0.1"
 }
 ```
@@ -173,7 +174,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile "org.scala-lang:scala-library:2.11.8"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
@@ -256,12 +257,13 @@ http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.scala.ScalaCompileOp
 ```groovy
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.3.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
+        classpath "com.android.tools.build:gradle:2.3.0-beta2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.6"
     }
 }
 
@@ -273,11 +275,11 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-22"
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
-        targetSdkVersion 22
+        targetSdkVersion 25
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
@@ -310,7 +312,7 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile "org.scala-lang:scala-library:2.11.8"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 }
@@ -322,6 +324,7 @@ tasks.withType(ScalaCompile) {
 ```
 
 ## Changelog
+- 1.6 Support android plugin 2.3.0-beta2 and Gradle 3.3
 - 1.4 Support android plugin 1.1.3. Manual configuration for dex task is now unnecessary (contributed by [sgrif](https://github.com/sgrif))
 - 1.3.2 Fix unexpected annotation processor's warnings
 - 1.3.1 Support android plugin 0.12.2

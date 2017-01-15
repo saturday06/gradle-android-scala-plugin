@@ -42,8 +42,8 @@ dependencies {
 description "Gradle Android Scala Plugin adds scala language support to official gradle android plugin."
 group = "com.github.xingda920813"
 version = "1.6-SNAPSHOT"
-sourceCompatibility = JavaVersion.VERSION_1_6
-targetCompatibility = JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 def uploadToSonatypeRepository = hasProperty("sonatypeUserName")
 

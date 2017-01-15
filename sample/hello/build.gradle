@@ -1,11 +1,12 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:1.3.1"
-        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
+        classpath "com.android.tools.build:gradle:2.3.0-beta2"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.6"
     }
 }
 
@@ -17,8 +18,8 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion "android-22"
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         targetSdkVersion 22
@@ -50,12 +51,12 @@ android {
 }
 
 dependencies {
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile "org.scala-lang:scala-library:2.11.8"
     compile "com.android.support:multidex:1.0.1"
     androidTestCompile "com.android.support:multidex-instrumentation:1.0.1", { exclude module: "multidex" }
 
     // to break 64k limit
-    compile "org.scalaz:scalaz-core_2.11:7.1.0"
+    compile "org.scalaz:scalaz-core_2.11:7.2.8"
     compile "com.google.guava:guava-jdk5:17.0"
-    compile "org.apache.commons:commons-math3:3.3"
+    compile "org.apache.commons:commons-math3:3.6.1"
 }

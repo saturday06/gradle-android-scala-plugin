@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         maven {
             url snaphotRepositoryUrl
@@ -9,7 +10,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidPluginVersion"
         classpath "jp.leafytree.gradle:gradle-android-scala-plugin:$androidScalaPluginVersion"
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4+'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.6'
     }
 }
 
@@ -49,7 +50,7 @@ apt {
     }
 }
 
-def AAVersion = "3.2"
+def AAVersion = "3.3.2"
 
 dependencies {
     apt "org.androidannotations:androidannotations:$AAVersion"

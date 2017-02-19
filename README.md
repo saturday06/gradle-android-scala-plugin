@@ -27,7 +27,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin      | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | ------------------- | ----------------- | ----------------- |
-| 2.11.8 | 3.3    | 2.3.0-beta4         | 25                | 25.0.2            |
+| 2.11.8 | 3.3    | 2.3.0-rc1         | 25                | 25.0.2            |
 | 2.11.7 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 | 2.10.5 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 
@@ -46,7 +46,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta4'
+        classpath 'com.android.tools.build:gradle:2.3.0-rc1'
         classpath 'com.github.xingda920813:gradle-android-scala-plugin:java8'
     }
 }
@@ -265,7 +265,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta4'
+        classpath 'com.android.tools.build:gradle:2.3.0-rc1'
         classpath 'com.github.xingda920813:gradle-android-scala-plugin:java8'
     }
 }
@@ -327,7 +327,7 @@ tasks.withType(ScalaCompile) {
 ```
 
 ## Changelog
-- 1.6 Support android plugin 2.3.0-beta4 and Gradle 3.3
+- 1.6 Support android plugin 2.3.0-rc1 and Gradle 3.3
 - 1.4 Support android plugin 1.1.3. Manual configuration for dex task is now unnecessary (contributed by [sgrif](https://github.com/sgrif))
 - 1.3.2 Fix unexpected annotation processor's warnings
 - 1.3.1 Support android plugin 0.12.2

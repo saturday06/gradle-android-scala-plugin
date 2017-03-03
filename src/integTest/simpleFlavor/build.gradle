@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         maven {
             url snaphotRepositoryUrl
@@ -49,11 +50,11 @@ android {
     sourceSets {
         flavor3 {
             java {
-                srcDirs = ['src/flavor3Moved/java']
+                srcDirs = []
             }
 
             scala {
-                srcDirs = ['src/flavor3Moved/scala']
+                srcDirs = ['src/flavor3Moved/java', 'src/flavor3Moved/scala']
             }
         }
     }

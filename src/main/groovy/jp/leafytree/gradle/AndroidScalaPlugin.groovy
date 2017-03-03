@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package jp.leafytree.gradle
-import com.google.common.annotations.VisibleForTesting
+//import com.google.common.annotations.VisibleForTesting
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.gradle.api.Plugin
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference
  */
 public class AndroidScalaPlugin implements Plugin<Project> {
     private final FileResolver fileResolver
-    @VisibleForTesting
+    //@VisibleForTesting
     final Map<String, SourceDirectorySet> sourceDirectorySetMap = new HashMap<>()
     private Project project
     private Object androidPlugin
@@ -92,7 +92,7 @@ public class AndroidScalaPlugin implements Plugin<Project> {
         }
 
         project.tasks.withType(ScalaCompile) {
-            scalaCompileOptions.useAnt = false
+            //scalaCompileOptions.useAnt = false
         }
     }
 

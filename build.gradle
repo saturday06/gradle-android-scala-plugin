@@ -35,7 +35,7 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     compile "commons-io:commons-io:2.5"
-    testCompile "com.android.tools.build:gradle:2.3.0-rc1"
+    testCompile "com.android.tools.build:gradle:2.3.0"
     testCompile "org.scala-lang:scala-compiler:2.11.8"
 }
 

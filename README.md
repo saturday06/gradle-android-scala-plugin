@@ -27,7 +27,7 @@ See also sample projects at https://github.com/saturday06/gradle-android-scala-p
 
 | Scala  | Gradle | Android Plugin      | compileSdkVersion | buildToolsVersion |
 | ------ | ------ | ------------------- | ----------------- | ----------------- |
-| 2.11.8 | 3.4.1  | 2.3.3               | 25                | 25.0.3            |
+| 2.11.8 | 3.4.1  | 2.3.3               | 26                | 26.0.2            |
 | 2.11.7 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 | 2.10.5 | 2.2.1  | 1.1.3, 1.2.3, 1.3.1 | 21, 22, 23        | 21.1.2, 22.0.1    |
 
@@ -278,11 +278,11 @@ apply plugin: "com.android.application"
 apply plugin: "jp.leafytree.android-scala"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
-        targetSdkVersion 25
+        targetSdkVersion 26
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
         versionCode 1
         versionName "1.0"
